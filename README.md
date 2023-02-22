@@ -21,4 +21,4 @@ to the Migration Schema:
     Update-Database
 ```
 
-3. Run the Project.
+4. Run the Project.
