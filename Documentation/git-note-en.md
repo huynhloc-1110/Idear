@@ -28,7 +28,7 @@ successfully merged into dev. Therefore, Khoa needs to update his branch from
 dev. Khoa proceeds to merge dev into feature-purchase and resolves any conflicts
 if there are any.
 
-## `main` branch
+## `master` branch
 - This is the default branch of GitHub, meaning that people who visit GitHub
 repos will see this branch first, and when they clone it, they will see the
 files from this branch first. Therefore, this branch is used for official
@@ -38,7 +38,7 @@ the features of a sprint have been completed.
 > For example, this sprint includes 2 features: `feature-login` and
 `feature-purchase`. Khoa has also completed `feature-purchase` and successfully
 merged it into `dev`. At this point, `dev` has completed one sprint and will be
-merged into `main`.
+merged into `master`.
 
 # Necessary git commands
 - We get the project to our local machine using the command:
@@ -81,16 +81,16 @@ GitHub and create a pull request):
 
 ## Note
 The keyword `origin` refers to our remote repos on GitHub. In the example below,
-there are 2 branches locally: `develop` and `main`, with `develop` being our
+there are 2 branches locally: `develop` and `master`, with `develop` being our
 current location. On GitHub, there are 3 branches: `develop`,
-`feature-register`, and `main`, with `main` being the default branch on GitHub.
+`feature-register`, and `master`, with `master` being the default branch on GitHub.
 ```console
 * develop
-  main
-  remotes/origin/HEAD -> origin/main
+  master
+  remotes/origin/HEAD -> origin/master
   remotes/origin/develop
   remotes/origin/feature-register
-  remotes/origin/main
+  remotes/origin/master
 ```
 As seen, `feature-register` is on remote but has not been brought to the local
 yet. To fetch it to review (or do something else), use the following commands:

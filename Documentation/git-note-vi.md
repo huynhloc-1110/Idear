@@ -28,7 +28,7 @@ Khoa nhận thấy pull request của Huy trước đó đã được merge thà
 Do đó, Khoa cần cập nhật branch của mình từ `dev`. Khoa tiến hành merge `dev`
 vào `feature-purchase` vả giải quyết các conflict nếu có.
 
-## `main` branch
+## `master` branch
 - Đây là default branch của github, tức là những người ghé thăm GitHub repos sẽ
 thấy branch này đầu tiên và khi clone về sẽ hiện các file từ branch này trước.
 Do đó, branch này được dùng cho các version release chính thức. Branch này sẽ
@@ -37,7 +37,7 @@ chỉ được merge từ `dev` branch sau khi xong hết các tính năng của
 > Ví dụ: Sprint này bao gồm 2 tính năng là `feature-login` và
 `feature-purchase`. Khoa cũng đã hoàn thành xong `feature-purchase` và thành
 công merge nó vào `dev`. Lúc này, `dev` đã hoàn thành 1 sprint và sẽ được merge
-vào `main`.
+vào `master`.
 
 # Các lệnh git cần thiết
 - Chúng ta lấy project về máy bằng lệnh:
@@ -80,16 +80,16 @@ branch thì lên GitHub và bấm tạo pull request):
 
 ## Lưu ý
 Từ khóa `origin` chỉ remote repos của chúng ta trên GitHub. Ở ví dụ ngay bên
-dưới, ở local có 2 branch: `develope` và `main`, trong đó `develop` là chỗ của
+dưới, ở local có 2 branch: `develope` và `master`, trong đó `develop` là chỗ của
 chúng ta hiện tại. Ở GitHub có 3 branch: `develop`, `feature-register` và
-`main`, trong đó main là branch default trên GitHub.
+`master`, trong đó master là branch default trên GitHub.
 ```console
 * develop
-  main
-  remotes/origin/HEAD -> origin/main
+  master
+  remotes/origin/HEAD -> origin/master
   remotes/origin/develop
   remotes/origin/feature-register
-  remotes/origin/main
+  remotes/origin/master
 ```
 Như đã thấy, `feature-register` có trên remote nhưng vẫn chưa được đem về local.
 Để lấy nó về để xem xét (hay để làm gì khác) thì dùng các lệnh:
