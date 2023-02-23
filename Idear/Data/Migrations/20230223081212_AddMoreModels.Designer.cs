@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Idear.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230223074445_AddMoreModels")]
+    [Migration("20230223081212_AddMoreModels")]
     partial class AddMoreModels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
