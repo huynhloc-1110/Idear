@@ -5,22 +5,16 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Idear.Data.Migrations
 {
-    public partial class ERDTables : Migration
+    public partial class AddMoreModels : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Discriminator",
-                table: "AspNetUsers",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddColumn<string>(
                 name: "DepartmentId",
                 table: "AspNetUsers",
                 type: "nvarchar(450)",
-                nullable: true);
+                nullable: false,
+                defaultValue: "");
 
             migrationBuilder.AddColumn<string>(
                 name: "FullName",
@@ -76,9 +70,9 @@ namespace Idear.Data.Migrations
                     Text = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    TopicId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    CategoryId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TopicId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CategoryId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,17 +81,20 @@ namespace Idear.Data.Migrations
                         name: "FK_Ideas_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Ideas_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Ideas_Topics_TopicId",
                         column: x => x.TopicId,
                         principalTable: "Topics",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -107,8 +104,8 @@ namespace Idear.Data.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Text = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Datetime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ideaId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdeaId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -117,12 +114,14 @@ namespace Idear.Data.Migrations
                         name: "FK_Comments_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Comments_Ideas_ideaId",
-                        column: x => x.ideaId,
+                        name: "FK_Comments_Ideas_IdeaId",
+                        column: x => x.IdeaId,
                         principalTable: "Ideas",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -130,8 +129,8 @@ namespace Idear.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    IdeaId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdeaId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ReactFlag = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -141,12 +140,14 @@ namespace Idear.Data.Migrations
                         name: "FK_Reactes_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Reactes_Ideas_IdeaId",
                         column: x => x.IdeaId,
                         principalTable: "Ideas",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -155,8 +156,8 @@ namespace Idear.Data.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     VisitTime = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ideaId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdeaId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -165,12 +166,14 @@ namespace Idear.Data.Migrations
                         name: "FK_Views_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Views_Ideas_ideaId",
-                        column: x => x.ideaId,
+                        name: "FK_Views_Ideas_IdeaId",
+                        column: x => x.IdeaId,
                         principalTable: "Ideas",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -179,9 +182,9 @@ namespace Idear.Data.Migrations
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_ideaId",
+                name: "IX_Comments_IdeaId",
                 table: "Comments",
-                column: "ideaId");
+                column: "IdeaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_UserId",
@@ -214,9 +217,9 @@ namespace Idear.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Views_ideaId",
+                name: "IX_Views_IdeaId",
                 table: "Views",
-                column: "ideaId");
+                column: "IdeaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Views_UserId",
@@ -228,7 +231,8 @@ namespace Idear.Data.Migrations
                 table: "AspNetUsers",
                 column: "DepartmentId",
                 principalTable: "Departments",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -269,10 +273,6 @@ namespace Idear.Data.Migrations
             migrationBuilder.DropColumn(
                 name: "FullName",
                 table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-               name: "Discriminator",
-               table: "AspNetUsers");
         }
     }
 }

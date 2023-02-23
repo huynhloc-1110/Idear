@@ -35,6 +35,7 @@ namespace Idear.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DepartmentId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Email")
@@ -120,22 +121,24 @@ namespace Idear.Data.Migrations
                     b.Property<DateTime>("Datetime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("IdeaId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ideaId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("IdeaId");
 
-                    b.HasIndex("ideaId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -161,6 +164,7 @@ namespace Idear.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CategoryId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DateTime")
@@ -175,9 +179,11 @@ namespace Idear.Data.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("TopicId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -197,12 +203,14 @@ namespace Idear.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("IdeaId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ReactFlag")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -240,20 +248,22 @@ namespace Idear.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("IdeaId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("VisitTime")
                         .HasColumnType("int");
 
-                    b.Property<string>("ideaId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("IdeaId");
 
-                    b.HasIndex("ideaId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Views");
                 });
@@ -399,39 +409,51 @@ namespace Idear.Data.Migrations
                 {
                     b.HasOne("Idear.Models.Department", "Department")
                         .WithMany("Users")
-                        .HasForeignKey("DepartmentId");
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Department");
                 });
 
             modelBuilder.Entity("Idear.Models.Comment", b =>
                 {
+                    b.HasOne("Idear.Models.Idea", "Idea")
+                        .WithMany("Comments")
+                        .HasForeignKey("IdeaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Idear.Models.ApplicationUser", "User")
                         .WithMany("Comments")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("Idear.Models.Idea", "idea")
-                        .WithMany("Comments")
-                        .HasForeignKey("ideaId");
+                    b.Navigation("Idea");
 
                     b.Navigation("User");
-
-                    b.Navigation("idea");
                 });
 
             modelBuilder.Entity("Idear.Models.Idea", b =>
                 {
                     b.HasOne("Idear.Models.Category", "Category")
                         .WithMany("Ideas")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Idear.Models.Topic", "Topic")
                         .WithMany("Ideas")
-                        .HasForeignKey("TopicId");
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Idear.Models.ApplicationUser", "User")
                         .WithMany("Ideas")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
 
@@ -444,11 +466,15 @@ namespace Idear.Data.Migrations
                 {
                     b.HasOne("Idear.Models.Idea", "Idea")
                         .WithMany("Reacts")
-                        .HasForeignKey("IdeaId");
+                        .HasForeignKey("IdeaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Idear.Models.ApplicationUser", "User")
                         .WithMany("Reacts")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Idea");
 
@@ -457,17 +483,21 @@ namespace Idear.Data.Migrations
 
             modelBuilder.Entity("Idear.Models.View", b =>
                 {
+                    b.HasOne("Idear.Models.Idea", "Idea")
+                        .WithMany("Views")
+                        .HasForeignKey("IdeaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Idear.Models.ApplicationUser", "User")
                         .WithMany("Views")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("Idear.Models.Idea", "idea")
-                        .WithMany("Views")
-                        .HasForeignKey("ideaId");
+                    b.Navigation("Idea");
 
                     b.Navigation("User");
-
-                    b.Navigation("idea");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
