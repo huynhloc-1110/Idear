@@ -15,13 +15,10 @@ namespace Idear.Models
 		[DataType(DataType.Date)]
 		public DateTime DateTime { get; set; }
 
-		[Required]
         public ApplicationUser? User { get; set; }
 
-		[Required]
         public Topic? Topic { get; set; }
 
-		[Required]
         public Category? Category { get; set; }
 
         public List<Comment>? Comments { get; set; }

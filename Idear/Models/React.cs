@@ -5,9 +5,9 @@ namespace Idear.Models
 	public class React
 	{
 		public string? Id { get; set; }
-		[Required]
+
 		public ApplicationUser? User { get; set; }
-		[Required]
+
 		public Idea? Idea { get; set; }
 
 

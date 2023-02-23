@@ -14,10 +14,8 @@ namespace Idear.Models
         [Display(Name = "Date Time")]
         public DateTime Datetime { get; set; }
 
-        [Required]
         public ApplicationUser? User { get; set; }
 
-        [Required]
         public Idea? Idea { get; set; }
     }
 }

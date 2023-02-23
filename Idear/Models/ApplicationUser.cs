@@ -9,7 +9,6 @@ namespace Idear.Models
         [Required]
         public string? FullName { get; set; }
 
-        [Required]
         public Department? Department { get; set; }
 
         public List<Idea>? Ideas { get; set; }
