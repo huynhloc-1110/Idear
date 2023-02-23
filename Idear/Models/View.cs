@@ -7,10 +7,7 @@ namespace Idear.Models
     public class View
     {
         public string? Id { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [Display(Name = "Visit Time")]
-        public DateTime VisitTime { get; set; }
+        public int VisitTime { get; set; }
         public ApplicationUser? User { get; set; }
         public Idea? idea { get; set; }
     }
