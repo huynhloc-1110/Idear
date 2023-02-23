@@ -11,5 +11,7 @@ namespace Idear.Models
         public DateTime ClosureDate { get; set; }
         [Required]
         public DateTime FinalClosureTime { get; set; }
+
+        public List<Idea>? Ideas { get; set; }
     }
 }

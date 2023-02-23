@@ -7,5 +7,6 @@ namespace Idear.Models
         public string? Id { get; set; }
         [Required]
         public string? Name { get; set; }
+        public List<Idear>? Ideas { get; set;}
     }
 }
