@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Idear.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230223045456_ERD-Tables")]
-    partial class ERDTables
+    [Migration("20230223074445_AddMoreModels")]
+    partial class AddMoreModels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -122,6 +122,9 @@ namespace Idear.Data.Migrations
                     b.Property<DateTime>("Datetime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("IdeaId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -130,14 +133,11 @@ namespace Idear.Data.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ideaId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("IdeaId");
 
-                    b.HasIndex("ideaId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -242,20 +242,20 @@ namespace Idear.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("IdeaId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("VisitTime")
                         .HasColumnType("int");
 
-                    b.Property<string>("ideaId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("IdeaId");
 
-                    b.HasIndex("ideaId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Views");
                 });
@@ -408,17 +408,17 @@ namespace Idear.Data.Migrations
 
             modelBuilder.Entity("Idear.Models.Comment", b =>
                 {
+                    b.HasOne("Idear.Models.Idea", "Idea")
+                        .WithMany("Comments")
+                        .HasForeignKey("IdeaId");
+
                     b.HasOne("Idear.Models.ApplicationUser", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId");
 
-                    b.HasOne("Idear.Models.Idea", "idea")
-                        .WithMany("Comments")
-                        .HasForeignKey("ideaId");
+                    b.Navigation("Idea");
 
                     b.Navigation("User");
-
-                    b.Navigation("idea");
                 });
 
             modelBuilder.Entity("Idear.Models.Idea", b =>
@@ -459,17 +459,17 @@ namespace Idear.Data.Migrations
 
             modelBuilder.Entity("Idear.Models.View", b =>
                 {
+                    b.HasOne("Idear.Models.Idea", "Idea")
+                        .WithMany("Views")
+                        .HasForeignKey("IdeaId");
+
                     b.HasOne("Idear.Models.ApplicationUser", "User")
                         .WithMany("Views")
                         .HasForeignKey("UserId");
 
-                    b.HasOne("Idear.Models.Idea", "idea")
-                        .WithMany("Views")
-                        .HasForeignKey("ideaId");
+                    b.Navigation("Idea");
 
                     b.Navigation("User");
-
-                    b.Navigation("idea");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

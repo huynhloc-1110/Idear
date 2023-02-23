@@ -11,10 +11,12 @@ namespace Idear.Models
 		public string? Text { get; set; }
 		public string? FilePath { get; set; }
 
+		[Required]
 		[DataType(DataType.Date)]
 		public DateTime DateTime { get; set; }
 
         public ApplicationUser? User { get; set; }
+
         public Topic? Topic { get; set; }
 
         public Category? Category { get; set; }
