@@ -26,11 +26,17 @@ namespace Idear.Data
             }
 
             string[] roles = { "Staff", "Admin", "QA Manager", "QA Coordinator" };
-            CreateSeveralRoles(roles);
-            CreateSeveralUser();
-            CreateCategories();
+            CreateRoles(roles);
+
+            string[] departments = { "QA", "IT", "HR", "Finance" };
+            CreateDepartments(departments);
+
+            string[] categories = { "General", "Improvement", "Change/Update" };
+            CreateCategories(categories);
+
             CreateTopics();
-            CreateDepartments();
+
+            CreateUsers();
 
         }
 
@@ -42,7 +48,7 @@ namespace Idear.Data
             GC.SuppressFinalize(this);
         }
 
-        private void CreateSeveralRoles(string[] roleList)
+        private void CreateRoles(string[] roleList)
         {
             foreach (string role in roleList)
             {
@@ -57,24 +63,28 @@ namespace Idear.Data
             }
         }
 
-        private void CreateSeveralUser()
+        private void CreateUsers()
         {
-            CreateUser("Loc123@gmail.com", "Le Huynh Loc", "Loc123@gmail.com", "Staff");
-            CreateUser("K1@gmail.com", "Le K", "K1@gmail.com", "Staff");
-            CreateUser("T2@gmail.com", "Tat T ", "T2@gmail.com", "Staff");
-            CreateUser("H3@gmail.com", "Nguyen H", "H3@gmail.com", "Staff");
-            CreateUser("Khoa234@gmail.com", "Le Dong Khoa", "Khoa234@gmail.com", "Admin");
-            CreateUser("Huy345@gmail.com", "Nguyen Phuoc Huy", "Huy345@gmail.com", "QA Manager");
-            CreateUser("Tri456@gmail.com", "Tat Khai Tri", "Tri456@gmail.com", "QA Coordinator");
+            CreateUser("Loc123@gmail.com", "Le Huynh Loc", "Loc123@gmail.com", "Staff", "QA");
+            CreateUser("N1@gmail.com", "Nhan Vien 1", "N1@gmail.com", "Staff", "IT");
+            CreateUser("N2@gmail.com", "Nhan Vien 2", "N2@gmail.com", "Staff", "HR");
+            CreateUser("N3@gmail.com", "Nhan Vien 3", "N3@gmail.com", "Staff", "Finance");
+            CreateUser("Khoa234@gmail.com", "Le Dong Khoa", "Khoa234@gmail.com", "Admin", "QA");
+            CreateUser("Huy345@gmail.com", "Nguyen Phuoc Huy", "Huy345@gmail.com", "QA Manager",
+                "QA");
+            CreateUser("Tri456@gmail.com", "Tat Khai Tri", "Tri456@gmail.com", "QA Coordinator",
+                "IT");
         }
 
-        private void CreateUser(string email, string fullName, string password, string role)
+        private void CreateUser(string email, string fullName, string password, string role,
+            string department)
         {
             var user = new ApplicationUser
             {
                 Email = email,
                 UserName = email,
-                FullName = fullName
+                FullName = fullName,
+                Department = _context.Departments.First(d => d.Name == department)
             };
 
             if (!_context.Users.Any(u => u.UserName == user.UserName)) {
@@ -92,98 +102,63 @@ namespace Idear.Data
             }
         }
 
-        private void CreateCategories()
-        {
-            _context.Categories.AddRange(
-                new Category
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "General"
-                },
-                new Category
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Technical"
-                },
-                new Category
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Non-Technical"
-                }
-            );
-            _context.SaveChanges();
-        }
         private void CreateTopics()
         {
             _context.Topics.AddRange(
                 new Topic
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = "New Idea"
+                    Name = "Workshop ideas for IT students",
+                    ClosureDate = new DateTime(2023,1,1),
+                    FinalClosureDate = new DateTime(2023,2,1)
                 },
                 new Topic
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = "Change/Improve Company"
+                    Name = "Event ideas for welcoming new students",
+                    ClosureDate = new DateTime(2023,1,1),
+                    FinalClosureDate = new DateTime(2023,12,31)
+                },
+                new Topic
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Improve work evironment for students and staffs",
+                    ClosureDate = new DateTime(2023,6,1),
+                    FinalClosureDate = new DateTime(2023,12,31)
                 }
             );
             _context.SaveChanges();
         }
-        private void CreateDepartments()
+
+        private void CreateDepartments(string[] departments)
         {
-            _context.Departments.AddRange(
-                new Department
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "IT"
-                },
-                new Department
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Bussiness"
-                },
-                new Department
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Marketing"
-                },
-                new Department
-                {
-                     Id = Guid.NewGuid().ToString(),
-                     Name = "Management"
-                },
-                new Department
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "HR"
-                },
-                new Department
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Financial"
-                },
-                new Department
-                {
-                     Id = Guid.NewGuid().ToString(),
-                     Name = "QA"
-                }
-            );
+            foreach (string department in departments)
+            {
+                _context.Departments.Add(
+                    new()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = department
+                    }
+                );
+            }
             _context.SaveChanges();
-            var user1 = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == "Loc123@gmail.com")!;
-            user1.Department = _context.Departments.FirstOrDefault(d => d.Name == "HR");
-            var user2 = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == "K1@gmail.com")!;
-            user2.Department = _context.Departments.FirstOrDefault(d => d.Name == "Bussiness");
-            var user3 = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == "T2@gmail.com")!;
-            user3.Department = _context.Departments.FirstOrDefault(d => d.Name == "Marketing");
-            var user4 = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == "H3@gmail.com")!;
-            user4.Department = _context.Departments.FirstOrDefault(d => d.Name == "Financial");
-            var user5 = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == "Khoa234@gmail.com")!;
-            user5.Department = _context.Departments.FirstOrDefault(d => d.Name == "IT");
-            var user6 = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == "Huy345@gmail.com")!;
-            user6.Department = _context.Departments.FirstOrDefault(d => d.Name == "QA");
-            var user7 = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == "Tri456@gmail.com")!;
-            user7.Department = _context.Departments.FirstOrDefault(d => d.Name == "QA");
-            _context.SaveChanges(); 
         }
+
+        private void CreateCategories(string[] categories)
+        {
+            foreach (string category in categories)
+            {
+                _context.Categories.Add(
+                    new()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = category
+                    }
+                );
+            }
+            _context.SaveChanges();
+        }
+
     }
 }
