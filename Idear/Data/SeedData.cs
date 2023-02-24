@@ -39,6 +39,12 @@ namespace Idear.Data
             CreateUsers();
 
             CreateIdeas();
+
+            CreateComments();
+
+            CreateViews();
+
+            CreateReactes();
         }
 
         public void Dispose()
@@ -200,6 +206,71 @@ namespace Idear.Data
                     User = _context.ApplicationUsers.First(u => u.UserName == "Loc123@gmail.com"),
                     Topic = _context.Topics.First(t => t.Name == "Improve work evironment for students and staffs"),
                     Category = _context.Categories.First(c => c.Name == "Improvement")
+                }
+            );
+            _context.SaveChanges();
+        }
+
+        private void CreateComments()
+        {
+            _context.Comments.AddRange(
+                new Comment
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Text = "100% agree.",
+                    Datetime = DateTime.Now,
+                    Idea = _context.Ideas.First(i => i.Text == "Improve the air conditional for student room"),
+                    User = _context.ApplicationUsers.First(u => u.UserName == "Tri456@gmail.com")
+                },
+                new Comment
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Text = "They won't fix it, it's been an issue for months.",
+                    Datetime = DateTime.Now,
+                    Idea = _context.Ideas.First(i => i.Text == "Improve the air conditional for student room"),
+                    User = _context.ApplicationUsers.First(u => u.UserName == "N3@gmail.com")
+                }
+            );
+            _context.SaveChanges();
+        }
+
+        private void CreateViews()
+        {
+            _context.Views.AddRange(
+                new View
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    VisitTime = 3,
+                    Idea = _context.Ideas.First(i => i.Text == "Improve the air conditional for student room"),
+                    User = _context.ApplicationUsers.First(u => u.UserName == "N3@gmail.com")
+                },
+                new View
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    VisitTime = 1,
+                    Idea = _context.Ideas.First(i => i.Text == "Improve the air conditional for student room"),
+                    User = _context.ApplicationUsers.First(u => u.UserName == "Tri456@gmail.com")
+                }
+            );
+            _context.SaveChanges();
+        }
+
+        private void CreateReactes()
+        {
+            _context.Reactes.AddRange(
+                new React
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ReactFlag = 1,
+                    Idea = _context.Ideas.First(i => i.Text == "Improve the air conditional for student room"),
+                    User = _context.ApplicationUsers.First(u => u.UserName == "Tri456@gmail.com")
+                },
+                new React
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ReactFlag = -1,
+                    Idea = _context.Ideas.First(i => i.Text == "Improve the air conditional for student room"),
+                    User = _context.ApplicationUsers.First(u => u.UserName == "N3@gmail.com")
                 }
             );
             _context.SaveChanges();
