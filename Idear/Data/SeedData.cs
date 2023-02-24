@@ -29,6 +29,8 @@ namespace Idear.Data
             CreateSeveralRoles(roles);
             CreateSeveralUser();
             CreateCategories();
+            CreateTopic();
+            CreateDepartment();
         }
 
         public void Dispose()
@@ -98,6 +100,63 @@ namespace Idear.Data
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = "Technical"
+                },
+                new Category
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Non-Technical"
+                }
+            );
+            _context.SaveChanges();
+        }
+        private void CreateTopic()
+        {
+            _context.Topics.AddRange(
+                new Topic
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "New Idea"
+                },
+                new Topic
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Change/Improve Company"
+                }
+            );
+            _context.SaveChanges();
+        }
+        private void CreateDepartment()
+        {
+            _context.Departments.AddRange(
+                new Department
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "IT"
+                },
+                new Department
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Bussiness"
+                },
+                new Department
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Marketing"
+                },
+                new Department
+                {
+                     Id = Guid.NewGuid().ToString(),
+                     Name = "Management"
+                },
+                new Department
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "HR"
+                },
+                new Department
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Financial"
                 }
             );
             _context.SaveChanges();
