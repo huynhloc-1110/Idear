@@ -11,5 +11,9 @@ namespace Idear.ViewModels
 
 		[Required]
 		public List<SelectListItem>? roles { get; set; }
+
+		[Required]
+		public string? department { get; set; }
+
 	}
 }

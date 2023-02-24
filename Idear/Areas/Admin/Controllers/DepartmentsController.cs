@@ -38,12 +38,13 @@ namespace Idear.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Department department)
+        public async Task<IActionResult> Create(Department department)
         {
             if (ModelState.IsValid)
             {
+                department.Id=Guid.NewGuid().ToString();
                 _context.Add(department);
-                await _context.SaveChangesAsync();
+				await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(department);

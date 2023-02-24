@@ -9,14 +9,7 @@ namespace Idear.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-			migrationBuilder.AddColumn<string>(
-				name: "Discriminator",
-				table: "AspNetUsers",
-				type: "nvarchar(max)",
-				nullable: false,
-				defaultValue: "");
-
-			migrationBuilder.AddColumn<string>(
+            migrationBuilder.AddColumn<string>(
                 name: "DepartmentId",
                 table: "AspNetUsers",
                 type: "nvarchar(450)",
@@ -269,10 +262,6 @@ namespace Idear.Data.Migrations
             migrationBuilder.DropColumn(
                 name: "FullName",
                 table: "AspNetUsers");
-
-			migrationBuilder.DropColumn(
-				name: "Discriminator",
-				table: "AspNetUsers");
-		}
+        }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.Intrinsics.Arm;
 
 namespace Idear.Areas.Admin.Controllers
 {
@@ -29,6 +30,8 @@ namespace Idear.Areas.Admin.Controllers
 		}
 
 
+		//Edit 
+	
 
 		//UpdateUserRoles
 		[HttpGet]
@@ -76,5 +79,6 @@ namespace Idear.Areas.Admin.Controllers
 			_context.SaveChanges();
 			return RedirectToAction("Index");
 		}
+
 	}
 }
