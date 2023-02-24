@@ -33,7 +33,7 @@ namespace Idear.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-		private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
 
         public RegisterModel(
@@ -42,7 +42,7 @@ namespace Idear.Areas.Identity.Pages.Account
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-			RoleManager<IdentityRole> roleManager,
+            RoleManager<IdentityRole> roleManager,
             ApplicationDbContext context)
         {
             _userManager = userManager;
@@ -81,6 +81,7 @@ namespace Idear.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+
             [Required]
             [Display(Name = "Full Name")]
             public string FullName { get; set; }
@@ -113,11 +114,11 @@ namespace Idear.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
+            [Required]
+            public string? roles { get; set; }
+            [ValidateNever]
+            public IEnumerable<SelectListItem> RolesList { get; set; }
 
-			[Required]
-            public string? Role { get; set; }
-			[ValidateNever]
-			public IEnumerable<SelectListItem> RolesList { get; set; }
 
             [Required]
             public string? Department { get; set; }
@@ -128,26 +129,26 @@ namespace Idear.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+
+
+
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-			Input = new InputModel()
-			{
-				RolesList = _context.Roles.Select(r => r.Name).Select(y => new SelectListItem
-				{
-					Text = y,
-					Value = y
-				})
-			};
-
             Input = new InputModel()
             {
+                RolesList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+                {
+                    Text = i,
+                    Value = i
+                }),
                 DepartmentList = _context.Departments.Select(x => x.Name).Select(i => new SelectListItem
                 {
                     Text = i,
                     Value = i
                 })
             };
+
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -167,7 +168,7 @@ namespace Idear.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    await _userManager.AddToRoleAsync(user, Input.Role);
+                    await _userManager.AddToRoleAsync(user, Input.roles);
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
