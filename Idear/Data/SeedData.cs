@@ -38,6 +38,7 @@ namespace Idear.Data
 
             CreateUsers();
 
+            CreateIdeas();
         }
 
         public void Dispose()
@@ -160,5 +161,48 @@ namespace Idear.Data
             _context.SaveChanges();
         }
 
+        private void CreateIdeas()
+        {
+            _context.Ideas.AddRange(
+                new Idea
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Text = "Invite BlockChain experts to share with students",
+                    DateTime = new DateTime(2023, 1, 10, 10, 30, 0),
+                    User = _context.ApplicationUsers.First(u => u.UserName == "N1@gmail.com"),
+                    Topic = _context.Topics.First(t => t.Name == "Workshop ideas for IT students"),
+                    Category = _context.Categories.First(c => c.Name == "General")
+                },
+                new Idea
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Text = "Decorate the university's mainhall with balloon",
+                    DateTime = new DateTime(2023, 1, 10, 10, 30, 0),
+                    User = _context.ApplicationUsers.First(u => u.UserName == "N2@gmail.com"),
+                    Topic = _context.Topics.First(t => t.Name == "Event ideas for welcoming new students"),
+                    Category = _context.Categories.First(c => c.Name == "Change/Update")
+                },
+                new Idea
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Text = "Add kitchen tools at the pastry for students and staffs to use",
+                    DateTime = new DateTime(2023, 2, 20, 20, 30, 0),
+                    User = _context.ApplicationUsers.First(u => u.UserName == "N2@gmail.com"),
+                    Topic = _context.Topics.First(t => t.Name == "Improve work evironment for students and staffs"),
+                    Category = _context.Categories.First(c => c.Name == "Change/Update")
+                },
+                new Idea
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Text = "Improve the air conditional for student room",
+                    FilePath = "air-conditional.jpg",
+                    DateTime = new DateTime(2023, 2, 24, 20, 30, 0),
+                    User = _context.ApplicationUsers.First(u => u.UserName == "Loc123@gmail.com"),
+                    Topic = _context.Topics.First(t => t.Name == "Improve work evironment for students and staffs"),
+                    Category = _context.Categories.First(c => c.Name == "Improvement")
+                }
+            );
+            _context.SaveChanges();
+        }
     }
 }
