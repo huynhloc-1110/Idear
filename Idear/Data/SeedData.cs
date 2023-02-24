@@ -29,8 +29,9 @@ namespace Idear.Data
             CreateSeveralRoles(roles);
             CreateSeveralUser();
             CreateCategories();
-            CreateTopic();
-            CreateDepartment();
+            CreateTopics();
+            CreateDepartments();
+
         }
 
         public void Dispose()
@@ -59,6 +60,9 @@ namespace Idear.Data
         private void CreateSeveralUser()
         {
             CreateUser("Loc123@gmail.com", "Le Huynh Loc", "Loc123@gmail.com", "Staff");
+            CreateUser("K1@gmail.com", "Le K", "K1@gmail.com", "Staff");
+            CreateUser("T2@gmail.com", "Tat T ", "T2@gmail.com", "Staff");
+            CreateUser("H3@gmail.com", "Nguyen H", "H3@gmail.com", "Staff");
             CreateUser("Khoa234@gmail.com", "Le Dong Khoa", "Khoa234@gmail.com", "Admin");
             CreateUser("Huy345@gmail.com", "Nguyen Phuoc Huy", "Huy345@gmail.com", "QA Manager");
             CreateUser("Tri456@gmail.com", "Tat Khai Tri", "Tri456@gmail.com", "QA Coordinator");
@@ -109,7 +113,7 @@ namespace Idear.Data
             );
             _context.SaveChanges();
         }
-        private void CreateTopic()
+        private void CreateTopics()
         {
             _context.Topics.AddRange(
                 new Topic
@@ -125,7 +129,7 @@ namespace Idear.Data
             );
             _context.SaveChanges();
         }
-        private void CreateDepartment()
+        private void CreateDepartments()
         {
             _context.Departments.AddRange(
                 new Department
@@ -157,9 +161,29 @@ namespace Idear.Data
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = "Financial"
+                },
+                new Department
+                {
+                     Id = Guid.NewGuid().ToString(),
+                     Name = "QA"
                 }
             );
             _context.SaveChanges();
+            var user1 = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == "Loc123@gmail.com")!;
+            user1.Department = _context.Departments.FirstOrDefault(d => d.Name == "HR");
+            var user2 = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == "K1@gmail.com")!;
+            user2.Department = _context.Departments.FirstOrDefault(d => d.Name == "Bussiness");
+            var user3 = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == "T2@gmail.com")!;
+            user3.Department = _context.Departments.FirstOrDefault(d => d.Name == "Marketing");
+            var user4 = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == "H3@gmail.com")!;
+            user4.Department = _context.Departments.FirstOrDefault(d => d.Name == "Financial");
+            var user5 = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == "Khoa234@gmail.com")!;
+            user5.Department = _context.Departments.FirstOrDefault(d => d.Name == "IT");
+            var user6 = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == "Huy345@gmail.com")!;
+            user6.Department = _context.Departments.FirstOrDefault(d => d.Name == "QA");
+            var user7 = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == "Tri456@gmail.com")!;
+            user7.Department = _context.Departments.FirstOrDefault(d => d.Name == "QA");
+            _context.SaveChanges(); 
         }
     }
 }
