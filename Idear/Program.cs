@@ -24,7 +24,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
-    SeedData seedData = new(serviceProvider);
+    using SeedData seedData = new(serviceProvider);
     seedData.Initialize();
 }
 

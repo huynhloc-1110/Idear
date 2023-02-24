@@ -28,8 +28,6 @@ namespace Idear.Data
             string[] roles = { "Staff", "Admin", "QA Manager", "QA Coordinator" };
             CreateSeveralRoles(roles);
             CreateSeveralUser();
-
-            // Dispose();
         }
 
         public void Dispose()
