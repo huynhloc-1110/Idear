@@ -26,23 +26,6 @@ namespace Idear.Areas.Admin.Controllers
               return View(await _context.Departments.ToListAsync());
         }
 
-        // GET: Admin/Departments/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null || _context.Departments == null)
-            {
-                return NotFound();
-            }
-
-            var department = await _context.Departments
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (department == null)
-            {
-                return NotFound();
-            }
-
-            return View(department);
-        }
 
         // GET: Admin/Departments/Create
         public IActionResult Create()
