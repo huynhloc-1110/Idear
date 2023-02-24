@@ -28,6 +28,7 @@ namespace Idear.Data
             string[] roles = { "Staff", "Admin", "QA Manager", "QA Coordinator" };
             CreateSeveralRoles(roles);
             CreateSeveralUser();
+            CreateCategories();
         }
 
         public void Dispose()
@@ -85,5 +86,21 @@ namespace Idear.Data
             }
         }
 
+        private void CreateCategories()
+        {
+            _context.Categories.AddRange(
+                new Category
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "General"
+                },
+                new Category
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Technical"
+                }
+            );
+            _context.SaveChanges();
+        }
     }
 }
