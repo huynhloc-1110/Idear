@@ -9,7 +9,7 @@
 <h1> View Roles</h1>
 
 <p>
-	<a asp-action="Create"> Create</a>
+	<a class="btn btn-dark" asp-action="Create"> Create</a>
 </p>
 
 <table class="table">
@@ -17,6 +17,7 @@
 		<tr>
 			<th>Id</th>
 			<th>Name</th>
+			<th>Action</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -26,10 +27,8 @@
 				<td>@item.Id</td>
 				<td>@item.Name</td>
 				<td>
-					<a asp-action="Edit" asp-controller="Roles" class="btn btn-primary" asp-route-id="@item.Id">Edit</a> 
-					<form method="post" asp-action="Delete" asp-controller="Roles" asp-route-id="@item.Id">
-					<button class="btn btn-danger" type="submit" onclick="return (confirm('Are you sure?'))">Delete</button>
-			</form>
+					<a asp-action="Edit" asp-controller="Roles" class="btn btn-primary" asp-route-id="@item.Id">Edit</a>
+					<a asp-action="Delete" asp-controller="Roles" class="btn btn-danger" asp-route-id="@item.Id">Delete</a>
 				</td>
 			</tr>
 

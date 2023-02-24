@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
+using Idear.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Idear.Areas.Admin.Controllers
@@ -14,7 +16,7 @@ namespace Idear.Areas.Admin.Controllers
         }
 
         //ListAllroles
-        public IActionResult ListRoles()
+        public IActionResult Index()
         {
             var roles = _roleManager.Roles;
             return View(roles);
@@ -34,7 +36,70 @@ namespace Idear.Areas.Admin.Controllers
 			{
 				_roleManager.CreateAsync(new IdentityRole(model.Name)).GetAwaiter().GetResult();
 			}
-			return RedirectToAction("ListRoles");
+			return RedirectToAction("Index");
 		}
+
+
+
+		//Edit Roles
+		[HttpGet]
+		public async Task<IActionResult> Edit(string Id)
+		{
+			var role = await _roleManager.FindByIdAsync(Id);
+			var model = new RolesVM
+			{
+				RoleName = role.Name,
+				Id = role.Id,
+			};
+			return View(model);
+		}
+		[HttpPost]
+		public async Task<IActionResult> Edit(RolesVM model)
+		{
+			var role = await _roleManager.FindByIdAsync(model.Id);
+			role.Name = model.RoleName;
+			var result = await _roleManager.UpdateAsync(role);
+			if (result.Succeeded)
+			{
+				return RedirectToAction("index");
+			}
+			foreach (var error in result.Errors)
+			{
+				ModelState.AddModelError("", error.Description);
+			}
+			return View(model);
+		}
+
+
+
+		//Delete Roles
+		[HttpGet]
+		public async Task<IActionResult> Delete(string Id)
+		{
+			var role = await _roleManager.FindByIdAsync(Id);
+			var model = new RolesVM
+			{
+				RoleName = role.Name,
+				Id = role.Id
+			};
+			return View(model);
+		}
+		[HttpPost]
+		public async Task<IActionResult> Delete(RolesVM model)
+		{
+			var role = await _roleManager.FindByIdAsync(model.Id);
+			role.Name = model.RoleName;
+			var result = await _roleManager.DeleteAsync(role);
+			if (result.Succeeded)
+			{
+				return RedirectToAction("Index");
+			}
+			foreach (var error in result.Errors)
+			{
+				ModelState.AddModelError("", error.Description);
+			}
+			return View(model);
+		}
+
 	}
 }
