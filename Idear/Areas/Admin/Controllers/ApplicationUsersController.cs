@@ -110,6 +110,7 @@ namespace Idear.Areas.Admin.Controllers
 		}
 
 		[HttpPost]
+		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(EditUserVM model)
 		{
 			var user = await _userManager.FindByIdAsync(model.Id);
