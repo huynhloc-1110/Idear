@@ -116,7 +116,7 @@ namespace Idear.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             [Required]
-            public string? roles { get; set; }
+            public string? Roles { get; set; }
             [ValidateNever]
             public IEnumerable<SelectListItem> RolesList { get; set; }
 
@@ -130,9 +130,6 @@ namespace Idear.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-
-
-
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -149,7 +146,6 @@ namespace Idear.Areas.Identity.Pages.Account
                     Value = i
                 })
             };
-
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
