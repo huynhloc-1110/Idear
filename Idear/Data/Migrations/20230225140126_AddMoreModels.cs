@@ -16,18 +16,12 @@ namespace Idear.Data.Migrations
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "Discriminator",
-                table: "AspNetUsers",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddColumn<string>(
                 name: "FullName",
                 table: "AspNetUsers",
                 type: "nvarchar(100)",
                 maxLength: 100,
-                nullable: true);
+                nullable: false,
+                defaultValue: "");
 
             migrationBuilder.CreateTable(
                 name: "Categories",
@@ -263,10 +257,6 @@ namespace Idear.Data.Migrations
 
             migrationBuilder.DropColumn(
                 name: "DepartmentId",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "Discriminator",
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(

@@ -168,7 +168,7 @@ namespace Idear.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    await _userManager.AddToRoleAsync(user, Input.roles);
+                    await _userManager.AddToRoleAsync(user, Input.Roles);
                     
                    //user.Department = await _context.AddAsync(user, Input.DepartmentList);
 
