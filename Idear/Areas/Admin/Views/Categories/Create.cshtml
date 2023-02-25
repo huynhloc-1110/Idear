@@ -1,12 +1,11 @@
-﻿@model Idear.Models.Department
+﻿@model Idear.Models.Category
 
 @{
     ViewData["Title"] = "Create";
 }
 
 <h1>Create</h1>
-
-<h4>Department</h4>
+<h4>Category</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -19,15 +18,13 @@
             </div>
             <div class="form-group">
                 <div class="col-10">
-                <button type="submit" class="btn btn-dark">Create</button>
-                <a asp-action="Index" class="btn btn-light">Back to list</a>
+                    <button type="submit" class="btn btn-dark">Create</button>
+                    <a asp-action="Index" class="btn btn-light">Back to list</a>
                 </div>
             </div>
         </form>
     </div>
 </div>
-
-
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -13,10 +13,13 @@
 				
 				<span asp-validation-for="Name" class=" text-danger"></span>
 			</div>
-			<button type="submit" class="btn btn-primary">Create</button>
+			<div class="form-group">
+				<div class="col-10">
+					<button type="submit" class="btn btn-dark">Create</button>
+					<a asp-action="Index" class="btn btn-light">Back to list</a>
+				</div>
+			</div>
 		</form>
 	</div>
 </div>
-<div>
-	<a class="btn btn-dark" asp-action="Index">Back to List</a>
-</div>
+
