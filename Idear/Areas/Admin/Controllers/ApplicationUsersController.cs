@@ -133,5 +133,41 @@ namespace Idear.Areas.Admin.Controllers
 		}
 
 
-	}
+
+
+
+
+
+        //Delete 
+        [HttpGet]
+        public async Task<IActionResult> Delete(string Id)
+        {
+            var user = await _userManager.FindByIdAsync(Id);
+            var model = new EditUserVM
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FullName = user.FullName,
+            };
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(EditUserVM model)
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+            user.FullName = model.FullName;
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+            return View(model);
+        }
+
+    }
 }
