@@ -1,12 +1,15 @@
 ﻿
 using Idear.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace Idear.Areas.Admin.Controllers
 {
 	[Area("Admin")]
-	public class RolesController : Controller
+    [Authorize(Roles = "Admin")]
+    public class RolesController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
 
@@ -29,7 +32,8 @@ namespace Idear.Areas.Admin.Controllers
 			return View();
 		}
 		[HttpPost]
-		public async Task<IActionResult> Create(IdentityRole model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(IdentityRole model)
 		{
 			//advoid duplicate
 			if (!_roleManager.RoleExistsAsync(model.Name).GetAwaiter().GetResult())
@@ -54,7 +58,8 @@ namespace Idear.Areas.Admin.Controllers
 			return View(model);
 		}
 		[HttpPost]
-		public async Task<IActionResult> Edit(RolesVM model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(RolesVM model)
 		{
 			var role = await _roleManager.FindByIdAsync(model.Id);
 			role.Name = model.RoleName;
@@ -85,7 +90,8 @@ namespace Idear.Areas.Admin.Controllers
 			return View(model);
 		}
 		[HttpPost]
-		public async Task<IActionResult> Delete(RolesVM model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(RolesVM model)
 		{
 			var role = await _roleManager.FindByIdAsync(model.Id);
 			role.Name = model.RoleName;

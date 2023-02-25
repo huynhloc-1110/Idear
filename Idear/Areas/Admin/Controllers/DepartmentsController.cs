@@ -7,17 +7,23 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Idear.Data;
 using Idear.Models;
+using Idear.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace Idear.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class DepartmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public DepartmentsController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public DepartmentsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Admin/Departments
@@ -142,5 +148,13 @@ namespace Idear.Areas.Admin.Controllers
         {
           return _context.Departments.Any(e => e.Id == id);
         }
+
+
+
+
+
+
+
+
     }
 }

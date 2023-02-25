@@ -1,20 +1,25 @@
 ﻿using Idear.Data;
 using Idear.Models;
 using Idear.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Runtime.Intrinsics.Arm;
 
 namespace Idear.Areas.Admin.Controllers
 {
 	[Area("Admin")]
-	public class ApplicationUsersController : Controller
+    [Authorize(Roles = "Admin")]
+
+    public class ApplicationUsersController : Controller
 	{
 		private readonly ApplicationDbContext _context;
 		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly UserManager<ApplicationUser> _userManager;
+
 
 		public ApplicationUsersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
 		{
@@ -30,7 +35,6 @@ namespace Idear.Areas.Admin.Controllers
 		}
 
 
-		//Edit 
 	
 
 		//UpdateUserRoles
@@ -51,7 +55,8 @@ namespace Idear.Areas.Admin.Controllers
 			return View(UserRoles);
 		}
 		[HttpPost]
-		public IActionResult UpdateRoles(ApplicationUsersVM model)
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateRoles(ApplicationUsersVM model)
 		{
 			var selectedRoleId = model.roles.Where(x => x.Selected).Select(x => x.Value);
 			var AlreadyExistRoleId = _context.UserRoles.Where(x => x.UserId == model.AppUser.Id).Select(x => x.RoleId).ToList();
@@ -79,6 +84,54 @@ namespace Idear.Areas.Admin.Controllers
 			_context.SaveChanges();
 			return RedirectToAction("Index");
 		}
+
+
+
+		//Edit
+		[HttpGet]
+		public async Task<IActionResult> Edit(string Id)
+		{
+			var user = await _userManager.FindByIdAsync(Id);
+			if (user == null)
+			{
+				return NotFound();
+			}
+
+			
+			var model = new EditUserVM
+			{
+				Id = user.Id,
+				Email = user.Email,
+				FullName = user.FullName,
+
+
+			};
+			return View(model);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Edit(EditUserVM model)
+		{
+			var user = await _userManager.FindByIdAsync(model.Id);
+			if (user == null)
+			{
+				return NotFound();
+			}
+			else
+			{
+				user.Email = model.Email;
+				user.FullName = model.FullName;
+
+				var result = await _userManager.UpdateAsync(user);
+				if (result.Succeeded)
+				{
+					return RedirectToAction("Index");
+				}
+				return View (model);
+
+			}
+		}
+
 
 	}
 }
