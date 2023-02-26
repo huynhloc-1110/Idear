@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -17,6 +21,31 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                {
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Manage
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item">
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Roles" asp-action="Index">Roles</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Departments" asp-action="Index">Department</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="ApplicationUsers" asp-action="Index">User</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Topics" asp-action="Index">Topic</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Categories" asp-action="Index">Category</a>
+                            </li>
+                        </ul>
+                    </div>
+                }
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">

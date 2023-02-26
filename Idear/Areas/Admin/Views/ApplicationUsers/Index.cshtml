@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<ApplicationUser>
+
+@{
+	ViewData["Title"] = "Application User";
+}
+
+<h1> View Users</h1>
+<a class="btn btn-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Add New User</a></>
+
+
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>Email</th>
+			<th>Full Name</th>
+			<th>Action</th>
+
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>@item.Id</td>
+				<td>@item.Email</td>
+				<td>@item.FullName</td>
+				<td>
+					<a class="btn btn-primary" asp-action="Edit" asp-controller="ApplicationUsers" asp-route-id="@item.Id">Edit</a>
+					<a class="btn btn-danger" asp-action="Delete" asp-controller="ApplicationUsers" asp-route-id="@item.Id">Delete</a>
+					<a class="btn btn-outline-secondary" asp-action="UpdateRoles" asp-controller="ApplicationUsers" asp-route-id="@item.Id">Update Roles</a>
+
+				</td>
+			</tr>
+
+		}
+	</tbody>
+</table>

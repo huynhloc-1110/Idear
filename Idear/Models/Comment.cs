@@ -9,10 +9,13 @@ namespace Idear.Models
         [StringLength(500)]
         public string? Text { get; set; }
 
+        [Required]
         [DataType(DataType.DateTime)]
         [Display(Name = "Date Time")]
         public DateTime Datetime { get; set; }
+
         public ApplicationUser? User { get; set; }
-        public Idea? idea { get; set; }
+
+        public Idea? Idea { get; set; }
     }
 }
