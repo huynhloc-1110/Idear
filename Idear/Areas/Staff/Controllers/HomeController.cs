@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace Idear.Controllers
+namespace Idear.Areas.Staff.Controllers
 {
-    public class HomeController : Controller
+	[Area("Staff")]
+	public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
 

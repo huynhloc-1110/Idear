@@ -19,9 +19,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Idear.Data;
 
 namespace Idear.Areas.Identity.Pages.Account
 {
+    [Authorize(Roles = "Admin")]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -30,13 +34,17 @@ namespace Idear.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _context;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,7 +52,10 @@ namespace Idear.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-        }
+            _roleManager = roleManager;
+            _context = context;
+
+		}
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -71,6 +82,7 @@ namespace Idear.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+
             [Required]
             [Display(Name = "Full Name")]
             public string FullName { get; set; }
@@ -102,6 +114,17 @@ namespace Idear.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            public string? Roles { get; set; }
+            [ValidateNever]
+            public IEnumerable<SelectListItem> RolesList { get; set; }
+
+
+            [Required]
+            public string? Department { get; set; }
+            [ValidateNever]
+            public IEnumerable<SelectListItem> DepartmentList { get; set; }
         }
 
 
@@ -109,6 +132,20 @@ namespace Idear.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            Input = new InputModel()
+            {
+                RolesList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+                {
+                    Text = i,
+                    Value = i
+                }),
+                DepartmentList = _context.Departments.Select(x => x.Name).Select(i => new SelectListItem
+                {
+                    Text = i,
+                    Value = i
+                })
+            };
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -122,13 +159,20 @@ namespace Idear.Areas.Identity.Pages.Account
                 user.FullName = Input.FullName;
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
+               
+				var result = await _userManager.CreateAsync(user, Input.Password);
+                
 
-                if (result.Succeeded)
+
+				if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var userId = await _userManager.GetUserIdAsync(user);
+                    await _userManager.AddToRoleAsync(user, Input.Roles);
+                    
+                   //user.Department = await _context.AddAsync(user, Input.DepartmentList);
+
+					var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
