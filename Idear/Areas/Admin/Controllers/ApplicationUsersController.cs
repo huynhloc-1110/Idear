@@ -11,127 +11,145 @@ using System.Runtime.Intrinsics.Arm;
 
 namespace Idear.Areas.Admin.Controllers
 {
-	[Area("Admin")]
+    [Area("Admin")]
     [Authorize(Roles = "Admin")]
 
     public class ApplicationUsersController : Controller
-	{
-		private readonly ApplicationDbContext _context;
-		private readonly RoleManager<IdentityRole> _roleManager;
-		private readonly UserManager<ApplicationUser> _userManager;
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
 
-		public ApplicationUsersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
-		{
-			_userManager = userManager;
-			_roleManager = roleManager;
-			_context = context;
-		}
+        public ApplicationUsersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _context = context;
+        }
 
-		//ListAllUser
-		public IActionResult Index()
-		{
-			return View(_context.ApplicationUsers.ToList());
-		}
+        //ListAllUser
+        public async Task<IActionResult> Index()
+        {
+            return View(await _context.ApplicationUsers.ToListAsync());
+        }
 
+        //UpdateUserRoles
+        [HttpGet]
+        public async Task<IActionResult> UpdateRoles(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-	
+            var user = await _userManager
+                .FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
 
-		//UpdateUserRoles
-		[HttpGet]
-		public async Task<IActionResult> UpdateRoles(string Id)
-		{
-			ApplicationUsersVM UserRoles = new ApplicationUsersVM();
-			var user = _context.ApplicationUsers.Where(x => x.Id == Id).SingleOrDefault();
-			var userInRole = _context.UserRoles.Where(x => x.UserId == Id).Select(x => x.RoleId).ToList();
-			UserRoles.roles = await _roleManager.Roles.Select(x => new SelectListItem()
-			{
-				Text = x.Name,
-				Value = x.Id,
-				Selected = userInRole.Contains(x.Id)
-			}).ToListAsync();
-			UserRoles.AppUser = user;
+            var userRoles = await _context.UserRoles
+                .Where(ur => ur.UserId == id)
+                .Select(ur => ur.RoleId)
+                .ToListAsync();
 
-			return View(UserRoles);
-		}
-		[HttpPost]
+            var userRolesVM = new ApplicationUsersVM
+            {
+                Roles = await _roleManager.Roles.Select(r => new SelectListItem()
+                {
+                    Value = r.Id,
+                    Text = r.Name,
+                    Selected = userRoles.Contains(r.Id)
+                }).ToListAsync(),
+                AppUser = user
+            };
+
+            return View(userRolesVM);
+        }
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult UpdateRoles(ApplicationUsersVM model)
-		{
-			var selectedRoleId = model.roles.Where(x => x.Selected).Select(x => x.Value);
-			var AlreadyExistRoleId = _context.UserRoles.Where(x => x.UserId == model.AppUser.Id).Select(x => x.RoleId).ToList();
-			var toAdd = selectedRoleId.Except(AlreadyExistRoleId);
-			var toRemove = AlreadyExistRoleId.Except(selectedRoleId);
+        public async Task<IActionResult> UpdateRoles(ApplicationUsersVM model)
+        {
+            var selectedRoleId = model.Roles
+                .Where(x => x.Selected)
+                .Select(x => x.Value);
+            var AlreadyExistRoleId = await _context.UserRoles
+                .Where(x => x.UserId == model.AppUser.Id)
+                .Select(x => x.RoleId)
+                .ToListAsync();
+
+            var toAdd = selectedRoleId.Except(AlreadyExistRoleId);
+            var toRemove = AlreadyExistRoleId.Except(selectedRoleId);
+
+            foreach (var item in toAdd)
+            {
+                _context.UserRoles.Add(new IdentityUserRole<string>
+                {
+                    RoleId = item,
+                    UserId = model.AppUser.Id
+                });
+            }
+            foreach (var item in toRemove)
+            {
+                _context.UserRoles.Remove(new IdentityUserRole<string>
+                {
+                    RoleId = item,
+                    UserId = model.AppUser.Id
+                });
+            }
+
+            _context.SaveChanges();
+            return RedirectToAction(nameof(UpdateRoles), new { id = model.AppUser.Id });
+        }
+
+        //Edit
+        [HttpGet]
+        public async Task<IActionResult> Edit(string Id)
+        {
+            var user = await _userManager.FindByIdAsync(Id);
+            if (user == null)
+            {
+                return NotFound();
+            }
 
 
-			foreach (var item in toAdd)
-			{
-				_context.UserRoles.Add(new IdentityUserRole<string>
-				{
-					RoleId = item,
-					UserId = model.AppUser.Id
-				});
-			}
-
-			foreach (var item in toRemove)
-			{
-				_context.UserRoles.Remove(new IdentityUserRole<string>
-				{
-					RoleId = item,
-					UserId = model.AppUser.Id
-				});
-			}
-			_context.SaveChanges();
-			return RedirectToAction("Index");
-		}
+            var model = new EditUserVM
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FullName = user.FullName,
 
 
+            };
+            return View(model);
+        }
 
-		//Edit
-		[HttpGet]
-		public async Task<IActionResult> Edit(string Id)
-		{
-			var user = await _userManager.FindByIdAsync(Id);
-			if (user == null)
-			{
-				return NotFound();
-			}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EditUserVM model)
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                user.Email = model.Email;
+                user.FullName = model.FullName;
 
-			
-			var model = new EditUserVM
-			{
-				Id = user.Id,
-				Email = user.Email,
-				FullName = user.FullName,
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                return View(model);
 
-
-			};
-			return View(model);
-		}
-
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(EditUserVM model)
-		{
-			var user = await _userManager.FindByIdAsync(model.Id);
-			if (user == null)
-			{
-				return NotFound();
-			}
-			else
-			{
-				user.Email = model.Email;
-				user.FullName = model.FullName;
-
-				var result = await _userManager.UpdateAsync(user);
-				if (result.Succeeded)
-				{
-					return RedirectToAction("Index");
-				}
-				return View (model);
-
-			}
-		}
+            }
+        }
 
 
 
