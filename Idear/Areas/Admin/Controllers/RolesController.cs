@@ -3,6 +3,7 @@ using Idear.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace Idear.Areas.Admin.Controllers
@@ -19,9 +20,9 @@ namespace Idear.Areas.Admin.Controllers
         }
 
         //ListAllroles
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var roles = _roleManager.Roles;
+            var roles = await _roleManager.Roles.ToListAsync();
             return View(roles);
         }
 
@@ -36,20 +37,28 @@ namespace Idear.Areas.Admin.Controllers
         public async Task<IActionResult> Create(IdentityRole model)
 		{
 			//advoid duplicate
-			if (!_roleManager.RoleExistsAsync(model.Name).GetAwaiter().GetResult())
+			if (!(await _roleManager.RoleExistsAsync(model.Name)))
 			{
-				_roleManager.CreateAsync(new IdentityRole(model.Name)).GetAwaiter().GetResult();
+				await _roleManager.CreateAsync(new IdentityRole(model.Name));
 			}
 			return RedirectToAction("Index");
 		}
 
-
-
 		//Edit Roles
 		[HttpGet]
-		public async Task<IActionResult> Edit(string Id)
+		public async Task<IActionResult> Edit(string id)
 		{
-			var role = await _roleManager.FindByIdAsync(Id);
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var role = await _roleManager.FindByIdAsync(id);
+			if (role == null)
+			{
+				return NotFound();
+			}
+
 			var model = new RolesVM
 			{
 				RoleName = role.Name,
@@ -75,37 +84,35 @@ namespace Idear.Areas.Admin.Controllers
 			return View(model);
 		}
 
-
-
 		//Delete Roles
 		[HttpGet]
-		public async Task<IActionResult> Delete(string Id)
+		public async Task<IActionResult> Delete(string id)
 		{
-			var role = await _roleManager.FindByIdAsync(Id);
-			var model = new RolesVM
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var role = await _roleManager.FindByIdAsync(id);
+            if (role == null)
+            {
+                return NotFound();
+            }
+
+            var model = new RolesVM
 			{
 				RoleName = role.Name,
 				Id = role.Id
 			};
 			return View(model);
 		}
-		[HttpPost]
+		[HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(RolesVM model)
+        public async Task<IActionResult> DeleteConfirmed(string id)
 		{
-			var role = await _roleManager.FindByIdAsync(model.Id);
-			role.Name = model.RoleName;
+			var role = await _roleManager.FindByIdAsync(id);
 			var result = await _roleManager.DeleteAsync(role);
-			if (result.Succeeded)
-			{
-				return RedirectToAction("Index");
-			}
-			foreach (var error in result.Errors)
-			{
-				ModelState.AddModelError("", error.Description);
-			}
-			return View(model);
+			return RedirectToAction("Index");
 		}
-
 	}
 }

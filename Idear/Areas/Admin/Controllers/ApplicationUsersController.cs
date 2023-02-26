@@ -102,27 +102,29 @@ namespace Idear.Areas.Admin.Controllers
             }
 
             _context.SaveChanges();
-            return RedirectToAction(nameof(UpdateRoles), new { id = model.AppUser.Id });
+            return RedirectToAction(nameof(Index));
         }
 
         //Edit
         [HttpGet]
-        public async Task<IActionResult> Edit(string Id)
+        public async Task<IActionResult> Edit(string id)
         {
-            var user = await _userManager.FindByIdAsync(Id);
-            if (user == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
 
             var model = new EditUserVM
             {
                 Id = user.Id,
                 Email = user.Email,
                 FullName = user.FullName,
-
-
             };
             return View(model);
         }
@@ -136,32 +138,32 @@ namespace Idear.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            else
+
+            user.Email = model.Email;
+            user.FullName = model.FullName;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
             {
-                user.Email = model.Email;
-                user.FullName = model.FullName;
-
-                var result = await _userManager.UpdateAsync(user);
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index");
-                }
-                return View(model);
-
+                return RedirectToAction("Index");
             }
+            return View(model);
         }
-
-
-
-
-
-
 
         //Delete 
         [HttpGet]
-        public async Task<IActionResult> Delete(string Id)
+        public async Task<IActionResult> Delete(string id)
         {
-            var user = await _userManager.FindByIdAsync(Id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
             var model = new EditUserVM
             {
                 Id = user.Id,
@@ -170,22 +172,22 @@ namespace Idear.Areas.Admin.Controllers
             };
             return View(model);
         }
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(EditUserVM model)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var user = await _userManager.FindByIdAsync(model.Id);
-            user.FullName = model.FullName;
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
             var result = await _userManager.DeleteAsync(user);
-            if (result.Succeeded)
-            {
-                return RedirectToAction("Index");
-            }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error.Description);
-            }
-            return View(model);
+            return RedirectToAction("Index");
         }
 
     }

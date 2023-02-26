@@ -6,10 +6,10 @@ namespace Idear.ViewModels
 {
 	public class ApplicationUsersVM
 	{
-		public ApplicationUser? AppUser { get; set; }
+		public ApplicationUser AppUser { get; set; } = default!;
 
 		[Required]
-		public List<SelectListItem>? Roles { get; set; }
+		public List<SelectListItem> Roles { get; set; } = default!;
 
 	}
 }
