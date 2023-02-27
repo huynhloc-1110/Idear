@@ -195,8 +195,7 @@ namespace Idear.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        return RedirectToAction("Index", "ApplicationUsers", new { Area = "Admin" });
                     }
                 }
                 foreach (var error in result.Errors)
