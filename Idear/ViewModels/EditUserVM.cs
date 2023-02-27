@@ -11,5 +11,9 @@ namespace Idear.ViewModels
 
         public string? Email { get; set; }
         public string? FullName { get; set; }
+
+        [Required]
+        public string? DepartmentId { get; set; }
+        public List<SelectListItem> Departments { get; set; } = default!;
 	}
 }
