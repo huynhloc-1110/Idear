@@ -31,8 +31,12 @@ namespace Idear.Areas.Admin.Controllers
         //ListAllUser
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ApplicationUsers.ToListAsync());
-        }
+            var users = await _userManager.Users
+                .Include(u => u.Department)
+                .ToListAsync();
+
+			return View(users);
+		}
 
         //UpdateUserRoles
         [HttpGet]
@@ -114,18 +118,23 @@ namespace Idear.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.Users.Include(u => u.Department).FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
             {
                 return NotFound();
             }
-
-            var model = new EditUserVM
+			var model = new EditUserVM
             {
                 Id = user.Id,
                 Email = user.Email,
                 FullName = user.FullName,
-            };
+                DepartmentId = user.Department!.Id,
+				Departments = await _context.Departments.Select(d => new SelectListItem()
+				{
+					Value = d.Id,
+					Text = d.Name,
+                }).ToListAsync(),
+			};
             return View(model);
         }
 
@@ -141,6 +150,7 @@ namespace Idear.Areas.Admin.Controllers
 
             user.Email = model.Email;
             user.FullName = model.FullName;
+            user.Department = await _context.Departments.FirstOrDefaultAsync(d => d.Id == model.DepartmentId);
 
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)

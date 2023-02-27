@@ -22,6 +22,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Idear.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Idear.Areas.Identity.Pages.Account
 {
@@ -122,8 +123,8 @@ namespace Idear.Areas.Identity.Pages.Account
 
 
             [Required]
-            public string? Department { get; set; }
-            [ValidateNever]
+			public string Department { get; set; }
+			[ValidateNever]
             public IEnumerable<SelectListItem> DepartmentList { get; set; }
         }
 
@@ -140,7 +141,7 @@ namespace Idear.Areas.Identity.Pages.Account
                     Text = i,
                     Value = i
                 }),
-                DepartmentList = _context.Departments.Select(x => x.Name).Select(i => new SelectListItem
+                DepartmentList = _context.Departments.Select(d => d.Name).Select(i => new SelectListItem
                 {
                     Text = i,
                     Value = i
@@ -155,22 +156,26 @@ namespace Idear.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-
-                user.FullName = Input.FullName;
+				user.FullName = Input.FullName;
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-               
+                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);           
 				var result = await _userManager.CreateAsync(user, Input.Password);
                 
-
 
 				if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
                     await _userManager.AddToRoleAsync(user, Input.Roles);
-                    
-                   //user.Department = await _context.AddAsync(user, Input.DepartmentList);
+
+					var department = await _context.Departments.FirstOrDefaultAsync(d => d.Name == Input.Department);
+					if (department != null)
+					{
+                        department.Users = new();
+                        department.Users.Add(user);
+						await _context.SaveChangesAsync();
+					}
+
 
 					var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -190,8 +195,7 @@ namespace Idear.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        return RedirectToAction("Index", "ApplicationUsers", new { Area = "Admin" });
                     }
                 }
                 foreach (var error in result.Errors)
