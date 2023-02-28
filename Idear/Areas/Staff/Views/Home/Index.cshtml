@@ -2,67 +2,191 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="row">
+<div class="container-fluid">
     <div class="card">
-        <div class="card-header">Topic</div>
+        <div class="card-header">
+            <h4>Opened Topics</h4>
+        </div>
         <div class="card-body">
-            <div class="row align-items-start">
-                <div class="col-md">
+            <div class="row">
+                <div class="col-md-4">
                     <div class="card">
-                        <div class="card-body">QWE</div>
+                        <a class="card-body" href="#">
+                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                        </a>
                     </div>
                 </div>
-                <div class="col-md">
+                <div class="col-md-4">
                     <div class="card">
-                        <div class="card-body">QWE</div>
+                        <a class="card-body" href="#">
+                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                        </a>
                     </div>
                 </div>
-                <div class="col-md">
+                <div class="col-md-4">
                     <div class="card">
-                        <div class="card-body">QWE</div>
+                        <a class="card-body" href="#">
+                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                        </a>
                     </div>
                 </div>
             </div>
-            <br />
-            <div class="d-flex flex-row-reverse bd-highlight">
-                <div class="p-2 bd-highlight"><a href="#" class="btn btn-dark">See more >></a></div>
+            <div class="text-right">
+                <a href="#" class="btn btn-dark">More Topics>></a>
             </div>
         </div>
     </div>
-</div>
-<br />
-<div class="row">
-    <div class="col-md-6 card">
-        <div class="card-header">Idea</div>
-        <div class="card-body">
-            <div class="row align-items-start">
-                <div class="card">
-                    <div class="card-body">QWE</div>
+    <br>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Latest Ideas</h4>
                 </div>
-                <div class="card">
-                    <div class="card-body">QWE</div>
-                </div>
-                <div class="card">
-                    <div class="card-body">QWE</div>
+                <div class="card-body">
+                    <div class="card">
+                        <a class="card-body" href="#">
+                            <p class="card-text">
+                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
+                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
+                            </p>
+                        </a>
+                    </div>
+                    <div class="card">
+                        <a class="card-body" href="#">
+                            <p class="card-text">
+                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
+                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
+                            </p>
+                        </a>
+                    </div>
+                    <div class="card">
+                        <a class="card-body" href="#">
+                            <p class="card-text">
+                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
+                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
+                            </p>
+                        </a>
+                    </div>
+                    <div class="text-right">
+                        <a href="#" class="btn btn-dark">More Ideas >></a>
+                    </div>
                 </div>
             </div>
-            <div class="d-flex flex-row-reverse bd-highlight">
-                <div class="p-2 bd-highlight"><a href="#" class="btn btn-dark">See more >></a></div>
+            <br>
+            <div class="card">
+                <div class="card-header">
+                    <h4>Most Liked Ideas</h4>
+                </div>
+                <div class="card-body">
+                    <div class="card">
+                        <a class="card-body" href="#">
+                            <p class="card-text">
+                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
+                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
+                                <small class="text-muted">- 3 likes</small>
+                                <small class="text-muted">/ 3 dislikes</small>
+                            </p>
+                        </a>
+                    </div>
+                    <div class="card">
+                        <a class="card-body" href="#">
+                            <p class="card-text">
+                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
+                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
+                                <small class="text-muted">- 3 likes</small>
+                                <small class="text-muted">/ 3 dislikes</small>
+                            </p>
+                        </a>
+                    </div>
+                    <div class="card">
+                        <a class="card-body" href="#">
+                            <p class="card-text">
+                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
+                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
+                                <small class="text-muted">- 3 likes</small>
+                                <small class="text-muted">/ 3 dislikes</small>
+                            </p>
+                        </a>
+                    </div>
+                    <div class="text-right">
+                        <a href="#" class="btn btn-dark">More Ideas >></a>
+                    </div>
+                </div>
             </div>
+            <br>
+            <div class="card">
+                <div class="card-header">
+                    <h4>Most Viewed Ideas</h4>
+                </div>
+                <div class="card-body">
+                    <div class="card">
+                        <a class="card-body" href="#">
+                            <p class="card-text">
+                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
+                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
+                                <small class="text-muted">- 3 views</small>
+                            </p>
+                        </a>
+                    </div>
+                    <div class="card">
+                        <a class="card-body" href="#">
+                            <p class="card-text">
+                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
+                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
+                                <small class="text-muted">- 3 views</small>
+                            </p>
+                        </a>
+                    </div>
+                    <div class="card">
+                        <a class="card-body" href="#">
+                            <p class="card-text">
+                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
+                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
+                                <small class="text-muted">- 3 views</small>
+                            </p>
+                        </a>
+                    </div>
+                    <div class="text-right">
+                        <a href="#" class="btn btn-dark">More Ideas >></a>
+                    </div>
+                </div>
+            </div>
+            <br>
         </div>
-    </div>
-    <div class="col-md-4 card">
-        <div class="card-header">Comment</div>
-        <div class="card-body">
-            <div class="row align-items-start">
-                <div class="card">
-                    <div class="card-body">QWE</div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Latest Comments</h4>
                 </div>
-                <div class="card">
-                    <div class="card-body">QWE</div>
-                </div>
-                <div class="card">
-                    <div class="card-body">QWE</div>
+                <div class="card-body">
+                    <div class="card">
+                        <a class="card-body" href="#">
+                            <p class="card-text">
+                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
+                                <small class="text-muted">- on topic ABC</small>
+                            </p>
+                        </a>
+                    </div>
+                    <div class="card">
+                        <a class="card-body" href="#">
+                            <p class="card-text">
+                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
+                                <small class="text-muted">- on topic ABC</small>
+                            </p>
+                        </a>
+                    </div>
+                    <div class="card">
+                        <a class="card-body" href="#">
+                            <p class="card-text">
+                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
+                                <small class="text-muted">- on topic ABC</small>
+                            </p>
+                        </a>
+                    </div>
+                    <div class="text-right">
+                        <a href="#" class="btn btn-dark">More Comments >></a>
+                    </div>
                 </div>
             </div>
         </div>
