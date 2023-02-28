@@ -1,8 +1,65 @@
-﻿@{
+﻿@model Idear.Areas.Staff.ViewModels.HomeVM
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h2>Opened Topics</h2>
+@foreach(var topic in Model.OpenedTopics) {
+    <p>
+        @topic.Name
+        <span style="font-style: italic">- accept new ideas until before @topic.ClosureDate.ToString("D")</span>
+    </p>
+}
+
+<br />
+<h2>Latest Comments</h2>
+@foreach(var comment in Model.LatestComments) {
+    <p>
+        @comment.Text
+        <span style="font-style: italic">- on idea "@comment.Idea!.Text"</span>
+        <span style="font-style: italic">- at @comment.Datetime</span>
+    </p>
+}
+
+<br />
+<h2>Latest Ideas</h2>
+@foreach (var idea in Model.LatestIdeas) {
+    <p>
+        @idea.Text
+        <span style="font-style: italic">- on topic "@idea.Topic!.Name"</span>
+        <span style="font-style: italic">- at @idea.DateTime</span>
+    </p>
+}
+
+<br />
+<h2>Most Viewed Ideas</h2>
+@foreach (var idea in Model.MostViewedIdeas)
+{
+    <p>
+        @idea.Text
+        <span style="font-style: italic">- on topic "@idea.Topic!.Name"</span>
+        <span style="font-style: italic">- with @idea.Views!.Count view(s)</span>
+    </p>
+}
+
+<br />
+<h2>Most Liked Ideas</h2>
+@foreach (var idea in Model.MostLikedIdeas)
+{
+    <p>
+        @idea.Text
+        <span style="font-style: italic">- on topic "@idea.Topic!.Name"</span>
+        @{
+            int likeCount = 0;
+            foreach (var react in idea.Reacts!)
+            {
+                if (react.ReactFlag == 1)
+                {
+                    likeCount++;
+                }
+            }
+            <span style="font-style: italic">- with @likeCount like(s)</span>
+        }
+    </p>
+}
