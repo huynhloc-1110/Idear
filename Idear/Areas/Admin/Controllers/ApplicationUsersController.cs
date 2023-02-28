@@ -34,7 +34,7 @@ namespace Idear.Areas.Admin.Controllers
             var users = await _userManager.Users
                 .Include(u => u.Department)
                 .ToListAsync();
-
+     
 			return View(users);
 		}
 

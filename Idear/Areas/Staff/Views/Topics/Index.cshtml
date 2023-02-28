@@ -1,4 +1,7 @@
 ﻿@model IEnumerable<Idear.Models.Topic>
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 @{
     ViewData["Title"] = "Ideas";
@@ -35,8 +38,17 @@
                     @Html.DisplayFor(modelItem => item.FinalClosureDate)
                 </td>
                 <td>
-                    <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="TopicIdeas" class="btn btn-primary" asp-route-id="@item.Id">Details</a>
                 </td>
+                @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                {
+                    <td>
+                         <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Export ZIP</a>
+                    </td>
+                    <td>
+                         <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Export Excel</a>
+                     </td>
+                }
             </tr>
         }
     </tbody>

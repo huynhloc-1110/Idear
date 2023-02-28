@@ -1,0 +1,72 @@
+﻿
+@model Idear.Areas.Staff.ViewModels.TopicIdeasVM
+
+
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+<form method="post" class="mt-3">
+    <h1> Ideas </h1>
+	<div class="form-group row">
+		<label asp-for="Name" class="col-sm-2 col-form-label"></label>
+		<div class="col-10">
+			<input asp-for="Name" class="form-control">
+			<span asp-validation-for="Name" class="text-danger"></span>
+		</div>
+	</div>
+    <table class="table">
+	<thead>
+		<tr>
+			<th>Ideas</th>
+			<th>View</th>
+			<th>Likes</th>
+			<th>Dislikes</th>
+			<th>Comments</th>
+
+		</tr>
+	</thead>
+    <tbody>
+
+        @if (Model.Ideas.Any())
+        {
+            foreach (var idea in Model.Ideas)
+            {
+                <tr>
+                <td>@idea.Text</td>
+                <td>@idea.Views.Count</td>
+                        @{
+                            int likeCount = 0;
+                            int dislikeCount = 0;
+                            foreach (var react in idea.Reacts!)
+                            {
+                                if (react.ReactFlag == 1)
+                                {
+                                    likeCount++;
+                                }
+                                if (react.ReactFlag == -1)
+                                {
+                                    dislikeCount++;
+                                }
+                            }
+                        }
+                <td>@likeCount</td>
+                <td>@dislikeCount</td>
+                <td>@idea.Comments.Count</td>
+                </tr>
+
+            }
+        }
+        else
+        {
+            <h5 class="card-title">None of ideas</h5>
+        }
+    </tbody>
+    </table>
+
+</form>
+<div>
+
+</div>
