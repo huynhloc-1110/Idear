@@ -11,16 +11,24 @@
         </div>
         <div class="card-body">
             <div class="row">
-                @foreach (var topic in Model.OpenedTopics)
+                @if (Model.OpenedTopics.Any())
                 {
-                    <div class="col-md-4">
-                        <div class="card">
-                            <a class="card-body" asp-area="Staff" asp-controller="Idea" asp-action="Index" asp-route-id="@topic.Id">
-                                <p class="card-text">@topic.Name</p>
-                            </a>
+                    foreach (var topic in Model.OpenedTopics)
+                    {
+                        <div class="col-md-4">
+                            <div class="card">
+                                <a class="card-body" asp-area="Staff" asp-controller="Idea" asp-action="Index" asp-route-id="@topic.Id">
+                                    <p class="card-text">@topic.Name</p>
+                                </a>
+                            </div>
                         </div>
+                    }
+                }
+                else {
+                    <div class="text-center">
+                        <p>No opened topic now!</p>
                     </div>
-                }  
+                }
             </div>
             <div class="text-right">
                 <a asp-area="Staff" asp-controller="Topic" asp-action="Index"  class="btn btn-dark">More Topics>></a>
