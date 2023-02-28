@@ -1,6 +1,6 @@
-﻿using Idear.Data;
+﻿using Idear.Areas.Admin.ViewModels;
+using Idear.Data;
 using Idear.Models;
-using Idear.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
