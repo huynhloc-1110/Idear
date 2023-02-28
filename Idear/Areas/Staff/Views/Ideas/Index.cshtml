@@ -6,7 +6,7 @@
 
 <h1>View Topics</h1>
 
-<table class="table">
+<table class="table" id="table_id">
     <thead>
         <tr>
             <th>
@@ -24,7 +24,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            <tr id="change-color">
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
@@ -41,3 +41,29 @@
         }
     </tbody>
 </table>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            //get the current date
+            var currentDate = new Date();
+            var formattedCurrentDate = currentDate.getMonth() + 1 + '/' + currentDate.getDate() + '/' + currentDate.getFullYear();
+
+            // iterate over each row in the table
+            $('#table_id tbody tr').each(function () {
+                // get the closure date and final closure date of each row
+                var closureDate = new Date($(this).find('td:eq(1)').text());
+                var formattedClosureDate = closureDate.getMonth() + 1 + '/' + closureDate.getDate() + '/' + closureDate.getFullYear();
+                var finalClosureDate = new Date($(this).find('td:eq(2)').text());
+                var formattedFinalClosureDate = finalClosureDate.getMonth() + 1 + '/' + finalClosureDate.getDate() + '/' + finalClosureDate.getFullYear();
+
+                // compare the dates and highlight the row based on the result
+                if (formattedClosureDate > formattedCurrentDate) {
+                    $(this).addClass('bg-success');
+                } else if (formattedFinalClosureDate < formattedCurrentDate) {
+                    $(this).addClass('bg-danger');
+                } else $(this).addClass('bg-warning');
+            });
+        })
+    </script>
+}
