@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Idear.Areas.Staff.ViewModels.HomeVM
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -9,30 +11,19 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4">
-                    <div class="card">
-                        <a class="card-body" href="#">
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                        </a>
+                @foreach (var topic in Model.OpenedTopics)
+                {
+                    <div class="col-md-4">
+                        <div class="card">
+                            <a class="card-body" asp-area="Staff" asp-controller="Idea" asp-action="Index" asp-route-id="@topic.Id">
+                                <p class="card-text">@topic.Name</p>
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card">
-                        <a class="card-body" href="#">
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card">
-                        <a class="card-body" href="#">
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                        </a>
-                    </div>
-                </div>
+                }  
             </div>
             <div class="text-right">
-                <a href="#" class="btn btn-dark">More Topics>></a>
+                <a asp-area="Staff" asp-controller="Topic" asp-action="Index"  class="btn btn-dark">More Topics>></a>
             </div>
         </div>
     </div>
@@ -44,32 +35,19 @@
                     <h4>Latest Ideas</h4>
                 </div>
                 <div class="card-body">
-                    <div class="card">
-                        <a class="card-body" href="#">
-                            <p class="card-text">
-                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
-                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
-                            </p>
-                        </a>
-                    </div>
-                    <div class="card">
-                        <a class="card-body" href="#">
-                            <p class="card-text">
-                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
-                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
-                            </p>
-                        </a>
-                    </div>
-                    <div class="card">
-                        <a class="card-body" href="#">
-                            <p class="card-text">
-                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
-                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
-                            </p>
-                        </a>
-                    </div>
+                    @foreach (var idea in Model.LatestIdeas)
+                    {
+                        <div class="card">
+                            <a class="card-body" asp-area="Staff" asp-controller="Idea" asp-action="Details" asp-route-id="@idea.Id">
+                                <p class="card-text">
+                                    @idea.Text
+                                    <small class="text-muted">- at @idea.DateTime</small>
+                                </p>
+                            </a>
+                        </div>
+                    }
                     <div class="text-right">
-                        <a href="#" class="btn btn-dark">More Ideas >></a>
+                        <a asp-area="Staff" asp-controller="Idea" asp-action="Index" class="btn btn-dark">More Ideas >></a>
                     </div>
                 </div>
             </div>
@@ -79,38 +57,36 @@
                     <h4>Most Liked Ideas</h4>
                 </div>
                 <div class="card-body">
-                    <div class="card">
-                        <a class="card-body" href="#">
-                            <p class="card-text">
-                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
-                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
-                                <small class="text-muted">- 3 likes</small>
-                                <small class="text-muted">/ 3 dislikes</small>
-                            </p>
-                        </a>
-                    </div>
-                    <div class="card">
-                        <a class="card-body" href="#">
-                            <p class="card-text">
-                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
-                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
-                                <small class="text-muted">- 3 likes</small>
-                                <small class="text-muted">/ 3 dislikes</small>
-                            </p>
-                        </a>
-                    </div>
-                    <div class="card">
-                        <a class="card-body" href="#">
-                            <p class="card-text">
-                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
-                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
-                                <small class="text-muted">- 3 likes</small>
-                                <small class="text-muted">/ 3 dislikes</small>
-                            </p>
-                        </a>
-                    </div>
+                    @foreach (var idea in Model.MostLikedIdeas)
+                    {
+                        <div class="card">
+                            <a class="card-body" asp-area="Staff" asp-controller="Idea" asp-action="Details" asp-route-id="@idea.Id">
+                                <p class="card-text">
+                                    @idea.Text
+                                    <small class="text-muted">- at @idea.DateTime</small>
+                                    @{
+                                        int likeCount = 0;
+                                        int dislikeCount = 0;
+                                        foreach (var react in idea.Reacts!)
+                                        {
+                                            if (react.ReactFlag == 1)
+                                            {
+                                                likeCount++;
+                                            }
+                                            if (react.ReactFlag == -1)
+                                            {
+                                                dislikeCount++;
+                                            }
+                                        }
+                                        <small class="text-muted">- @likeCount likes </small>
+                                        <small class="text-muted">/ @dislikeCount dislikes </small>
+                                    }
+                                </p>
+                            </a>
+                        </div>
+                    }
                     <div class="text-right">
-                        <a href="#" class="btn btn-dark">More Ideas >></a>
+                        <a asp-area="Staff" asp-controller="Idea" asp-action="Index" class="btn btn-dark">More Ideas >></a>
                     </div>
                 </div>
             </div>
@@ -120,35 +96,20 @@
                     <h4>Most Viewed Ideas</h4>
                 </div>
                 <div class="card-body">
-                    <div class="card">
-                        <a class="card-body" href="#">
-                            <p class="card-text">
-                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
-                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
-                                <small class="text-muted">- 3 views</small>
-                            </p>
-                        </a>
-                    </div>
-                    <div class="card">
-                        <a class="card-body" href="#">
-                            <p class="card-text">
-                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
-                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
-                                <small class="text-muted">- 3 views</small>
-                            </p>
-                        </a>
-                    </div>
-                    <div class="card">
-                        <a class="card-body" href="#">
-                            <p class="card-text">
-                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
-                                <small class="text-muted">- at 28/02/2023 17:21:00</small>
-                                <small class="text-muted">- 3 views</small>
-                            </p>
-                        </a>
-                    </div>
+                    @foreach (var idea in Model.MostViewedIdeas)
+                    {
+                        <div class="card">
+                            <a class="card-body" asp-area="Staff" asp-controller="Idea" asp-action="Details" asp-route-id="@idea.Id">
+                                <p class="card-text">
+                                    @idea.Text
+                                    <small class="text-muted">- at @idea.DateTime</small>
+                                    <small class="text-muted">- @idea.Views!.Count views</small>
+                                </p>
+                            </a>
+                        </div>
+                    }
                     <div class="text-right">
-                        <a href="#" class="btn btn-dark">More Ideas >></a>
+                        <a asp-area="Staff" asp-controller="Idea" asp-action="Index" class="btn btn-dark">More Ideas >></a>
                     </div>
                 </div>
             </div>
@@ -160,33 +121,17 @@
                     <h4>Latest Comments</h4>
                 </div>
                 <div class="card-body">
-                    <div class="card">
-                        <a class="card-body" href="#">
-                            <p class="card-text">
-                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
-                                <small class="text-muted">- on topic ABC</small>
-                            </p>
-                        </a>
-                    </div>
-                    <div class="card">
-                        <a class="card-body" href="#">
-                            <p class="card-text">
-                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
-                                <small class="text-muted">- on topic ABC</small>
-                            </p>
-                        </a>
-                    </div>
-                    <div class="card">
-                        <a class="card-body" href="#">
-                            <p class="card-text">
-                                Amet nisl suscipit adipiscing bibendum. Consectetur purus ut faucibus pulvinar elementum integer. Id volutpat lacus laoreet non curabitur
-                                <small class="text-muted">- on topic ABC</small>
-                            </p>
-                        </a>
-                    </div>
-                    <div class="text-right">
-                        <a href="#" class="btn btn-dark">More Comments >></a>
-                    </div>
+                    @foreach (var comment in Model.LatestComments)
+                    {
+                        <div class="card">
+                            <a class="card-body" asp-area="Staff" asp-controller="Idea" asp-action="Details" asp-route-id="@comment.Idea!.Id">
+                                <p class="card-text">
+                                    @comment.Text
+                                    <small class="text-muted">- on idea @comment.Idea!.Text</small>
+                                </p>
+                            </a>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
