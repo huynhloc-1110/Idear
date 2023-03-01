@@ -229,6 +229,14 @@ namespace Idear.Data
                     Datetime = DateTime.Now,
                     Idea = _context.Ideas.First(i => i.Text == "Improve the air conditional for student room"),
                     User = _context.ApplicationUsers.First(u => u.UserName == "N3@gmail.com")
+                },
+                new Comment
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Text = "It's not necessary. Just a waste of money!",
+                    Datetime = DateTime.Now,
+                    Idea = _context.Ideas.First(i => i.Text == "Add kitchen tools at the pastry for students and staffs to use"),
+                    User = _context.ApplicationUsers.First(u => u.UserName == "Khoa234@gmail.com")
                 }
             );
             _context.SaveChanges();
@@ -249,6 +257,20 @@ namespace Idear.Data
                     Id = Guid.NewGuid().ToString(),
                     VisitTime = 1,
                     Idea = _context.Ideas.First(i => i.Text == "Improve the air conditional for student room"),
+                    User = _context.ApplicationUsers.First(u => u.UserName == "Tri456@gmail.com")
+                },
+                new View
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    VisitTime = 2,
+                    Idea = _context.Ideas.First(i => i.Text == "Decorate the university's mainhall with balloon"),
+                    User = _context.ApplicationUsers.First(u => u.UserName == "Tri456@gmail.com")
+                },
+                new View
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    VisitTime = 2,
+                    Idea = _context.Ideas.First(i => i.Text == "Invite BlockChain experts to share with students"),
                     User = _context.ApplicationUsers.First(u => u.UserName == "Tri456@gmail.com")
                 }
             );
@@ -271,6 +293,20 @@ namespace Idear.Data
                     ReactFlag = -1,
                     Idea = _context.Ideas.First(i => i.Text == "Improve the air conditional for student room"),
                     User = _context.ApplicationUsers.First(u => u.UserName == "N3@gmail.com")
+                },
+                new React
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ReactFlag = 1,
+                    Idea = _context.Ideas.First(i => i.Text == "Invite BlockChain experts to share with students"),
+                    User = _context.ApplicationUsers.First(u => u.UserName == "N3@gmail.com")
+                },
+                new React
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ReactFlag = 1,
+                    Idea = _context.Ideas.First(i => i.Text == "Invite BlockChain experts to share with students"),
+                    User = _context.ApplicationUsers.First(u => u.UserName == "Khoa234@gmail.com")
                 }
             );
             _context.SaveChanges();
