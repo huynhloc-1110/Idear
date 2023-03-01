@@ -72,23 +72,8 @@
                                 <p class="card-text">
                                     @idea.Text
                                     <small class="text-muted">- at @idea.DateTime</small>
-                                    @{
-                                        int likeCount = 0;
-                                        int dislikeCount = 0;
-                                        foreach (var react in idea.Reacts!)
-                                        {
-                                            if (react.ReactFlag == 1)
-                                            {
-                                                likeCount++;
-                                            }
-                                            if (react.ReactFlag == -1)
-                                            {
-                                                dislikeCount++;
-                                            }
-                                        }
-                                        <small class="text-muted">- @likeCount likes </small>
-                                        <small class="text-muted">/ @dislikeCount dislikes </small>
-                                    }
+                                    <small class="text-muted">- @idea.Reacts.Where(i => i.ReactFlag == 1).Count() likes </small>
+                                    <small class="text-muted">/ @idea.Reacts.Where(i => i.ReactFlag == -1).Count() dislikes </small>
                                 </p>
                             </a>
                         </div>
@@ -111,7 +96,7 @@
                                 <p class="card-text">
                                     @idea.Text
                                     <small class="text-muted">- at @idea.DateTime</small>
-                                    <small class="text-muted">- @idea.Views!.Count views</small>
+                                    <small class="text-muted">- @idea.Views!.Sum(v => v.VisitTime) views</small>
                                 </p>
                             </a>
                         </div>
@@ -135,7 +120,7 @@
                             <a class="card-body" asp-area="Staff" asp-controller="Idea" asp-action="Details" asp-route-id="@comment.Idea!.Id">
                                 <p class="card-text">
                                     @comment.Text
-                                    <small class="text-muted">- on idea @comment.Idea!.Text</small>
+                                    <small class="text-muted">- on idea "@comment.Idea!.Text"</small>
                                 </p>
                             </a>
                         </div>
