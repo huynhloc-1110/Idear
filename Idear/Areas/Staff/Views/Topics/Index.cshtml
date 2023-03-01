@@ -22,13 +22,13 @@
                 @Html.DisplayNameFor(model => model.FinalClosureDate)
             </th>
             <th>Number of Ideas</th>
-            <th>Actions</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            <tr class="@(item.ClosureDate >= DateTime.Now ? "table-success" : item.FinalClosureDate >= DateTime.Now ? "table-warning" : "table-danger")">
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
@@ -39,48 +39,18 @@
                     @Html.DisplayFor(modelItem => item.FinalClosureDate)
                 </td>
                 <td style="text-align:center">
-                    @Html.DisplayFor(modelItem => item.Ideas.Count)
+                    @Html.DisplayFor(modelItem => item.Ideas!.Count)
                 </td>
                 <td>
                     <a asp-area="Staff" asp-controller="Ideas" asp-action="Index" class="btn btn-primary" asp-route-id="@item.Id">Details</a>
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Export ZIP</a>
+                        <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Export Excel</a>
+                    }
                 </td>
-                @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
-                {
-                    <td>
-                         <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Export ZIP</a>
-                    </td>
-                    <td>
-                         <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Export Excel</a>
-                    </td>
-                }
+
             </tr>
         }
     </tbody>
 </table>
-
-
-@section Scripts{
-    <script>
-        $(document).ready(function () {
-            //get the current date
-            var currentDate = new Date();
-            var formattedCurrentDate = currentDate.getMonth() + 1 + '/' + currentDate.getDate() + '/' + currentDate.getFullYear();
-
-            // iterate over each row in the table
-            $('#table_id tbody tr').each(function () {
-                // get the closure date and final closure date of each row
-                var closureDate = new Date($(this).find('td:eq(1)').text());
-                var formattedClosureDate = closureDate.getMonth() + 1 + '/' + closureDate.getDate() + '/' + closureDate.getFullYear();
-                var finalClosureDate = new Date($(this).find('td:eq(2)').text());
-                var formattedFinalClosureDate = finalClosureDate.getMonth() + 1 + '/' + finalClosureDate.getDate() + '/' + finalClosureDate.getFullYear();
-
-                // compare the dates and highlight the row based on the result
-                if (formattedClosureDate > formattedCurrentDate) {
-                    $(this).addClass('table-success');
-                } else if (formattedFinalClosureDate < formattedCurrentDate) {
-                    $(this).addClass('table-danger');
-                } else $(this).addClass('table-warning');
-            });
-        })
-    </script>
-}
