@@ -1,8 +1,132 @@
-﻿@{
+﻿@model Idear.Areas.Staff.ViewModels.HomeVM
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h4>Opened Topics</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                @if (Model.OpenedTopics.Any())
+                {
+                    foreach (var topic in Model.OpenedTopics)
+                    {
+                        <div class="col-md-4">
+                            <div class="card">
+                                <a class="card-body" asp-area="Staff" asp-controller="Idea" asp-action="Index" asp-route-id="@topic.Id">
+                                    <p class="card-text">@topic.Name</p>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                }
+                else {
+                    <div class="text-center">
+                        <p>No opened topic now!</p>
+                    </div>
+                }
+            </div>
+            <div class="text-right">
+                <a asp-area="Staff" asp-controller="Topic" asp-action="Index"  class="btn btn-dark">More Topics>></a>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Latest Ideas</h4>
+                </div>
+                <div class="card-body">
+                    @foreach (var idea in Model.LatestIdeas)
+                    {
+                        <div class="card">
+                            <a class="card-body" asp-area="Staff" asp-controller="Idea" asp-action="Details" asp-route-id="@idea.Id">
+                                <p class="card-text">
+                                    @idea.Text
+                                    <small class="text-muted">- at @idea.DateTime</small>
+                                </p>
+                            </a>
+                        </div>
+                    }
+                    <div class="text-right">
+                        <a asp-area="Staff" asp-controller="Idea" asp-action="Index" class="btn btn-dark">More Ideas >></a>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="card">
+                <div class="card-header">
+                    <h4>Most Liked Ideas</h4>
+                </div>
+                <div class="card-body">
+                    @foreach (var idea in Model.MostLikedIdeas)
+                    {
+                        <div class="card">
+                            <a class="card-body" asp-area="Staff" asp-controller="Idea" asp-action="Details" asp-route-id="@idea.Id">
+                                <p class="card-text">
+                                    @idea.Text
+                                    <small class="text-muted">- at @idea.DateTime</small>
+                                    <small class="text-muted">- @idea.Reacts.Where(i => i.ReactFlag == 1).Count() likes </small>
+                                    <small class="text-muted">/ @idea.Reacts.Where(i => i.ReactFlag == -1).Count() dislikes </small>
+                                </p>
+                            </a>
+                        </div>
+                    }
+                    <div class="text-right">
+                        <a asp-area="Staff" asp-controller="Idea" asp-action="Index" class="btn btn-dark">More Ideas >></a>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="card">
+                <div class="card-header">
+                    <h4>Most Viewed Ideas</h4>
+                </div>
+                <div class="card-body">
+                    @foreach (var idea in Model.MostViewedIdeas)
+                    {
+                        <div class="card">
+                            <a class="card-body" asp-area="Staff" asp-controller="Idea" asp-action="Details" asp-route-id="@idea.Id">
+                                <p class="card-text">
+                                    @idea.Text
+                                    <small class="text-muted">- at @idea.DateTime</small>
+                                    <small class="text-muted">- @idea.Views!.Sum(v => v.VisitTime) views</small>
+                                </p>
+                            </a>
+                        </div>
+                    }
+                    <div class="text-right">
+                        <a asp-area="Staff" asp-controller="Idea" asp-action="Index" class="btn btn-dark">More Ideas >></a>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Latest Comments</h4>
+                </div>
+                <div class="card-body">
+                    @foreach (var comment in Model.LatestComments)
+                    {
+                        <div class="card">
+                            <a class="card-body" asp-area="Staff" asp-controller="Idea" asp-action="Details" asp-route-id="@comment.Idea!.Id">
+                                <p class="card-text">
+                                    @comment.Text
+                                    <small class="text-muted">- on idea "@comment.Idea!.Text"</small>
+                                </p>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

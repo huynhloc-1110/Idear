@@ -16,3 +16,13 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.text-right {
+    margin-top: 10px;
+    text-align: right;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
