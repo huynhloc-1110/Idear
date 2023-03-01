@@ -60,29 +60,31 @@
 
 
 @section Scripts{
+    <!-- Import moment.js to parse date string -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script>
         $(document).ready(function () {
+            // get user local date format
+            var localdateFormat = moment.localeData().longDateFormat('L');
+
             //get the current date
-            var currentDate = new Date();
-            var formattedCurrentDate = currentDate.getMonth() + 1 + '/' + currentDate.getDate() + '/' + currentDate.getFullYear();
+            var currentDate = moment();
 
             // iterate over each row in the table
             $('#table_id tbody tr').each(function () {
                 // get the closure date and final closure date of each row
-                var closureDate = new Date($(this).find('td:eq(1)').text());
-                var formattedClosureDate = closureDate.getMonth() + 1 + '/' + closureDate.getDate() + '/' + closureDate.getFullYear();
-                var finalClosureDate = new Date($(this).find('td:eq(2)').text());
-                var formattedFinalClosureDate = finalClosureDate.getMonth() + 1 + '/' + finalClosureDate.getDate() + '/' + finalClosureDate.getFullYear();
+                var closureDateSt = $(this).find('td:eq(1)').text();
+                var closureDate = moment(closureDateSt, localdateFormat);
+
+                var finalClosureDateSt = $(this).find('td:eq(2)').text();
+                var finalClosureDate = moment(finalClosureDateSt, localdateFormat);
 
                 // compare the dates and highlight the row based on the result
-                if (formattedClosureDate > formattedCurrentDate) {
+                if (closureDate > currentDate) {
                     $(this).addClass('table-success');
-                } else if (formattedFinalClosureDate < formattedCurrentDate) {
+                } else if (finalClosureDate <= currentDate) {
                     $(this).addClass('table-danger');
                 } else $(this).addClass('table-warning');
-
-                alert(currentDate.toLocaleDateString());
             });
         })
     </script>
