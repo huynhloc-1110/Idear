@@ -42,7 +42,7 @@
                     @Html.DisplayFor(modelItem => item.Ideas!.Count)
                 </td>
                 <td>
-                    <a asp-area="Staff" asp-controller="Ideas" asp-action="Index" class="btn btn-primary" asp-route-id="@item.Id">Details</a>
+                    <a asp-area="Staff" asp-controller="Topics" asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Details</a>
                     @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
                         <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Export ZIP</a>

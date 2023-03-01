@@ -24,28 +24,41 @@ namespace Idear.Areas.Staff.Controllers
         }
 
         // GET: Staff/Ideas
-        public async Task<IActionResult> Index(string id)
+        public async Task<IActionResult> Index(string orderBy)
         {
-            var topic = await _context.Topics
-                .Include(t => t.Ideas)!
-                    .ThenInclude(i => i.Views)
-                .Include(t => t.Ideas)!
-                    .ThenInclude(i => i.Comments)
-                .Include(t => t.Ideas)!
-                    .ThenInclude(i => i.Reacts)
-                .FirstOrDefaultAsync(t => t.Id == id);
-
-            if (topic == null)
+            IQueryable<Idea> ideaQuery = null;
+            switch (orderBy)
             {
-                return NotFound();
+                case "like":
+                    ideaQuery = _context.Ideas
+                        .Select(idea => new
+                        {
+                            Idea = idea,
+                            Likes = idea.Reacts.Where(r => r.ReactFlag == 1).Sum(r => r.ReactFlag)
+                        })
+                        .OrderByDescending(idea => idea.Likes)
+                        .Select(idea => idea.Idea);
+                    break;
+                case "view":
+                    ideaQuery = _context.Ideas
+                        .OrderByDescending(i => i.Views!.Count);
+                    break;
+                case "comment":
+                    ideaQuery = _context.Ideas
+                        .OrderByDescending(i => i.Comments!.Count);
+                    break;
+                default:
+                    ideaQuery = _context.Ideas
+                        .OrderByDescending(i => i.DateTime);
+                    break;
             }
-            var model = new TopicIdeasVM
-            {
-                Id = topic.Id,
-                Name = topic.Name,
-                Ideas = topic.Ideas
-            };
-            return View(model);
+            var ideas = await ideaQuery
+                .Include(i => i.Views)
+                .Include(i => i.Comments)
+                .Include(i => i.Reacts)
+                .ToListAsync();
+
+            return View(ideas);
         }
 
     }
