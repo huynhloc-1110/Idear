@@ -26,24 +26,9 @@
                 {
                     <tr>
                         <td>@idea.Text</td>
-                        <td>@idea.Views.Count</td>
-                        @{
-                            int likeCount = 0;
-                            int dislikeCount = 0;
-                            foreach (var react in idea.Reacts!)
-                            {
-                                if (react.ReactFlag == 1)
-                                {
-                                    likeCount++;
-                                }
-                                if (react.ReactFlag == -1)
-                                {
-                                    dislikeCount++;
-                                }
-                            }
-                        }
-                        <td>@likeCount</td>
-                        <td>@dislikeCount</td>
+                        <td> @idea.Views!.Sum(v => v.VisitTime)</td>
+                        <td>@idea.Reacts.Where(i => i.ReactFlag == 1).Count()</td>
+                        <td>@idea.Reacts.Where(i => i.ReactFlag == -1).Count()</td>
                         <td>@idea.Comments.Count</td>
                         <td>
                             <a class="btn btn-primary" asp-action="Details" asp-route-id="@idea.Id">Details</a>

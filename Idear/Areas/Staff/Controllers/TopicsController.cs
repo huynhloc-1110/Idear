@@ -2,6 +2,7 @@
 using Idear.Areas.Staff.ViewModels;
 using Idear.Data;
 using Idear.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,6 +11,7 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace Idear.Areas.Staff.Controllers
 {
+	[Authorize]
     [Area("Staff")]
     public class TopicsController : Controller
 	{

@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Idear.Data;
 using Idear.Models;
 using Idear.Areas.Staff.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Idear.Areas.Staff.Controllers
 {
+    [Authorize]
     [Area("Staff")]
     public class IdeasController : Controller
     {
