@@ -176,6 +176,7 @@ namespace Idear.Data
                     Text = "Invite BlockChain experts to share with students",
                     DateTime = new DateTime(2023, 1, 10, 10, 30, 0),
                     User = _context.ApplicationUsers.First(u => u.UserName == "N1@gmail.com"),
+                    IsAnonymous = true,
                     Topic = _context.Topics.First(t => t.Name == "Workshop ideas for IT students"),
                     Category = _context.Categories.First(c => c.Name == "General")
                 },
@@ -204,6 +205,7 @@ namespace Idear.Data
                     FilePath = "air-conditional.jpg",
                     DateTime = new DateTime(2023, 2, 24, 20, 30, 0),
                     User = _context.ApplicationUsers.First(u => u.UserName == "Loc123@gmail.com"),
+                    IsAnonymous = true,
                     Topic = _context.Topics.First(t => t.Name == "Improve work evironment for students and staffs"),
                     Category = _context.Categories.First(c => c.Name == "Improvement")
                 }
@@ -220,6 +222,7 @@ namespace Idear.Data
                     Text = "100% agree.",
                     Datetime = DateTime.Now,
                     Idea = _context.Ideas.First(i => i.Text == "Improve the air conditional for student room"),
+                    IsAnonymous = true,
                     User = _context.ApplicationUsers.First(u => u.UserName == "Tri456@gmail.com")
                 },
                 new Comment
