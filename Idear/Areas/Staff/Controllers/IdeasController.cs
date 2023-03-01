@@ -9,6 +9,7 @@ using Idear.Data;
 using Idear.Models;
 using Idear.Areas.Staff.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Idear.Areas.Staff.Controllers
 {
@@ -17,10 +18,12 @@ namespace Idear.Areas.Staff.Controllers
     public class IdeasController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public IdeasController(ApplicationDbContext context)
+        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Staff/Ideas
@@ -41,7 +44,13 @@ namespace Idear.Areas.Staff.Controllers
                     break;
                 case "view":
                     ideaQuery = _context.Ideas
-                        .OrderByDescending(i => i.Views!.Count);
+                        .Select(idea => new
+                        {
+                            Idea = idea,
+                            Views = idea.Views.Sum(v=>v.VisitTime)
+                        })
+                        .OrderByDescending(idea => idea.Views)
+                        .Select(idea => idea.Idea);
                     break;
                 case "comment":
                     ideaQuery = _context.Ideas
@@ -59,6 +68,67 @@ namespace Idear.Areas.Staff.Controllers
                 .ToListAsync();
 
             return View(ideas);
+        }
+
+        //Details 
+        public async Task<IActionResult> Details(string id)
+		{
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var idea = await _context.Ideas
+                .Include(i => i.User)
+                .Include(i => i.Topic)
+                .Include(i => i.Category)
+                .Include(i => i.Comments)!
+                    .ThenInclude(c => c.User)
+                .Include(i => i.Reacts)
+                .Include(i => i.Views)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (idea == null)
+            {
+                return NotFound();
+            }
+            var relatedIdeas = await _context.Ideas
+                .Where(i => i.Category!.Id == idea.Category!.Id && i.Id != idea.Id)
+                .Include(i => i.User)
+                .ToListAsync();
+
+            var ideaVM = new IdeasVM
+            {
+                Idea = idea,
+                RelatedIdeas = relatedIdeas,
+            };
+
+
+            var user = await _userManager.GetUserAsync(User);
+
+            var view = await _context.Views.Where(v=>v.User!.Id == user.Id && v.Idea.Id == idea.Id).FirstOrDefaultAsync();
+            if (view != null)
+            {
+                view.VisitTime++;
+                
+            }
+            else
+            {
+                _context.Views.Add(
+                    new View
+                    {
+
+                        Id = Guid.NewGuid().ToString(),
+                        VisitTime = 1,
+                        Idea = idea,
+                        User = user
+
+                    }
+                );
+            }
+            _context.SaveChanges();
+
+            return View(ideaVM);
         }
 
     }

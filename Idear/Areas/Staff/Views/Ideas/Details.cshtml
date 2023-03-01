@@ -1,0 +1,49 @@
+﻿@model Idear.Areas.Staff.ViewModels.IdeasVM
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h4>Details of Idea</h4>
+
+<p>Description: @Model.Idea.Text</p>
+<p>Suported File: @Model.Idea.FilePath</p>
+<p>Category: @Model.Idea.Category!.Name</p>
+<p>At: @Model.Idea.DateTime</p>
+<p>By:
+    @if (Model.Idea.IsAnonymous)
+    {
+        <text>Anonymous User</text>
+    }else
+    @Model.Idea.User!.FullName
+</p>
+<p>Views: @Model.Idea.Views!.Sum(v=> v.VisitTime)</p>
+<p>Like: @Model.Idea.Reacts.Where(i => i.ReactFlag == 1).Count()</p>
+<p>Dislike: @Model.Idea.Reacts.Where(i => i.ReactFlag == -1).Count()</p>
+
+<h4>Comments</h4>
+
+@foreach (var comment in Model.Idea.Comments!){
+    <p>@comment.Text by
+        @if (comment.IsAnonymous)
+        {
+            <text>Anonymous User</text>
+        }else
+        @comment.User!.FullName at 
+        @comment.Datetime
+    </p> 
+}
+
+<h4>Ideas with similar category</h4>
+@foreach (var idea in Model.RelatedIdeas)
+{
+    <p>@idea.Text by
+        @if (idea.IsAnonymous)
+        {
+            <text>Anonymous User</text>
+        }
+        else
+        @idea.User!.FullName at
+        @idea.DateTime
+    </p>
+}
