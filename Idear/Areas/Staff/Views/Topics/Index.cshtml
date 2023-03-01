@@ -60,6 +60,7 @@
 
 
 @section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script>
         $(document).ready(function () {
             //get the current date
@@ -80,6 +81,8 @@
                 } else if (formattedFinalClosureDate < formattedCurrentDate) {
                     $(this).addClass('table-danger');
                 } else $(this).addClass('table-warning');
+
+                alert(currentDate.toLocaleDateString());
             });
         })
     </script>
