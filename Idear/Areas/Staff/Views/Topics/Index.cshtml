@@ -22,13 +22,13 @@
                 @Html.DisplayNameFor(model => model.FinalClosureDate)
             </th>
             <th>Number of Ideas</th>
-            <th>Actions</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            <tr class="@(item.ClosureDate >= DateTime.Now ? "table-success" : item.FinalClosureDate >= DateTime.Now ? "table-warning" : "table-danger")">
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
@@ -39,53 +39,18 @@
                     @Html.DisplayFor(modelItem => item.FinalClosureDate)
                 </td>
                 <td style="text-align:center">
-                    @Html.DisplayFor(modelItem => item.Ideas.Count)
+                    @Html.DisplayFor(modelItem => item.Ideas!.Count)
                 </td>
                 <td>
                     <a asp-area="Staff" asp-controller="Ideas" asp-action="Index" class="btn btn-primary" asp-route-id="@item.Id">Details</a>
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Export ZIP</a>
+                        <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Export Excel</a>
+                    }
                 </td>
-                @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
-                {
-                    <td>
-                         <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Export ZIP</a>
-                    </td>
-                    <td>
-                         <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Export Excel</a>
-                    </td>
-                }
+
             </tr>
         }
     </tbody>
 </table>
-
-
-@section Scripts{
-    <!-- Import moment.js to parse date string -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            // get user local date format
-            var localdateFormat = moment.localeData().longDateFormat('L');
-
-            //get the current date
-            var currentDate = moment();
-
-            // iterate over each row in the table
-            $('#table_id tbody tr').each(function () {
-                // get the closure date and final closure date of each row
-                var closureDateSt = $(this).find('td:eq(1)').text();
-                var closureDate = moment(closureDateSt, localdateFormat);
-
-                var finalClosureDateSt = $(this).find('td:eq(2)').text();
-                var finalClosureDate = moment(finalClosureDateSt, localdateFormat);
-
-                // compare the dates and highlight the row based on the result
-                if (closureDate > currentDate) {
-                    $(this).addClass('table-success');
-                } else if (finalClosureDate <= currentDate) {
-                    $(this).addClass('table-danger');
-                } else $(this).addClass('table-warning');
-            });
-        })
-    </script>
-}
