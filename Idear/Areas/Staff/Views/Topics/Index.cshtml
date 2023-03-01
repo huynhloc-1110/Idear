@@ -21,7 +21,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.FinalClosureDate)
             </th>
-            <th></th>
+            <th>Number of Ideas</th>
         </tr>
     </thead>
     <tbody>
@@ -37,8 +37,11 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.FinalClosureDate)
                 </td>
+                <td style="text-align:center">
+                    @Html.DisplayFor(modelItem => item.Ideas.Count)
+                </td>
                 <td>
-                    <a asp-action="TopicIdeas" class="btn btn-primary" asp-route-id="@item.Id">Details</a>
+                    <a asp-area="Staff" asp-controller="Ideas" asp-action="Index" class="btn btn-primary" asp-route-id="@item.Id">Details</a>
                 </td>
                 @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                 {
@@ -47,7 +50,7 @@
                     </td>
                     <td>
                          <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Export Excel</a>
-                     </td>
+                    </td>
                 }
             </tr>
         }
