@@ -4,46 +4,91 @@
     ViewData["Title"] = "Details";
 }
 
-<h4>Details of Idea</h4>
-
-<p>Description: @Model.Idea.Text</p>
-<p>Suported File: @Model.Idea.FilePath</p>
-<p>Category: @Model.Idea.Category!.Name</p>
-<p>At: @Model.Idea.DateTime</p>
-<p>By:
-    @if (Model.Idea.IsAnonymous)
-    {
-        <text>Anonymous User</text>
-    }else
-    @Model.Idea.User!.FullName
-</p>
-<p>Views: @Model.Idea.Views!.Sum(v=> v.VisitTime)</p>
-<p>Like: @Model.Idea.Reacts.Where(i => i.ReactFlag == 1).Count()</p>
-<p>Dislike: @Model.Idea.Reacts.Where(i => i.ReactFlag == -1).Count()</p>
-
-<h4>Comments</h4>
-
-@foreach (var comment in Model.Idea.Comments!){
-    <p>@comment.Text by
-        @if (comment.IsAnonymous)
-        {
-            <text>Anonymous User</text>
-        }else
-        @comment.User!.FullName at 
-        @comment.Datetime
-    </p> 
-}
-
-<h4>Ideas with similar category</h4>
-@foreach (var idea in Model.RelatedIdeas)
-{
-    <p>@idea.Text by
-        @if (idea.IsAnonymous)
-        {
-            <text>Anonymous User</text>
-        }
-        else
-        @idea.User!.FullName at
-        @idea.DateTime
-    </p>
-}
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h4>Idea</h4>
+        </div>
+        <div class="card-body">
+            <div class="card">
+                <div class="card-body">@Model.Idea.Text</div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        by @if (Model.Idea.IsAnonymous)
+                            {
+                                <text>Anonymous User</text>
+                            }
+                            else
+                                @Model.Idea.User!.FullName
+                        at @Model.Idea.DateTime
+                        </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center"> Category: @Model.Idea.Category!.Name</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <span><i class="bi bi-eye"></i> @Model.Idea.Views!.Sum(v=> v.VisitTime) views</span>
+                        <button class="btn btn-primary"><i class="bi bi-hand-thumbs-up"></i> @Model.Idea.Reacts.Where(i => i.ReactFlag == 1).Count() Likes</button>
+                        <button class="btn btn-dark"><i class="bi bi-hand-thumbs-down"></i> @Model.Idea.Reacts.Where(i => i.ReactFlag == -1).Count() DisLikes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Comments</h4>
+                </div>
+                <div class="card-body">
+                    @foreach (var comment in Model.Idea.Comments!){
+                        <div class="card">
+                            <div class="card-body">
+                                @comment.Text by
+                                @if (comment.IsAnonymous)
+                                    {
+                                        <text>Anonymous User</text>
+                                    }
+                                else
+                                    @comment.User!.FullName
+                                    at
+                                    @comment.Datetime
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Ideas with similar category</h4>
+                </div>
+                <div class="card-body">
+                    @foreach (var idea in Model.RelatedIdeas)
+                    {
+                        <div class="card">
+                            <div class="card-body">
+                                @idea.Text by
+                                @if (idea.IsAnonymous)
+                                    {
+                                        <text>Anonymous User</text>
+                                    }
+                                else
+                                    @idea.User!.FullName
+                                    at
+                                    @idea.DateTime
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
