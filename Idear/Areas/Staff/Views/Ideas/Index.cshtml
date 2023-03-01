@@ -24,7 +24,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr id="change-color">
+            <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
@@ -59,10 +59,10 @@
 
                 // compare the dates and highlight the row based on the result
                 if (formattedClosureDate > formattedCurrentDate) {
-                    $(this).addClass('bg-success');
+                    $(this).addClass('table-success');
                 } else if (formattedFinalClosureDate < formattedCurrentDate) {
-                    $(this).addClass('bg-danger');
-                } else $(this).addClass('bg-warning');
+                    $(this).addClass('table-danger');
+                } else $(this).addClass('table-warning');
             });
         })
     </script>
