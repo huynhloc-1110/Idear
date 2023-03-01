@@ -21,35 +21,7 @@ namespace Idear.Areas.Staff.Controllers
 		}
 		public async Task<IActionResult> Index()
 		{
-			return View(await _context.Topics.Include(t => t.Ideas).ToListAsync());
+			return View(await _context.Topics.OrderByDescending(t => t.ClosureDate).Include(t => t.Ideas).ToListAsync());
 		}
-
-
-
-
-
-        //public async Task<IActionResult> TopicIdeas(string id)
-        //{
-        //    var topic = await _context.Topics
-        //        .Include(t => t.Ideas)!
-        //            .ThenInclude(i => i.Views)
-        //        .Include(t => t.Ideas)!
-        //            .ThenInclude(i => i.Comments)
-        //        .Include(t => t.Ideas)!
-        //            .ThenInclude(i => i.Reacts)
-        //        .FirstOrDefaultAsync(t => t.Id == id);
-
-        //    if (topic == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    var model = new TopicIdeasVM
-        //    {
-        //        Id = topic.Id,
-        //        Name = topic.Name,
-        //        Ideas = topic.Ideas
-        //    };
-        //    return View(model);
-        //}
     }
 }
