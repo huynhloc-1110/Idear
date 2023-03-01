@@ -1,5 +1,5 @@
 ﻿
-using Idear.ViewModels;
+using Idear.Areas.Admin.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ using System.Data;
 
 namespace Idear.Areas.Admin.Controllers
 {
-	[Area("Admin")]
+    [Area("Admin")]
     [Authorize(Roles = "Admin")]
     public class RolesController : Controller
     {

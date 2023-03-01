@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Build.Framework;
 
-namespace Idear.ViewModels
+namespace Idear.Areas.Admin.ViewModels
 {
     public class EditUserVM
     {
@@ -15,5 +15,5 @@ namespace Idear.ViewModels
         [Required]
         public string? DepartmentId { get; set; }
         public List<SelectListItem> Departments { get; set; } = default!;
-	}
+    }
 }
