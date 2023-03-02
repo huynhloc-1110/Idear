@@ -32,8 +32,12 @@
                 <div class="col-md-4">
                     <div class="text-center">
                         <span><i class="bi bi-eye"></i> @Model.Idea.Views!.Sum(v=> v.VisitTime) views</span>
-                        <button class="btn btn-primary"><i class="bi bi-hand-thumbs-up"></i> @Model.Idea.Reacts.Where(i => i.ReactFlag == 1).Count() Likes</button>
-                        <button class="btn btn-dark"><i class="bi bi-hand-thumbs-down"></i> @Model.Idea.Reacts.Where(i => i.ReactFlag == -1).Count() DisLikes</button>
+                        <button id="btn-like" type="button" class="btn btn-primary">
+                            <i class="bi bi-hand-thumbs-up"></i> @Model.Idea.Reacts.Where(r => r.ReactFlag == 1).Count() Likes
+                        </button>
+                        <button id="btn-dislike" type="button" class="btn btn-dark">
+                            <i class="bi bi-hand-thumbs-down"></i> @Model.Idea.Reacts.Where(r => r.ReactFlag == -1).Count() DisLikes
+                        </button>
                     </div>
                 </div>
             </div>
@@ -124,12 +128,41 @@
 
 @section Scripts {
     <script>
+        function sendAjaxRequest(flag) {
+            // Get the CSRF token from the server
+            $.get("/Staff/Ideas/GetCsrfToken", function (token) {
+                // Add the CSRF token to the AJAX request header
+                var headers = {};
+                headers["RequestVerificationToken"] = token;
+                var id = `@Model.Idea.Id`;
+
+
+                // Send the AJAX request with the CSRF token included in the header
+                $.ajax({
+                    url: '/Staff/Ideas/Like',
+                    type: "POST",
+                    data: { reactFlag: flag, ideaId: id },
+                    headers: headers,
+                    success: function (result) {
+                        location.reload();
+                    },
+                });
+            });
+        }
         $(document).ready(function() {
             $('#comment-input').on('input', function () {
                 var text = $(this).val();
                 var charCount = text.length;
                 $('#char-count').text(charCount);
             });
+
+            $('#btn-like').click(function() {
+                sendAjaxRequest(1);
+            });
+            $('#btn-dislike').click(function() {
+                sendAjaxRequest(-1);
+            });
         })
+
     </script>
 }
