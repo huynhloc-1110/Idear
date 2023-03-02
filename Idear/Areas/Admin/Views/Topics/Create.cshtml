@@ -27,10 +27,11 @@
                 <input asp-for="FinalClosureDate" class="form-control" />
                 <span asp-validation-for="FinalClosureDate" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
                 <div class="col-10">
-                <button type="submit" class="btn btn-dark">Create</button>
-                <a asp-action="Index" class="btn btn-light">Back to list</a>
+                    <button type="submit" class="btn btn-dark"><i class="bi bi-plus-circle"></i> New Topic</button>
+                    <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-return-left"></i> Back to list</a>
                 </div>
             </div>
         </form>
