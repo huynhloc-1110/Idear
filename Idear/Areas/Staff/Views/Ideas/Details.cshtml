@@ -47,6 +47,31 @@
                     <h4>Comments</h4>
                 </div>
                 <div class="card-body">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-text text-bold">@Model.Idea.Comments!.Count comments</p>
+                            <form method="post" asp-action="Create" asp-controller="Comments">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="mb-3">
+                                    <textarea asp-for="@Model.Comment.Text" id="comment-input" class="form-control" rows="3" name="commentText"></textarea>
+                                    <span asp-validation-for="@Model.Comment.Text" class="text-danger"></span>
+                                </div>
+                                <div class="mb-3 form-check">
+                                        <div class="row">
+                                        <div class="col-6">
+                                            <input type="checkbox" class="form-check-input" id="chk-anonymous" asp-for="@Model.Comment.IsAnonymous">
+                                            <label class="form-check-label" for="chk-anonymous" asp-for="@Model.Comment.IsAnonymous">Post this comment as anonymous</label>
+                                            <span asp-validation-for="@Model.Comment.IsAnonymous" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-6 text-right">
+                                            <span><span id="char-count">0</span>/500</span>
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                     @foreach (var comment in Model.Idea.Comments!){
                         <div class="card">
                             <div class="card-body">
@@ -92,3 +117,15 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#comment-input').on('input', function () {
+                var text = $(this).val();
+                var charCount = text.length;
+                $('#char-count').text(charCount);
+            });
+        })
+    </script>
+}

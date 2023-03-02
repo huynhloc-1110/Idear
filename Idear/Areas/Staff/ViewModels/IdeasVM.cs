@@ -7,6 +7,6 @@ namespace Idear.Areas.Staff.ViewModels
         public Idea Idea { get; set; } = default!;
         public List<Idea> RelatedIdeas { get; set;} = default!;
 
-
+        public Comment Comment { get; set; } = default!;
     }
 }

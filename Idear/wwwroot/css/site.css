@@ -22,6 +22,10 @@ body {
     text-align: right;
 }
 
+.text-bold {
+    font-weight: bold;
+}
+
 a {
     text-decoration: none;
     color: black;
