@@ -26,3 +26,8 @@ a {
     text-decoration: none;
     color: black;
 }
+
+.inline-select {
+    width: auto;
+    display: inline-block;
+}
