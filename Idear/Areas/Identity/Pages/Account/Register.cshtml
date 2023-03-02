@@ -5,13 +5,12 @@
 }
 
 <h1>@ViewData["Title"]</h1>
-
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+    <h2>Create a new account.</h2>
+    <hr />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-6">
             <div class="form-floating">
                 <input asp-for="Input.FullName" class="form-control" autocomplete="full-name" aria-required="true" />
                 <label asp-for="Input.FullName"></label>
@@ -35,7 +34,8 @@
                 <label asp-for="Input.ConfirmPassword"></label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <br />
+        </div>
+        <div class="col-md-6">
             <div class="form-floating">
                 <select asp-for="Input.Roles" asp-items="@Model.Input.RolesList" class="form-select" aria-required="true">
                     <option disabled selected>Select Role</option>
@@ -51,9 +51,9 @@
             </div>
             <br />
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-danger">Register</button>
-        </form>
+        </div>
     </div>
-</div>
+</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
