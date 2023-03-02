@@ -14,7 +14,7 @@
                 <div class="card-body">@Model.Idea.Text</div>
             </div>
             <br />
-            <div class="row">
+            <div class="row g-2 align-items-center">
                 <div class="col-md-4">
                     <div class="text-center">
                         by @if (Model.Idea.IsAnonymous)
@@ -75,15 +75,18 @@
                     @foreach (var comment in Model.Idea.Comments!){
                         <div class="card">
                             <div class="card-body">
-                                @comment.Text by
-                                @if (comment.IsAnonymous)
-                                    {
-                                        <text>Anonymous User</text>
+                                <p class="card-text">
+                                    @if (comment.IsAnonymous)
+                                        {
+                                        <b><text>Anonymous User</text></b>
                                     }
-                                else
-                                    @comment.User!.FullName
-                                    at
-                                    @comment.Datetime
+                                    else
+                                        {
+                                        <b>@comment.User!.FullName</b>
+                                        }
+
+                                </p>
+                                <p>@comment.Text at @comment.Datetime</p>
                             </div>
                         </div>
                     }
