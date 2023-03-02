@@ -53,11 +53,12 @@
                             <form method="post" asp-action="Create" asp-controller="Comments">
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <div class="mb-3">
-                                    <textarea asp-for="@Model.Comment.Text" id="comment-input" class="form-control" rows="3" name="commentText"></textarea>
+                                    <textarea asp-for="@Model.Comment.Text" id="comment-input" class="form-control" rows="3"></textarea>
                                     <span asp-validation-for="@Model.Comment.Text" class="text-danger"></span>
                                 </div>
                                 <div class="mb-3 form-check">
-                                        <div class="row">
+                                    <div class="row">
+                                        <input asp-for="@Model.Idea.Id" hidden readonly class="form-control" />
                                         <div class="col-6">
                                             <input type="checkbox" class="form-check-input" id="chk-anonymous" asp-for="@Model.Comment.IsAnonymous">
                                             <label class="form-check-label" for="chk-anonymous" asp-for="@Model.Comment.IsAnonymous">Post this comment as anonymous</label>
