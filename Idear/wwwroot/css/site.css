@@ -35,3 +35,8 @@ a {
 .table-hover tbody tr:hover {
     background-color: #00ffe3;
 }
+
+.inline-select {
+    width: auto;
+    display: inline-block;
+}
