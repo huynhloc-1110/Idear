@@ -1,20 +1,25 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-image: url("../img/bg.jpg");
+    background-attachment: fixed;
+    background-position: center;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
 }
 
 .text-right {
@@ -29,4 +34,13 @@ body {
 a {
     text-decoration: none;
     color: black;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #00ffe3;
+}
+
+.inline-select {
+    width: auto;
+    display: inline-block;
 }

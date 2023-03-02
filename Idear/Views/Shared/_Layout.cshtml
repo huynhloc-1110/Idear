@@ -25,12 +25,12 @@
                 @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                 {
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Manage
                         </button>
                         <ul class="dropdown-menu">
                             <li class="nav-item">
-                                <a class="dropdown-item" asp-area="Admin" asp-controller="Roles" asp-action="Index">Roles</a>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Roles" asp-action="Index">Role</a>
                             </li>
                             <li class="nav-item">
                                 <a class="dropdown-item" asp-area="Admin" asp-controller="Departments" asp-action="Index">Department</a>
@@ -76,7 +76,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted bg-white">
         <div class="container">
             &copy; 2023 - Idear - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>

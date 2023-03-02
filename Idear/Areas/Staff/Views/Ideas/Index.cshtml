@@ -8,13 +8,12 @@
 
 <form method="get">
     <label for="select-order">Choose order</label>
-    <select id="select-order" name="orderBy">
+    <select class="form-select inline-select" id="select-order" name="orderBy">
         <option value="latest">Latest</option>
         <option value="like">Most Liked</option>
         <option value="view">Most Viewed</option>
         <option value="comment">Most Commented</option>
     </select>
-    <button type="submit">Confirm</button>
 </form>
 
 <table class="table table-hover">
@@ -56,3 +55,26 @@
 <td>
     <a asp-area="Staff" asp-controller="Topics" asp-action="Index" class="btn btn-outline-dark">Back To All Topics</a>
 </td>
+
+@section Scripts{
+    <script>
+        $(document).ready(function() {
+
+            $('#select-order').change(function() {
+                // Get the selected sorting option
+                var selectedOption = $(this).val();
+                
+                // Redirect to the current page with the sorting option as a query parameter
+                window.location.href = window.location.pathname + '?orderBy=' + selectedOption;
+            });
+
+            // get the select option from query string
+            var selectedOption = new URLSearchParams(window.location.search).get('orderBy');
+            if (selectedOption != "" && selectedOption != null) {
+                $('#select-order').val(selectedOption);
+            }
+
+            // Set the selected option in the sort select element
+        });
+    </script>
+}

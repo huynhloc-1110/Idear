@@ -1,6 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @model IdentityRole
-<h4>Roles</h4>
+@{
+    ViewData["Title"] = "Create Role";
+}
+<h1>Create</h1>
+<h4>Role</h4>
+<hr />
 <div class="row">
 	<div class="col-md-4">
 		<form method="post">
@@ -10,16 +15,15 @@
 			<div class="from-floating ">
 				<label asp-for="Name"></label>
 				<input asp-for="Name" class=" form-control" aria-required="true" />
-				
 				<span asp-validation-for="Name" class=" text-danger"></span>
 			</div>
+			<br />
 			<div class="form-group">
 				<div class="col-10">
-					<button type="submit" class="btn btn-dark">Create</button>
-					<a asp-action="Index" class="btn btn-light">Back to list</a>
+					<button type="submit" class="btn btn-dark"><i class="bi bi-plus-circle"></i> New role</button>
+					<a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-return-left"></i> Back to list</a>
 				</div>
 			</div>
 		</form>
 	</div>
 </div>
-
