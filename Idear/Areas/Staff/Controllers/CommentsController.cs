@@ -24,9 +24,15 @@ namespace Idear.Areas.Staff.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string cmtText, bool isAnonymous, string ideaId)
+        public async Task<IActionResult> Create(string cmtText, bool isAnonymous, string ideaId,
+            string deadline)
         {
-            if (cmtText == "" || cmtText == null)
+            // check for comment null or topic deadline meet
+            if (!DateTime.TryParse(deadline, out var topicFinalClosureDate))
+            {
+                return BadRequest("The request is invalid.");
+            }
+            if (cmtText == "" || cmtText == null || topicFinalClosureDate < DateTime.Now )
             {
                 return BadRequest("The request is invalid.");
             }

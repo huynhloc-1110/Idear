@@ -60,10 +60,11 @@
                             <p class="card-text text-bold"><span id="cmt-count">@Model.Idea.Comments!.Count</span> comments</p>
                             
                             <!-- Create new comment Section -->
-                            <form>
-                                <div class="mb-3">
-                                    <textarea id="input-cmt" class="form-control" rows="3"></textarea>
-                                </div>
+                            @if (Model.Idea.Topic!.FinalClosureDate >= DateTime.Now) {
+                                <form>
+                                    <div class="mb-3">
+                                        <textarea id="input-cmt" class="form-control" rows="3"></textarea>
+                                    </div>
                                     <div class="mb-3 form-check">
                                         <div class="row">
                                             <div class="col-6">
@@ -76,7 +77,8 @@
                                             </div>
                                         </div>
                                     </div>
-                            </form>
+                                </form>
+                            }
                             <!--/ Create new comment Section -->
 
                         </div>
@@ -183,12 +185,13 @@
                 var id = `@Model.Idea.Id`;
                 var cmtText = $('#input-cmt').val();
                 var isAnonymous = $('#chk-anonymous').prop('checked');
+                var topicFinalClosureDate = `@Model.Idea.Topic!.FinalClosureDate`;
 
                 // Send the AJAX request with the CSRF token included in the header
                 $.ajax({
                     url: '/Staff/Comments/Create',
                     type: "POST",
-                    data: { 'cmtText' : cmtText, 'isAnonymous' : isAnonymous, ideaId: id },
+                    data: { 'cmtText': cmtText, 'isAnonymous': isAnonymous, ideaId: id, deadline: topicFinalClosureDate },
                     headers: headers,
                     success: function (result) {
                         // update cmt UI after successfully change the backend
