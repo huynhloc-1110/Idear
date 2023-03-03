@@ -108,6 +108,10 @@ namespace Idear.Areas.Staff.Controllers
             {
                 Idea = idea,
                 RelatedIdeas = relatedIdeas,
+                Comment = new Comment
+                {
+                    Idea = idea
+                }
             };
 
 

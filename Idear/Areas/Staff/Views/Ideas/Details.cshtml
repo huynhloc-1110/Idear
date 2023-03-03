@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    //ViewData["IdeaId"] = Model.Idea.Id;
 }
 
 <div class="container-fluid">
@@ -54,27 +55,9 @@
                     <div class="card">
                         <div class="card-body">
                             <p class="card-text text-bold">@Model.Idea.Comments!.Count comments</p>
-                            <form method="post" asp-action="Create" asp-controller="Comments">
-                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                <div class="mb-3">
-                                    <textarea asp-for="@Model.Comment.Text" id="comment-input" class="form-control" rows="3"></textarea>
-                                    <span asp-validation-for="@Model.Comment.Text" class="text-danger"></span>
-                                </div>
-                                <div class="mb-3 form-check">
-                                    <div class="row">
-                                        <input asp-for="@Model.Idea.Id" hidden readonly class="form-control" />
-                                        <div class="col-6">
-                                            <input type="checkbox" class="form-check-input" id="chk-anonymous" asp-for="@Model.Comment.IsAnonymous">
-                                            <label class="form-check-label" for="chk-anonymous" asp-for="@Model.Comment.IsAnonymous">Post this comment as anonymous</label>
-                                            <span asp-validation-for="@Model.Comment.IsAnonymous" class="text-danger"></span>
-                                        </div>
-                                        <div class="col-6 text-right">
-                                            <span><span id="char-count">0</span>/500</span>
-                                            <button type="submit" class="btn btn-primary">Submit</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                            <div id="partial-view-container">
+                                @await Html.PartialAsync("~/Areas/Staff/Views/Comments/_CreateComment.cshtml", Model.Comment)
+                            </div>
                         </div>
                     </div>
                     @foreach (var comment in Model.Idea.Comments!){
@@ -127,6 +110,10 @@
 </div>
 
 @section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
     <script>
         function sendAjaxRequest(flag) {
             // Get the CSRF token from the server
@@ -135,7 +122,6 @@
                 var headers = {};
                 headers["RequestVerificationToken"] = token;
                 var id = `@Model.Idea.Id`;
-
 
                 // Send the AJAX request with the CSRF token included in the header
                 $.ajax({
@@ -162,6 +148,22 @@
             $('#btn-dislike').click(function() {
                 sendAjaxRequest(-1);
             });
+            $('#btn-new-cmt').click(function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: '/Staff/Comments/Create',
+                    type: 'POST',
+                    data: $('#form-new-cmt').serialize(),
+                    success: function (result) {
+                        if (result == "New comment added!") {
+                            location.reload();
+                        } else {
+                            $('#partial-view-container').html(result);
+                        }
+                    }
+                });
+            })
         })
 
     </script>

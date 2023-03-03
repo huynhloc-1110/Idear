@@ -1,0 +1,24 @@
+﻿@model Idear.Models.Comment
+
+
+<form id="form-new-cmt" asp-action="Create" asp-controller="Comments">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <textarea asp-for="Text" id="comment-input" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Text" class="text-danger"></span>
+    </div>
+    <div class="mb-3 form-check">
+        <div class="row">
+            <input asp-for="Idea!.Id" hidden readonly class="form-control" />
+            <div class="col-6">
+                <input type="checkbox" class="form-check-input" id="chk-anonymous" asp-for="IsAnonymous">
+                <label class="form-check-label" for="chk-anonymous" asp-for="IsAnonymous">Post this comment as anonymous</label>
+                <span asp-validation-for="IsAnonymous" class="text-danger"></span>
+            </div>
+            <div class="col-6 text-right">
+                <span><span id="char-count">0</span>/500</span>
+                <button id="btn-new-cmt" type="button" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</form>
