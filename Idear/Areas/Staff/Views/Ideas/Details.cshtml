@@ -34,10 +34,10 @@
                     <div class="text-center">
                         <span><i class="bi bi-eye"></i> @Model.Idea.Views!.Sum(v=> v.VisitTime) views</span>
                         <button id="btn-like" type="button" class="btn btn-primary">
-                            <i class="bi bi-hand-thumbs-up"></i> @Model.Idea.Reacts.Where(r => r.ReactFlag == 1).Count() Likes
+                                <i class="bi bi-hand-thumbs-up@( Model.ReactFlag == 1 ? "-fill" : "" )"></i> <span>@Model.Idea.Reacts.Where(r => r.ReactFlag == 1).Count()</span> Likes
                         </button>
                         <button id="btn-dislike" type="button" class="btn btn-dark">
-                            <i class="bi bi-hand-thumbs-down"></i> @Model.Idea.Reacts.Where(r => r.ReactFlag == -1).Count() DisLikes
+                                <i class="bi bi-hand-thumbs-down@( Model.ReactFlag == -1 ? "-fill" : "" )"></i> <span>@Model.Idea.Reacts.Where(r => r.ReactFlag == -1).Count()</span> DisLikes
                         </button>
                     </div>
                 </div>
@@ -130,11 +130,28 @@
                     data: { reactFlag: flag, ideaId: id },
                     headers: headers,
                     success: function (result) {
-                        location.reload();
+                        updateReactButtons(result.flag, result.likeCount, result.dislikeCount);
                     },
                 });
             });
         }
+
+        function updateReactButtons(flag, likeCount, dislikeCount) {
+            if (flag == 1) {
+                $('#btn-like > i').removeClass('bi-hand-thumbs-up').addClass('bi-hand-thumbs-up-fill');
+                $('#btn-dislike > i').removeClass('bi-hand-thumbs-down-fill').addClass('bi-hand-thumbs-down');
+            } else if (flag == -1) {
+                $('#btn-dislike > i').removeClass('bi-hand-thumbs-down').addClass('bi-hand-thumbs-down-fill');
+                $('#btn-like > i').removeClass('bi-hand-thumbs-up-fill').addClass('bi-hand-thumbs-up');
+            } else {
+                $('#btn-like > i').removeClass('bi-hand-thumbs-up-fill').addClass('bi-hand-thumbs-up');
+                $('#btn-dislike > i').removeClass('bi-hand-thumbs-donw-fill').addClass('bi-hand-thumbs-down');
+            }
+            
+            $('#btn-like > span').text(likeCount);
+            $('#btn-dislike > span').text(dislikeCount);
+        }
+
         $(document).ready(function() {
             $('#comment-input').on('input', function () {
                 var text = $(this).val();
