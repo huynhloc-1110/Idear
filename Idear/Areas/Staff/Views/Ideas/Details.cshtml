@@ -57,7 +57,7 @@
                             <form method="post" asp-action="Create" asp-controller="Comments">
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <div class="mb-3">
-                                    <textarea asp-for="@Model.Comment.Text" id="comment-input" class="form-control" rows="3"></textarea>
+                                    <textarea asp-for="@Model.Comment.Text" placeholder="Write a new comment here" id="comment-input" class="form-control" rows="3"></textarea>
                                     <span asp-validation-for="@Model.Comment.Text" class="text-danger"></span>
                                 </div>
                                 <div class="mb-3 form-check">
@@ -77,10 +77,11 @@
                             </form>
                         </div>
                     </div>
-                    @foreach (var comment in Model.Idea.Comments!){
+                        @foreach (var comment in Model.Idea.Comments.OrderByDescending(c => c.Datetime))
+                    {
                         <div class="card">
                             <div class="card-body">
-                                <p class="card-text">
+                                <p class="card-text" id="@comment.Id">
                                     @if (comment.IsAnonymous)
                                         {
                                         <b><text>Anonymous User</text></b>
@@ -91,7 +92,12 @@
                                         }
 
                                 </p>
-                                <p>@comment.Text at @comment.Datetime</p>
+                                <p>@comment.Text</p>
+                                <p class="text-right">
+                                    <small class="text-muted">
+                                        at @comment.Datetime
+                                    </small>
+                                </p>
                             </div>
                         </div>
                     }
