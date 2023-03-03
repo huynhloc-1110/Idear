@@ -193,7 +193,7 @@ namespace Idear.Areas.Staff.Controllers
 
             var model = new CreateIdeasVM
             {
-                Topics = _context.Topics.Select(t => new SelectListItem
+                Topics = _context.Topics.Where(t => t.ClosureDate >= DateTime.Now).Select(t => new SelectListItem
                 {
                     Value = t.Id.ToString(),
                     Text = t.Name
@@ -231,27 +231,27 @@ namespace Idear.Areas.Staff.Controllers
             var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == model.CategoryId);
             var currentUser = await _userManager.GetUserAsync(User);
 
-            string fileName = String.Empty;
+
+			//creates an empty string variable
+			string fileName = String.Empty;
             if (file != null)
             {
-                string uploadDir = Path.Combine(_hostingEnvironment.WebRootPath, "filePaths");
+				//string variable uploadDir that represents the folder path where the uploaded file will be stored
+				//using the Path.Combine method
+				string uploadDir = Path.Combine(_hostingEnvironment.WebRootPath, "files");
+                //advoid duplicated fileName
                 fileName = Guid.NewGuid().ToString() + "-" + file.FileName;
                 string filePath = Path.Combine(uploadDir, fileName);
 
-                if (model.FilePath != null)
-                {
-                    var oldImagePath = Path.Combine(_hostingEnvironment.WebRootPath, model.FilePath.TrimStart('\\'));
-                    if (System.IO.File.Exists(oldImagePath))
-                    {
-
-                        System.IO.File.Delete(oldImagePath);
-                    }
-                }
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+				//creates a new file on the file system at the location specified by the filePath variable
+                //using the FileStream class and the file.CopyTo method
+				using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     file.CopyTo(fileStream);
                 }
-                model.FilePath = @"filePaths\" + fileName;
+
+				//sets the model.FilePath property to the relative path of the uploaded file
+				model.FilePath = @"files\" + fileName;
 
             }
 

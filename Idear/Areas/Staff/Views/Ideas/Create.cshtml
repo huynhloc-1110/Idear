@@ -9,23 +9,23 @@
 	<div class="border p-3 mt-4"> 
 		<div asp-validation-summary-All>
 		<div class="row mb-3">
-			<label asp-for="TopicId"></label>
+			<label asp-for="TopicId">Accessible Topic</label>
 			<select asp-for="TopicId" asp-items="@Model.Topics" class="form-control">
 				<option selected disabled>--Select Topics-- </option>
 			</select>
 			<span asp-validation-for="TopicId" class="text-danger"></span>
 		</div>
 		</div> <div class="row mb-3"> 
-			<label asp-for="Text"></label> 
+			<label asp-for="Text">Idea</label> 
 			<input asp-for="Text" class="form-control" /> 
 			<span asp-validation-for="Text" class="text-danger"></span> 
 		</div> 
 		<div class="row mb-3">
-			<label asp-for="FilePath"></label>
+			<label asp-for="FilePath">Supporting files</label>
 			<input type="file" name="file" class="form-select" />
 		</div>
 		<div class="row mb-3"> 
-			<label asp-for="CategoryId"></label> 
+			<label asp-for="CategoryId">Category</label> 
 			<select asp-for="CategoryId" asp-items="@Model.Categories" class="form-control"> 
 				<option selected disabled>--Select Category-- </option> 
 			</select> 
