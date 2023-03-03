@@ -24,25 +24,27 @@ namespace Idear.Areas.Staff.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Text,IsAnonymous,Idea")]Comment comment)
+        public async Task<IActionResult> Create(string cmtText, bool isAnonymous, string ideaId)
         {
-            comment.Idea = await _context.Ideas.FirstOrDefaultAsync(i => i.Id == comment.Idea!.Id);
-
-            ModelState.Clear();
-            TryValidateModel(comment);
-
-            if (!ModelState.IsValid)
+            if (cmtText == "" || cmtText == null)
             {
-                return PartialView("_CreateComment", comment);
+                return BadRequest("The request is invalid.");
             }
 
-            comment.Id = Guid.NewGuid().ToString();
-            comment.User = await _userManager.GetUserAsync(User);
-            comment.Datetime = DateTime.Now;
+            var cmt = new Comment()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Text = cmtText,
+                IsAnonymous = isAnonymous,
+                Idea = await _context.Ideas.FindAsync(ideaId),
+                User = await _userManager.GetUserAsync(User),
+                Datetime = DateTime.Now
+            };
 
-            _context.Comments.Add(comment);
+            _context.Comments.Add(cmt);
             await _context.SaveChangesAsync();
-            return Json("New comment added!");
+
+            return Json(new { id = cmt.Id, user = cmt.User.FullName, dateTime = cmt.Datetime.ToString("d/M/yyyy HH:mm:ss") });
         }
     }
 }

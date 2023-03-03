@@ -52,12 +52,26 @@
                     <h4>Comments</h4>
                 </div>
                 <div class="card-body">
-                    <div class="card">
+                    <div class="card" id="card-new-cmt">
                         <div class="card-body">
-                            <p class="card-text text-bold">@Model.Idea.Comments!.Count comments</p>
-                            <div id="partial-view-container">
-                                @await Html.PartialAsync("~/Areas/Staff/Views/Comments/_CreateComment.cshtml", Model.Comment)
-                            </div>
+                                <p class="card-text text-bold"><span id="cmt-count">@Model.Idea.Comments!.Count</span> comments</p>
+                            <form>
+                                <div class="mb-3">
+                                    <textarea id="input-cmt" class="form-control" rows="3"></textarea>
+                                </div>
+                                    <div class="mb-3 form-check">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input type="checkbox" class="form-check-input" id="chk-anonymous">
+                                                <label class="form-check-label" for="chk-anonymous">Post this comment as anonymous</label>
+                                            </div>
+                                            <div class="col-6 text-right">
+                                                <span><span id="char-count">0</span>/500</span>
+                                                <button id="btn-new-cmt" type="button" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </form>
                         </div>
                     </div>
                     @foreach (var comment in Model.Idea.Comments!){
@@ -110,12 +124,8 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
     <script>
-        function sendAjaxRequest(flag) {
+        function ajaxPostReact(flag) {
             // Get the CSRF token from the server
             $.get("/Staff/Ideas/GetCsrfToken", function (token) {
                 // Add the CSRF token to the AJAX request header
@@ -152,35 +162,59 @@
             $('#btn-dislike > span').text(dislikeCount);
         }
 
+        function ajaxPostCmt() {
+            // Get the CSRF token from the server
+            $.get("/Staff/Ideas/GetCsrfToken", function (token) {
+                // Add the CSRF token to the AJAX request header
+                var headers = {};
+                headers["RequestVerificationToken"] = token;
+
+                var id = `@Model.Idea.Id`;
+                var cmtText = $('#input-cmt').val();
+                var isAnonymous = $('#chk-anonymous').prop('checked');
+
+                // Send the AJAX request with the CSRF token included in the header
+                $.ajax({
+                    url: '/Staff/Comments/Create',
+                    type: "POST",
+                    data: { 'cmtText' : cmtText, 'isAnonymous' : isAnonymous, ideaId: id },
+                    headers: headers,
+                    success: function (result) {
+                        var cmtOwner = isAnonymous ? 'Anonymous User' : result.user;
+                        $('#card-new-cmt').after(
+                            `
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        <b><text>${cmtOwner}</text></b>
+                                    </p>
+                                            <p>${cmtText} at ${result.dateTime}</p>
+                                </div>
+                            </div>
+                            `
+                        );
+
+                        var cmtCount = $('#cmt-count');
+                        cmtCount.text(parseInt(cmtCount.text()) + 1);
+                    },
+                });
+            });
+        }
+
         $(document).ready(function() {
-            $('#comment-input').on('input', function () {
+            $('#input-cmt').on('input', function () {
                 var text = $(this).val();
                 var charCount = text.length;
                 $('#char-count').text(charCount);
             });
 
             $('#btn-like').click(function() {
-                sendAjaxRequest(1);
+                ajaxPostReact(1);
             });
             $('#btn-dislike').click(function() {
-                sendAjaxRequest(-1);
+                ajaxPostReact(-1);
             });
-            $('#btn-new-cmt').click(function (e) {
-                e.preventDefault();
-
-                $.ajax({
-                    url: '/Staff/Comments/Create',
-                    type: 'POST',
-                    data: $('#form-new-cmt').serialize(),
-                    success: function (result) {
-                        if (result == "New comment added!") {
-                            location.reload();
-                        } else {
-                            $('#partial-view-container').html(result);
-                        }
-                    }
-                });
-            })
+            $('#btn-new-cmt').click(ajaxPostCmt);
         })
 
     </script>
