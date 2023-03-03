@@ -193,7 +193,6 @@ namespace Idear.Areas.Staff.Controllers
 
             var model = new CreateIdeasVM
             {
-                IsAnonymous = false,
                 Topics = _context.Topics.Select(t => new SelectListItem
                 {
                     Value = t.Id.ToString(),
@@ -211,7 +210,7 @@ namespace Idear.Areas.Staff.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Text,CategoryId,TopicId")] CreateIdeasVM model)
+        public async Task<IActionResult> Create([Bind("Text,CategoryId,TopicId,IsAnonymous,AgreeTerms")] CreateIdeasVM model, IFormFile? file)
         {
             if (!ModelState.IsValid)
             {
@@ -232,6 +231,31 @@ namespace Idear.Areas.Staff.Controllers
             var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == model.CategoryId);
             var currentUser = await _userManager.GetUserAsync(User);
 
+            string fileName = String.Empty;
+            if (file != null)
+            {
+                string uploadDir = Path.Combine(_hostingEnvironment.WebRootPath, "filePaths");
+                fileName = Guid.NewGuid().ToString() + "-" + file.FileName;
+                string filePath = Path.Combine(uploadDir, fileName);
+
+                if (model.FilePath != null)
+                {
+                    var oldImagePath = Path.Combine(_hostingEnvironment.WebRootPath, model.FilePath.TrimStart('\\'));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+                model.FilePath = @"filePaths\" + fileName;
+
+            }
+
+
             var idea = new Idea
             {
                 Id = Guid.NewGuid().ToString(),
@@ -240,19 +264,11 @@ namespace Idear.Areas.Staff.Controllers
                 Topic = topic,
                 Category = category,
                 User = currentUser,
-                IsAnonymous = model.IsAnonymous
+                IsAnonymous = model.IsAnonymous,
+                FilePath = model.FilePath
             };
 
-            //if (model.FilePath != null)
-            //{
-            //    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.FilePath.FileName);
-            //    var filePath = Path.Combine(_hostingEnvironment.WebRootPath, "filePaths", fileName);
-            //    using (var stream = new FileStream(filePath, FileMode.Create))
-            //    {
-            //        await model.FilePath.CopyToAsync(stream);
-            //    }
-            //    idea.FilePath = "/filePaths/" + fileName;
-            //}
+
 
             _context.Ideas.Add(idea);
             await _context.SaveChangesAsync();
