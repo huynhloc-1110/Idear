@@ -20,13 +20,15 @@ namespace Idear.Areas.Staff.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IAntiforgery _antiforgery;
 
-        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IAntiforgery antiforgery)
+        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IAntiforgery antiforgery, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
             _userManager = userManager;
             _antiforgery = antiforgery;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: Staff/Ideas
@@ -183,6 +185,82 @@ namespace Idear.Areas.Staff.Controllers
 
             return ;
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+    
+
+            var model = new CreateIdeasVM
+            {
+                IsAnonymous = false,
+                Topics = _context.Topics.Select(t => new SelectListItem
+                {
+                    Value = t.Id.ToString(),
+                    Text = t.Name
+                }).ToList(),
+                Categories = _context.Categories.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Text,CategoryId,TopicId")] CreateIdeasVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.Topics = _context.Topics.Select(t => new SelectListItem
+                {
+                    Value = t.Id.ToString(),
+                    Text = t.Name
+                }).ToList();
+                model.Categories = _context.Categories.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList();
+                return View(model);
+            }
+
+            var topic = await _context.Topics.FirstOrDefaultAsync(t => t.Id == model.TopicId);
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == model.CategoryId);
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            var idea = new Idea
+            {
+                Id = Guid.NewGuid().ToString(),
+                Text = model.Text,
+                DateTime = DateTime.Now,
+                Topic = topic,
+                Category = category,
+                User = currentUser,
+                IsAnonymous = model.IsAnonymous
+            };
+
+            //if (model.FilePath != null)
+            //{
+            //    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.FilePath.FileName);
+            //    var filePath = Path.Combine(_hostingEnvironment.WebRootPath, "filePaths", fileName);
+            //    using (var stream = new FileStream(filePath, FileMode.Create))
+            //    {
+            //        await model.FilePath.CopyToAsync(stream);
+            //    }
+            //    idea.FilePath = "/filePaths/" + fileName;
+            //}
+
+            _context.Ideas.Add(idea);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+
 
     }
 }

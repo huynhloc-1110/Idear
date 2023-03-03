@@ -1,0 +1,50 @@
+﻿@model  Idear.Areas.Staff.ViewModels.CreateIdeasVM
+
+@{
+	ViewData["Title"] = "Create Idea";
+}
+
+<form method="post" asp-action="Create" enctype="multipart/form-data"> 
+	<input type="hidden" asp-for="Id"/> 
+	<input type="hidden" asp-for="FilePath"/> 
+	
+	<div class="border p-3 mt-4"> 
+		<div asp-validation-summary-All>
+			
+		</div> <div class="row mb-3"> 
+			<label asp-for="Text"></label> 
+			<input asp-for="Text" class="form-control" /> 
+			<span asp-validation-for="Text" class="text-danger"></span> 
+		</div> 
+		<div class="row mb-3">
+			<label asp-for="FilePath"></label>
+			<input type="file" id="ImageFile" name="file" class="form-select" />
+		</div>
+		<div class="row mb-3"> 
+			<label asp-for="CategoryId"></label> 
+			<select asp-for="CategoryId" asp-items="@Model.Categories" class="form-control"> 
+				<option selected disabled>--Select Category-- </option> 
+			</select> 
+			<span asp-validation-for="CategoryId" class="text-danger"></span>
+		</div>
+		<div class="row mb-3">
+			<label asp-for="TopicId"></label>
+			<select asp-for="TopicId" asp-items="@Model.Topics" class="form-control">
+				<option selected disabled>--Select Topics-- </option>
+			</select>
+			<span asp-validation-for="TopicId" class="text-danger"></span>
+		</div>
+		<div class="row mb-3">
+			<input type="checkbox" class="form-check-input" id="chk-anonymous" asp-for="IsAnonymous">
+			<label class="form-check-label" for="chk-anonymous" asp-for="IsAnonymous">Post this comment as anonymous</label>
+			<span asp-validation-for="IsAnonymous" class="text-danger"></span>
+		</div>
+			<button class="btn btn-primary" type ="submit">Create</button>
+	</div>
+</form>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}
