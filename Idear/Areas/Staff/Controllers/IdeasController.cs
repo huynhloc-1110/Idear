@@ -20,13 +20,15 @@ namespace Idear.Areas.Staff.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IAntiforgery _antiforgery;
 
-        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IAntiforgery antiforgery)
+        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IAntiforgery antiforgery, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
             _userManager = userManager;
             _antiforgery = antiforgery;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: Staff/Ideas
@@ -183,6 +185,96 @@ namespace Idear.Areas.Staff.Controllers
 
             return ;
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var model = new CreateIdeasVM
+            {
+                Topics = await _context.Topics.Where(t => t.ClosureDate >= DateTime.Now).Select(t => new SelectListItem
+                {
+                    Value = t.Id,
+                    Text = t.Name
+                }).ToListAsync(),
+                Categories = await _context.Categories.Select(c => new SelectListItem
+                {
+                    Value = c.Id,
+                    Text = c.Name
+                }).ToListAsync()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Text,CategoryId,TopicId,IsAnonymous,AgreeTerms")] CreateIdeasVM model, IFormFile? file)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.Topics = _context.Topics.Select(t => new SelectListItem
+                {
+                    Value = t.Id,
+                    Text = t.Name
+                }).ToList();
+                model.Categories = _context.Categories.Select(c => new SelectListItem
+                {
+                    Value = c.Id,
+                    Text = c.Name
+                }).ToList();
+                return View(model);
+            }
+
+            var topic = await _context.Topics.FirstOrDefaultAsync(t => t.Id == model.TopicId);
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == model.CategoryId);
+            var currentUser = await _userManager.GetUserAsync(User);
+
+
+			//creates an empty string variable
+			string fileName = String.Empty;
+            if (file != null)
+            {
+				//string variable uploadDir that represents the folder path where the uploaded file will be stored
+				//using the Path.Combine method
+				string uploadDir = Path.Combine(_hostingEnvironment.WebRootPath, "files");
+                //advoid duplicated fileName
+                fileName = Guid.NewGuid().ToString() + "-" + file.FileName;
+                string filePath = Path.Combine(uploadDir, fileName);
+
+				//creates a new file on the file system at the location specified by the filePath variable
+                //using the FileStream class and the file.CopyTo method
+				using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+
+				//sets the model.FilePath property to the relative path of the uploaded file
+				model.FilePath = @"files\" + fileName;
+
+            }
+
+
+            var idea = new Idea
+            {
+                Id = Guid.NewGuid().ToString(),
+                Text = model.Text,
+                DateTime = DateTime.Now,
+                Topic = topic,
+                Category = category,
+                User = currentUser,
+                IsAnonymous = model.IsAnonymous,
+                FilePath = model.FilePath
+            };
+
+
+
+            _context.Ideas.Add(idea);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+
 
     }
 }
