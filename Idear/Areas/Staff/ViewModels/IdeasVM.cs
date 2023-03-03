@@ -8,5 +8,7 @@ namespace Idear.Areas.Staff.ViewModels
         public List<Idea> RelatedIdeas { get; set;} = default!;
 
         public Comment Comment { get; set; } = default!;
+
+        public int ReactFlag { get; set; } = 0;
     }
 }

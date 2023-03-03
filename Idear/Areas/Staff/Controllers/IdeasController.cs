@@ -106,20 +106,24 @@ namespace Idear.Areas.Staff.Controllers
                 .Include(i => i.User)
                 .ToListAsync();
 
+            var user = await _userManager.GetUserAsync(User);
+            var currentUserReact = await _context.Reactes.Where(r => r.User == user && r.Idea == idea).FirstOrDefaultAsync();
+
             var ideaVM = new IdeasVM
             {
                 Idea = idea,
                 RelatedIdeas = relatedIdeas,
+                Comment = new Comment
+                {
+                    Idea = idea
+                },
+                ReactFlag = (currentUserReact != null) ? currentUserReact.ReactFlag : 0
             };
 
-
-            var user = await _userManager.GetUserAsync(User);
-
-            var view = await _context.Views.Where(v=>v.User!.Id == user.Id && v.Idea.Id == idea.Id).FirstOrDefaultAsync();
+            var view = await _context.Views.Where(v=>v.User == user && v.Idea == idea).FirstOrDefaultAsync();
             if (view != null)
             {
                 view.VisitTime++;
-                
             }
             else
             {
@@ -151,11 +155,11 @@ namespace Idear.Areas.Staff.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task Like(string ideaId, int reactFlag)
+        public async Task<IActionResult> Like(string ideaId, int reactFlag)
         {
             var idea = await _context.Ideas.FirstOrDefaultAsync(i => i.Id ==ideaId);
             var user = await _userManager.GetUserAsync(User);
-            var react = await _context.Reactes.Where(r => r.User!.Id == user.Id && r.Idea!.Id == ideaId).FirstOrDefaultAsync();
+            var react = await _context.Reactes.Where(r => r.User == user && r.Idea == idea).FirstOrDefaultAsync();
             if (react != null)
             {
                 if (react.ReactFlag == reactFlag)
@@ -165,25 +169,29 @@ namespace Idear.Areas.Staff.Controllers
                 else
                 {
                     react.ReactFlag = reactFlag;
-                }
-                           
+                }         
             }
             else
             {
-                _context.Reactes.Add(
-                    new React
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        User = user,
-                        Idea = idea,
-                        ReactFlag = reactFlag,
-                    }
-                );
+                react = new React
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    User = user,
+                    Idea = idea,
+                    ReactFlag = reactFlag,
+                };
+                _context.Reactes.Add(react);
             }
-
             await _context.SaveChangesAsync();
 
-            return ;
+            var likeCount = await _context.Reactes
+                .Where(r => r.Idea == idea)
+                .CountAsync(r => r.ReactFlag == 1);
+            var dislikeCount = await _context.Reactes
+                .Where(r => r.Idea == idea)
+                .CountAsync(r => r.ReactFlag == -1);
+
+            return Json(new { flag = react.ReactFlag, likeCount, dislikeCount });
         }
 
         [HttpGet]

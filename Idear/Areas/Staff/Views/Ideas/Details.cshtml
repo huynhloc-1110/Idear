@@ -29,17 +29,21 @@
                 <div class="col-md-4">
                     <div class="text-center"> Category: @Model.Idea.Category!.Name</div>
                 </div>
+
+                <!-- View, Like, Dislike Section -->
                 <div class="col-md-4">
                     <div class="text-center">
                         <span><i class="bi bi-eye"></i> @Model.Idea.Views!.Sum(v=> v.VisitTime) views</span>
                         <button id="btn-like" type="button" class="btn btn-primary">
-                            <i class="bi bi-hand-thumbs-up"></i> @Model.Idea.Reacts.Where(r => r.ReactFlag == 1).Count() Likes
+                                <i class="bi bi-hand-thumbs-up@( Model.ReactFlag == 1 ? "-fill" : "" )"></i> <span>@Model.Idea.Reacts.Where(r => r.ReactFlag == 1).Count()</span> Likes
                         </button>
                         <button id="btn-dislike" type="button" class="btn btn-dark">
-                            <i class="bi bi-hand-thumbs-down"></i> @Model.Idea.Reacts.Where(r => r.ReactFlag == -1).Count() DisLikes
+                                <i class="bi bi-hand-thumbs-down@( Model.ReactFlag == -1 ? "-fill" : "" )"></i> <span>@Model.Idea.Reacts.Where(r => r.ReactFlag == -1).Count()</span> DisLikes
                         </button>
                     </div>
                 </div>
+                <!--/ View, Like, Dislike Section -->
+
             </div>
         </div>
     </div>
@@ -51,30 +55,32 @@
                     <h4>Comments</h4>
                 </div>
                 <div class="card-body">
-                    <div class="card">
+                    <div class="card" id="card-new-cmt">
                         <div class="card-body">
-                            <p class="card-text text-bold">@Model.Idea.Comments!.Count comments</p>
-                            <form method="post" asp-action="Create" asp-controller="Comments">
-                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                <div class="mb-3">
-                                    <textarea asp-for="@Model.Comment.Text" id="comment-input" class="form-control" rows="3"></textarea>
-                                    <span asp-validation-for="@Model.Comment.Text" class="text-danger"></span>
-                                </div>
-                                <div class="mb-3 form-check">
-                                    <div class="row">
-                                        <input asp-for="@Model.Idea.Id" hidden readonly class="form-control" />
-                                        <div class="col-6">
-                                            <input type="checkbox" class="form-check-input" id="chk-anonymous" asp-for="@Model.Comment.IsAnonymous">
-                                            <label class="form-check-label" for="chk-anonymous" asp-for="@Model.Comment.IsAnonymous">Post this comment as anonymous</label>
-                                            <span asp-validation-for="@Model.Comment.IsAnonymous" class="text-danger"></span>
-                                        </div>
-                                        <div class="col-6 text-right">
-                                            <span><span id="char-count">0</span>/500</span>
-                                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <p class="card-text text-bold"><span id="cmt-count">@Model.Idea.Comments!.Count</span> comments</p>
+                            
+                            <!-- Create new comment Section -->
+                            @if (Model.Idea.Topic!.FinalClosureDate >= DateTime.Now) {
+                                <form>
+                                    <div class="mb-3">
+                                        <textarea id="input-cmt" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <div class="mb-3 form-check">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input type="checkbox" class="form-check-input" id="chk-anonymous">
+                                                <label class="form-check-label" for="chk-anonymous">Post this comment as anonymous</label>
+                                            </div>
+                                            <div class="col-6 text-right">
+                                                <span><span id="char-count">0</span>/500</span>
+                                                <button id="btn-new-cmt" type="button" class="btn btn-primary">Submit</button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </form>
+                                </form>
+                            }
+                            <!--/ Create new comment Section -->
+
                         </div>
                     </div>
                     @foreach (var comment in Model.Idea.Comments!){
@@ -128,14 +134,15 @@
 
 @section Scripts {
     <script>
-        function sendAjaxRequest(flag) {
+        function ajaxPostReact(flag) {
             // Get the CSRF token from the server
             $.get("/Staff/Ideas/GetCsrfToken", function (token) {
                 // Add the CSRF token to the AJAX request header
                 var headers = {};
                 headers["RequestVerificationToken"] = token;
-                var id = `@Model.Idea.Id`;
 
+                // Get the current idea's id
+                var id = `@Model.Idea.Id`;
 
                 // Send the AJAX request with the CSRF token included in the header
                 $.ajax({
@@ -144,24 +151,91 @@
                     data: { reactFlag: flag, ideaId: id },
                     headers: headers,
                     success: function (result) {
-                        location.reload();
+                        // update like, dislike UI after successfully change the backend
+                        updateReactButtons(result.flag, result.likeCount, result.dislikeCount);
                     },
                 });
             });
         }
+
+        function updateReactButtons(flag, likeCount, dislikeCount) {
+            if (flag == 1) {
+                $('#btn-like > i').removeClass('bi-hand-thumbs-up').addClass('bi-hand-thumbs-up-fill');
+                $('#btn-dislike > i').removeClass('bi-hand-thumbs-down-fill').addClass('bi-hand-thumbs-down');
+            } else if (flag == -1) {
+                $('#btn-dislike > i').removeClass('bi-hand-thumbs-down').addClass('bi-hand-thumbs-down-fill');
+                $('#btn-like > i').removeClass('bi-hand-thumbs-up-fill').addClass('bi-hand-thumbs-up');
+            } else {
+                $('#btn-like > i').removeClass('bi-hand-thumbs-up-fill').addClass('bi-hand-thumbs-up');
+                $('#btn-dislike > i').removeClass('bi-hand-thumbs-donw-fill').addClass('bi-hand-thumbs-down');
+            }
+            
+            $('#btn-like > span').text(likeCount);
+            $('#btn-dislike > span').text(dislikeCount);
+        }
+
+        function ajaxPostCmt() {
+            // Get the CSRF token from the server
+            $.get("/Staff/Ideas/GetCsrfToken", function (token) {
+                // Add the CSRF token to the AJAX request header
+                var headers = {};
+                headers["RequestVerificationToken"] = token;
+
+                // Get the necessary info for creating a new cmt
+                var id = `@Model.Idea.Id`;
+                var cmtText = $('#input-cmt').val();
+                var isAnonymous = $('#chk-anonymous').prop('checked');
+                var topicFinalClosureDate = `@Model.Idea.Topic!.FinalClosureDate`;
+
+                // Send the AJAX request with the CSRF token included in the header
+                $.ajax({
+                    url: '/Staff/Comments/Create',
+                    type: "POST",
+                    data: { 'cmtText': cmtText, 'isAnonymous': isAnonymous, ideaId: id, deadline: topicFinalClosureDate },
+                    headers: headers,
+                    success: function (result) {
+                        // update cmt UI after successfully change the backend
+                        updateCmtUI(result, isAnonymous, cmtText);
+                    },
+                });
+            });
+        }
+
+        function updateCmtUI(result, isAnonymous, cmtText) {
+            // add the new comment after the 'create comment' section
+            var cmtOwner = isAnonymous ? 'Anonymous User' : result.user;
+            $('#card-new-cmt').after(
+                `
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">
+                            <b><text>${cmtOwner}</text></b>
+                        </p>
+                        <p>${cmtText} at ${result.dateTime}</p>
+                    </div>
+                </div>
+                `
+            );
+
+            // update comment count of this idea page
+            var cmtCount = $('#cmt-count');
+            cmtCount.text(parseInt(cmtCount.text()) + 1);
+        } 
+
         $(document).ready(function() {
-            $('#comment-input').on('input', function () {
+            $('#input-cmt').on('input', function () {
                 var text = $(this).val();
                 var charCount = text.length;
                 $('#char-count').text(charCount);
             });
 
             $('#btn-like').click(function() {
-                sendAjaxRequest(1);
+                ajaxPostReact(1);
             });
             $('#btn-dislike').click(function() {
-                sendAjaxRequest(-1);
+                ajaxPostReact(-1);
             });
+            $('#btn-new-cmt').click(ajaxPostCmt);
         })
 
     </script>

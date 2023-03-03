@@ -24,24 +24,33 @@ namespace Idear.Areas.Staff.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(IdeasVM model)
+        public async Task<IActionResult> Create(string cmtText, bool isAnonymous, string ideaId,
+            string deadline)
         {
-            var idea = await _context.Ideas.FirstOrDefaultAsync(i => i.Id == model.Idea.Id);
-            var currentUser = await _userManager.GetUserAsync(User);
+            // check for comment null or topic deadline meet
+            if (!DateTime.TryParse(deadline, out var topicFinalClosureDate))
+            {
+                return BadRequest("The request is invalid.");
+            }
+            if (cmtText == "" || cmtText == null || topicFinalClosureDate < DateTime.Now )
+            {
+                return BadRequest("The request is invalid.");
+            }
 
-            _context.Comments.Add(
-                new Comment
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Text = model.Comment.Text,
-                    Datetime = DateTime.Now,
-                    Idea = idea,
-                    User = currentUser,
-                    IsAnonymous = model.Comment.IsAnonymous
-                }
-            );
+            var cmt = new Comment()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Text = cmtText,
+                IsAnonymous = isAnonymous,
+                Idea = await _context.Ideas.FindAsync(ideaId),
+                User = await _userManager.GetUserAsync(User),
+                Datetime = DateTime.Now
+            };
+
+            _context.Comments.Add(cmt);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Details", "Ideas", new { id = model.Idea.Id});
+
+            return Json(new { id = cmt.Id, user = cmt.User.FullName, dateTime = cmt.Datetime.ToString("d/M/yyyy HH:mm:ss") });
         }
     }
 }
