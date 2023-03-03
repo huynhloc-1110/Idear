@@ -183,10 +183,10 @@ namespace Idear.Areas.Staff.Controllers
             await _context.SaveChangesAsync();
 
             var likeCount = await _context.Reactes
-                .Where(r => r.Idea == idea && r.ReactFlag == 1)
+                .Where(r => r.Idea == idea)
                 .CountAsync(r => r.ReactFlag == 1);
             var dislikeCount = await _context.Reactes
-                .Where(r => r.Idea == idea && r.ReactFlag == -1)
+                .Where(r => r.Idea == idea)
                 .CountAsync(r => r.ReactFlag == -1);
 
             return Json(new { flag = react.ReactFlag, likeCount, dislikeCount });
