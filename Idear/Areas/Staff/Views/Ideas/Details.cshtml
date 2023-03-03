@@ -95,61 +95,6 @@
                                 </small>
                             </a>
                         </div>
-                    }@foreach (var idea in Model.RelatedIdeas)
-                    {
-                        <div class="card">
-                            <a class="card-body" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@idea.Id">
-                                @idea.Text
-                                <small class="text-muted">
-                                    by
-                                @if (idea.IsAnonymous)
-                                    {
-                                        <text>Anonymous User</text>
-                                    }
-                                else
-                                    @idea.User!.FullName
-                                    at
-                                    @idea.DateTime
-                                </small>
-                            </a>
-                        </div>
-                    }@foreach (var idea in Model.RelatedIdeas)
-                    {
-                        <div class="card">
-                            <a class="card-body" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@idea.Id">
-                                @idea.Text
-                                <small class="text-muted">
-                                    by
-                                @if (idea.IsAnonymous)
-                                    {
-                                        <text>Anonymous User</text>
-                                    }
-                                else
-                                    @idea.User!.FullName
-                                    at
-                                    @idea.DateTime
-                                </small>
-                            </a>
-                        </div>
-                    }@foreach (var idea in Model.RelatedIdeas)
-                    {
-                        <div class="card">
-                            <a class="card-body" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@idea.Id">
-                                @idea.Text
-                                <small class="text-muted">
-                                    by
-                                    @if (idea.IsAnonymous)
-                                    {
-                                        <text>Anonymous User</text>
-                                    }
-                                    else
-                                        @idea.User!.FullName
-
-                                        at
-                                        @idea.DateTime
-                                    </small>
-                                </a>
-                            </div>
                     }
                 </div>
             </div>
