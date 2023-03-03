@@ -189,20 +189,18 @@ namespace Idear.Areas.Staff.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-    
-
             var model = new CreateIdeasVM
             {
-                Topics = _context.Topics.Where(t => t.ClosureDate >= DateTime.Now).Select(t => new SelectListItem
+                Topics = await _context.Topics.Where(t => t.ClosureDate >= DateTime.Now).Select(t => new SelectListItem
                 {
-                    Value = t.Id.ToString(),
+                    Value = t.Id,
                     Text = t.Name
-                }).ToList(),
-                Categories = _context.Categories.Select(c => new SelectListItem
+                }).ToListAsync(),
+                Categories = await _context.Categories.Select(c => new SelectListItem
                 {
-                    Value = c.Id.ToString(),
+                    Value = c.Id,
                     Text = c.Name
-                }).ToList()
+                }).ToListAsync()
             };
 
             return View(model);
@@ -216,12 +214,12 @@ namespace Idear.Areas.Staff.Controllers
             {
                 model.Topics = _context.Topics.Select(t => new SelectListItem
                 {
-                    Value = t.Id.ToString(),
+                    Value = t.Id,
                     Text = t.Name
                 }).ToList();
                 model.Categories = _context.Categories.Select(c => new SelectListItem
                 {
-                    Value = c.Id.ToString(),
+                    Value = c.Id,
                     Text = c.Name
                 }).ToList();
                 return View(model);
