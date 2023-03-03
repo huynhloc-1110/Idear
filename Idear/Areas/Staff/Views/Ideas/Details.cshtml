@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Details";
-    //ViewData["IdeaId"] = Model.Idea.Id;
 }
 
 <div class="container-fluid">
@@ -30,6 +29,8 @@
                 <div class="col-md-4">
                     <div class="text-center"> Category: @Model.Idea.Category!.Name</div>
                 </div>
+
+                <!-- View, Like, Dislike Section -->
                 <div class="col-md-4">
                     <div class="text-center">
                         <span><i class="bi bi-eye"></i> @Model.Idea.Views!.Sum(v=> v.VisitTime) views</span>
@@ -41,6 +42,8 @@
                         </button>
                     </div>
                 </div>
+                <!--/ View, Like, Dislike Section -->
+
             </div>
         </div>
     </div>
@@ -54,7 +57,9 @@
                 <div class="card-body">
                     <div class="card" id="card-new-cmt">
                         <div class="card-body">
-                                <p class="card-text text-bold"><span id="cmt-count">@Model.Idea.Comments!.Count</span> comments</p>
+                            <p class="card-text text-bold"><span id="cmt-count">@Model.Idea.Comments!.Count</span> comments</p>
+                            
+                            <!-- Create new comment Section -->
                             <form>
                                 <div class="mb-3">
                                     <textarea id="input-cmt" class="form-control" rows="3"></textarea>
@@ -72,6 +77,8 @@
                                         </div>
                                     </div>
                             </form>
+                            <!--/ Create new comment Section -->
+
                         </div>
                     </div>
                     @foreach (var comment in Model.Idea.Comments!){
@@ -131,6 +138,8 @@
                 // Add the CSRF token to the AJAX request header
                 var headers = {};
                 headers["RequestVerificationToken"] = token;
+
+                // Get the current idea's id
                 var id = `@Model.Idea.Id`;
 
                 // Send the AJAX request with the CSRF token included in the header
@@ -140,6 +149,7 @@
                     data: { reactFlag: flag, ideaId: id },
                     headers: headers,
                     success: function (result) {
+                        // update like, dislike UI after successfully change the backend
                         updateReactButtons(result.flag, result.likeCount, result.dislikeCount);
                     },
                 });
@@ -169,6 +179,7 @@
                 var headers = {};
                 headers["RequestVerificationToken"] = token;
 
+                // Get the necessary info for creating a new cmt
                 var id = `@Model.Idea.Id`;
                 var cmtText = $('#input-cmt').val();
                 var isAnonymous = $('#chk-anonymous').prop('checked');
@@ -180,26 +191,33 @@
                     data: { 'cmtText' : cmtText, 'isAnonymous' : isAnonymous, ideaId: id },
                     headers: headers,
                     success: function (result) {
-                        var cmtOwner = isAnonymous ? 'Anonymous User' : result.user;
-                        $('#card-new-cmt').after(
-                            `
-                            <div class="card">
-                                <div class="card-body">
-                                    <p class="card-text">
-                                        <b><text>${cmtOwner}</text></b>
-                                    </p>
-                                            <p>${cmtText} at ${result.dateTime}</p>
-                                </div>
-                            </div>
-                            `
-                        );
-
-                        var cmtCount = $('#cmt-count');
-                        cmtCount.text(parseInt(cmtCount.text()) + 1);
+                        // update cmt UI after successfully change the backend
+                        updateCmtUI(result, isAnonymous, cmtText);
                     },
                 });
             });
         }
+
+        function updateCmtUI(result, isAnonymous, cmtText) {
+            // add the new comment after the 'create comment' section
+            var cmtOwner = isAnonymous ? 'Anonymous User' : result.user;
+            $('#card-new-cmt').after(
+                `
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">
+                            <b><text>${cmtOwner}</text></b>
+                        </p>
+                        <p>${cmtText} at ${result.dateTime}</p>
+                    </div>
+                </div>
+                `
+            );
+
+            // update comment count of this idea page
+            var cmtCount = $('#cmt-count');
+            cmtCount.text(parseInt(cmtCount.text()) + 1);
+        } 
 
         $(document).ready(function() {
             $('#input-cmt').on('input', function () {
