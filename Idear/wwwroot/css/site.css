@@ -36,11 +36,15 @@ a {
     color: black;
 }
 
-.table-hover tbody tr:hover {
+/*.table-hover tbody tr:hover {
     background-color: #00ffe3;
-}
+}*/
 
 .inline-select {
     width: auto;
     display: inline-block;
+}
+
+#gap{
+    margin-bottom: 15px;
 }

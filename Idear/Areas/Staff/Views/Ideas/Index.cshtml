@@ -5,30 +5,33 @@
 }
 
 <h1>All Ideas</h1>
+<div class="row justify-content-between">
+    <div class="col-4">
+        <a class="btn btn-dark" asp-controller="Ideas" asp-action="Create" asp-route-id="Id"> <i class="bi bi-clipboard-plus"></i> Create new</a>
+    </div>
+    <div class="col-4">
+        <form method="get">
+            <label for="select-order"><b><h6>Choose order</h6></b></label>
+            <select class="form-select inline-select" id="select-order" name="orderBy">
+                <option value="latest">Latest</option>
+                <option value="like">Most Liked</option>
+                <option value="view">Most Viewed</option>
+                <option value="comment">Most Commented</option>
+            </select>
+        </form>
+    </div>
+</div>
+<br />
 
-<td>
-    <a class="btn btn-primary" asp-controller="Ideas" asp-action="Create" asp-route-id="Id">Add Idea</a>
-</td>
-
-<form method="get">
-    <label for="select-order">Choose order</label>
-    <select class="form-select inline-select" id="select-order" name="orderBy">
-        <option value="latest">Latest</option>
-        <option value="like">Most Liked</option>
-        <option value="view">Most Viewed</option>
-        <option value="comment">Most Commented</option>
-    </select>
-</form>
-
-<table class="table table-hover">
-    <thead>
+<table class="table table-hover table-bordered bg-white table-striped">
+    <thead style="background-image: linear-gradient(to right, #20e3b2, #2cccff);">
         <tr>
             <th>Ideas</th>
             <th>View</th>
             <th>Likes</th>
             <th>Dislikes</th>
             <th>Comments</th>
-            <th></th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -44,7 +47,7 @@
                     <td>@idea.Reacts.Where(i => i.ReactFlag == -1).Count()</td>
                     <td>@idea.Comments!.Count</td>
                     <td>
-                        <a class="btn btn-primary" asp-controller="Ideas" asp-action="Details" asp-route-id="@idea.Id">Details</a>
+                        <a class="btn btn-info" asp-controller="Ideas" asp-action="Details" asp-route-id="@idea.Id"><i class="bi bi-card-list"></i> Details</a>
                     </td>
                 </tr>
 

@@ -3,47 +3,51 @@
 @{
 	ViewData["Title"] = "Create Idea";
 }
-
-<form method="post" asp-action="Create" enctype="multipart/form-data"> 
-	
-	<div class="border p-3 mt-4"> 
-		<div asp-validation-summary-All>
-		<div class="row mb-3">
-			<label asp-for="TopicId">Accessible Topic</label>
-			<select asp-for="TopicId" asp-items="@Model.Topics" class="form-control">
-				<option selected disabled>--Select Topics-- </option>
-			</select>
-			<span asp-validation-for="TopicId" class="text-danger"></span>
+<div class="card mx-3 mt-n5 shadow-lg" style="border-radius: 10px; border-left:8px #007bff solid; border-right: none; border-top:none; border-bottom:none">
+	<form method="post" asp-action="Create" enctype="multipart/form-data"> 
+		<div class="card-body">
+			<div class="row"> 
+				<div asp-validation-summary-All>
+					<div id="gap">
+						<label asp-for="TopicId"><b>Accessible Topic</b></label>
+						<select asp-for="TopicId" asp-items="@Model.Topics" class="form-control">
+							<option selected disabled>--Select Topics-- </option>
+						</select>
+						<span asp-validation-for="TopicId" class="text-danger"></span>
+					</div>	
+					<div id="gap">
+						<label asp-for="Text"><b>Idea</b></label>
+						<input asp-for="Text" class="form-control" /> 
+						<span asp-validation-for="Text" class="text-danger"></span> 
+					</div> 
+					<div id="gap">
+						<label for="file-input"><b>Supporting files</b></label>
+						<input type="file" id="file-input" name="file" class="form-control" />
+					</div>
+					<div id="gap">
+						<label asp-for="CategoryId"><b>Category</b></label> 
+						<select asp-for="CategoryId" asp-items="@Model.Categories" class="form-control"> 
+							<option selected disabled>--Select Category-- </option> 
+						</select> 
+						<span asp-validation-for="CategoryId" class="text-danger"></span>
+					</div>
+					<div class="form-switch" id="gap">
+						<input type="checkbox" class="form-check-input" id="chk-anonymous" asp-for="IsAnonymous">
+						<label class="form-check-label" for="chk-anonymous" asp-for="IsAnonymous">Post this ideas as anonymous</label>
+						<span asp-validation-for="IsAnonymous" class="text-danger"></span>
+					</div>
+					<div class="form-switch" id="gap">
+						<input type="checkbox" class="form-check-input" id="chk-agree" asp-for="AgreeTerms">
+						<label class="form-check-label" for="chk-anonymous" asp-for="AgreeTerms">I agree to the terms and conditions</label>
+						<span asp-validation-for="AgreeTerms" class="text-danger"></span>
+					</div>
+					<button class="btn btn-dark" type="submit"><i class="bi bi-plus-circle"></i> New idea</button>
+					<a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-return-left"></i> Back to list</a>
+				</div> 
+			</div>
 		</div>
-		</div> <div class="row mb-3"> 
-			<label asp-for="Text">Idea</label> 
-			<input asp-for="Text" class="form-control" /> 
-			<span asp-validation-for="Text" class="text-danger"></span> 
-		</div> 
-		<div class="row mb-3">
-			<label for="file-input">Supporting files</label>
-			<input type="file" id="file-input" name="file" class="form-select" />
-		</div>
-		<div class="row mb-3"> 
-			<label asp-for="CategoryId">Category</label> 
-			<select asp-for="CategoryId" asp-items="@Model.Categories" class="form-control"> 
-				<option selected disabled>--Select Category-- </option> 
-			</select> 
-			<span asp-validation-for="CategoryId" class="text-danger"></span>
-		</div>
-		<div class="row mb-3">
-			<input type="checkbox" class="form-check-input" id="chk-anonymous" asp-for="IsAnonymous">
-			<label class="form-check-label" for="chk-anonymous" asp-for="IsAnonymous">Post this ideas as anonymous</label>
-			<span asp-validation-for="IsAnonymous" class="text-danger"></span>
-		</div>
-		<div class="row mb-3">
-			<input type="checkbox" class="form-check-input" id="chk-agree" asp-for="AgreeTerms">
-			<label class="form-check-label" for="chk-anonymous" asp-for="AgreeTerms">I agree to the terms and conditions</label>
-			<span asp-validation-for="AgreeTerms" class="text-danger"></span>
-		</div>
-			<button class="btn btn-primary" type ="submit">Create</button>
-	</div>
-</form>
+	</form>
+</div>
 
 @section Scripts {
 	@{
