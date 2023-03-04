@@ -202,7 +202,6 @@ namespace Idear.Data
                 {
                     Id = Guid.NewGuid().ToString(),
                     Text = "Improve the air conditional for student room",
-                    FilePath = "air-conditional.jpg",
                     DateTime = new DateTime(2023, 2, 24, 20, 30, 0),
                     User = _context.ApplicationUsers.First(u => u.UserName == "Loc123@gmail.com"),
                     IsAnonymous = true,
