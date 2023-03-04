@@ -72,7 +72,7 @@
                             @if (Model.Idea.Topic!.FinalClosureDate >= DateTime.Now) {
                                 <form>
                                     <div class="mb-3">
-                                        <textarea id="input-cmt" class="form-control" rows="3"></textarea>
+                                        <textarea id="input-cmt" class="form-control" rows="3" placeholder="Write a new comment here"></textarea>
                                     </div>
                                     <div class="mb-3 form-check">
                                         <div class="row">
@@ -92,10 +92,11 @@
 
                         </div>
                     </div>
-                    @foreach (var comment in Model.Idea.Comments!){
+                        @foreach (var comment in Model.Idea.Comments!.OrderByDescending(c => c.Datetime))
+                    {
                         <div class="card">
                             <div class="card-body">
-                                <p class="card-text">
+                                <p class="card-text" id="@comment.Id">
                                     @if (comment.IsAnonymous)
                                         {
                                         <b><text>Anonymous User</text></b>
@@ -106,7 +107,12 @@
                                         }
 
                                 </p>
-                                <p>@comment.Text at @comment.Datetime</p>
+                                <p>@comment.Text</p>
+                                <p class="text-right">
+                                    <small class="text-muted">
+                                        at @comment.Datetime
+                                    </small>
+                                </p>
                             </div>
                         </div>
                     }
@@ -122,18 +128,23 @@
                     @foreach (var idea in Model.RelatedIdeas)
                     {
                         <div class="card">
-                            <div class="card-body">
-                                @idea.Text by
-                                @if (idea.IsAnonymous)
+                            <a class="card-body" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@idea.Id">
+                                @idea.Text
+                                <small class="text-muted">
+                                    by
+                                    @if (idea.IsAnonymous)
                                     {
                                         <text>Anonymous User</text>
                                     }
-                                else
-                                    @idea.User!.FullName
+                                    else
+                                    {
+                                        @idea.User!.FullName
+                                    }
                                     at
                                     @idea.DateTime
+                                </small>
+                                </a>
                             </div>
-                        </div>
                     }
                 </div>
             </div>
@@ -217,7 +228,7 @@
                 `
                 <div class="card">
                     <div class="card-body">
-                        <p class="card-text">
+                        <p class="card-text" id="${result.id}">
                             <b><text>${cmtOwner}</text></b>
                         </p>
                         <p>${cmtText} at ${result.dateTime}</p>
