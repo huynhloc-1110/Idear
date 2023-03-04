@@ -321,7 +321,7 @@ namespace Idear.Areas.Staff.Controllers
                 return NotFound();
             }
             var currentUser = await _userManager.GetUserAsync(User);
-            if (idea.Comments.Any() || idea.User != currentUser) 
+            if (idea.User != currentUser) 
 			{
 				return RedirectToAction("Error", "Home");
             }
