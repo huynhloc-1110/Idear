@@ -348,7 +348,7 @@ namespace Idear.Areas.Staff.Controllers
             _context.Ideas.Remove(idea);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("ListIdeaByUser");
         }
 
 
