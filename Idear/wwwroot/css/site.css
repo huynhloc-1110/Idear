@@ -45,6 +45,18 @@ a {
     display: inline-block;
 }
 
-#gap{
+.gapbreak{
     margin-bottom: 15px;
+}
+
+thead {
+    background-image: linear-gradient(to right, #20e3b2, #2cccff);
+}
+
+.form-view {
+    border-radius: 10px;
+    border-left: 8px #007bff solid;
+    border-right: none;
+    border-top: none;
+    border-bottom: none;
 }
