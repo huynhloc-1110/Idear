@@ -92,7 +92,8 @@
 
                         </div>
                     </div>
-                        @foreach (var comment in Model.Idea.Comments!.OrderByDescending(c => c.Datetime))
+
+                    @foreach (var comment in Model.Idea.Comments!.OrderByDescending(c => c.Datetime))
                     {
                         <div class="card">
                             <div class="card-body">
@@ -143,8 +144,8 @@
                                     at
                                     @idea.DateTime
                                 </small>
-                                </a>
-                            </div>
+                            </a>
+                        </div>
                     }
                 </div>
             </div>
@@ -231,7 +232,12 @@
                         <p class="card-text" id="${result.id}">
                             <b><text>${cmtOwner}</text></b>
                         </p>
-                        <p>${cmtText} at ${result.dateTime}</p>
+                        <p>${cmtText}</p>
+                        <p class="text-right">
+                            <small class="text-muted">
+                                at ${result.dateTime}
+                            </small>
+                        </p>
                     </div>
                 </div>
                 `
