@@ -69,6 +69,11 @@ thead {
     border-bottom: none;
 }
 
+.header-section {
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+}
+
 .bg-purple {
     background-color: #c27fdf;
 }
