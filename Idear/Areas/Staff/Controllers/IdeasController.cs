@@ -238,27 +238,29 @@ namespace Idear.Areas.Staff.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
 
 
-			//creates an empty string variable
-			string fileName = String.Empty;
+            //creates an empty string variable
+            string fileName = String.Empty;
             if (file != null)
             {
-				//string variable uploadDir that represents the folder path where the uploaded file will be stored
-				//using the Path.Combine method
-				string uploadDir = Path.Combine(_hostingEnvironment.WebRootPath, "files");
-                //advoid duplicated fileName
-                fileName = Guid.NewGuid().ToString() + "-" + file.FileName;
-                string filePath = Path.Combine(uploadDir, fileName);
+                //string variable uploadDir that represents the folder path where the uploaded file will be stored
+                //using the Path.Combine method
+                string uploadDir = Path.Combine(_hostingEnvironment.WebRootPath, "files");
 
-				//creates a new file on the file system at the location specified by the filePath variable
+                //generate a random file name
+                var extension = Path.GetExtension(file.FileName);
+                var randomFileName = Path.ChangeExtension(Guid.NewGuid().ToString(), extension);
+
+                string filePath = Path.Combine(uploadDir, randomFileName);
+
+                //creates a new file on the file system at the location specified by the filePath variable
                 //using the FileStream class and the file.CopyTo method
-				using (var fileStream = new FileStream(filePath, FileMode.Create))
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     file.CopyTo(fileStream);
                 }
 
-				//sets the model.FilePath property to the relative path of the uploaded file
-				model.FilePath = @"files\" + fileName;
-
+                //sets the model.FilePath property to the relative path of the uploaded file
+                model.FilePath = @"files\" + randomFileName;
             }
 
 
@@ -281,6 +283,20 @@ namespace Idear.Areas.Staff.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public IActionResult DownloadFile(string id)
+        {
+            var idea = _context.Ideas.FirstOrDefault(i => i.Id == id);
+            if (idea == null || string.IsNullOrEmpty(idea.FilePath))
+            {
+                return NotFound();
+            }
+
+            string filePath = Path.Combine(_hostingEnvironment.WebRootPath, idea.FilePath);
+            var fileStream = new FileStream(filePath, FileMode.Open);
+            return File(fileStream, "application/octet-stream", Path.GetFileName(filePath));
+        }
+
 
 
 
