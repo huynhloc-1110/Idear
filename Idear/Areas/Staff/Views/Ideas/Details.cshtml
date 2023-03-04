@@ -15,6 +15,15 @@
             </div>
             <br />
             <div class="row g-2 align-items-center">
+                <div class="text-right">
+                    @if (!string.IsNullOrEmpty(Model.Idea.FilePath))
+                    {
+                        <a class="btn btn-primary" asp-controller="Ideas" asp-action="DownloadFile" asp-route-id="@Model.Idea.Id">Download Supported files</a>
+                    }
+                </div>
+            </div>
+            <br>
+            <div class="row g-2 align-items-center">
                 <div class="col-md-4">
                     <div class="text-center">
                         by @if (Model.Idea.IsAnonymous)
@@ -29,12 +38,7 @@
                 <div class="col-md-4">
                     <div class="text-center"> Category: @Model.Idea.Category!.Name</div>
                 </div>
-                <div class="col-md-4">
-                        @if (!string.IsNullOrEmpty(Model.Idea.FilePath))
-                    {
-                        <a class="btn btn-primary" asp-controller="Ideas" asp-action="DownloadFile" asp-route-id="@Model.Idea.Id">Download Supported files</a>
-                    }
-                </div>
+
                 <!-- View, Like, Dislike Section -->
                 <div class="col-md-4">
                     <div class="text-center">

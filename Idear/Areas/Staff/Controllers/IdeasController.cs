@@ -236,10 +236,6 @@ namespace Idear.Areas.Staff.Controllers
             var topic = await _context.Topics.FirstOrDefaultAsync(t => t.Id == model.TopicId);
             var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == model.CategoryId);
             var currentUser = await _userManager.GetUserAsync(User);
-
-
-            //creates an empty string variable
-            string fileName = String.Empty;
             if (file != null)
             {
                 //string variable uploadDir that represents the folder path where the uploaded file will be stored
@@ -263,7 +259,6 @@ namespace Idear.Areas.Staff.Controllers
                 model.FilePath = @"files\" + randomFileName;
             }
 
-
             var idea = new Idea
             {
                 Id = Guid.NewGuid().ToString(),
@@ -275,8 +270,6 @@ namespace Idear.Areas.Staff.Controllers
                 IsAnonymous = model.IsAnonymous,
                 FilePath = model.FilePath
             };
-
-
 
             _context.Ideas.Add(idea);
             await _context.SaveChangesAsync();
@@ -291,14 +284,10 @@ namespace Idear.Areas.Staff.Controllers
             {
                 return NotFound();
             }
-
             string filePath = Path.Combine(_hostingEnvironment.WebRootPath, idea.FilePath);
             var fileStream = new FileStream(filePath, FileMode.Open);
             return File(fileStream, "application/octet-stream", Path.GetFileName(filePath));
         }
-
-
-
 
     }
 }
