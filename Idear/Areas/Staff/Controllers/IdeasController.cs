@@ -11,6 +11,7 @@ using Idear.Areas.Staff.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Antiforgery;
+using System.Security.Claims;
 
 namespace Idear.Areas.Staff.Controllers
 {
@@ -194,7 +195,11 @@ namespace Idear.Areas.Staff.Controllers
             return Json(new { flag = react.ReactFlag, likeCount, dislikeCount });
         }
 
-        [HttpGet]
+
+
+		// Create idea
+
+		[HttpGet]
         public async Task<IActionResult> Create()
         {
             var model = new CreateIdeasVM
@@ -289,5 +294,166 @@ namespace Idear.Areas.Staff.Controllers
             return File(fileStream, "application/octet-stream", Path.GetFileName(filePath));
         }
 
-    }
+
+        //ListIdeaByUser
+        public async Task<IActionResult> ListIdeaByUser()
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            var ideas = await _context.Ideas.Where(i => i.User.Id == currentUser.Id).ToListAsync();
+            return View(ideas);
+        }
+
+
+
+        // Delete idea
+        [HttpGet]
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (id == null || _context.Ideas == null)
+            {
+                return NotFound();
+            }
+
+            var idea = await _context.Ideas
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (idea == null)
+            {
+                return NotFound();
+            }
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (idea.Comments.Any() || idea.User != currentUser) 
+			{
+				return RedirectToAction("Error", "Home");
+            }
+
+            return View(idea);
+        }
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var idea = await _context.Ideas
+                .Include(i => i.Views)
+                .Include(i=> i.Comments)
+                .Include(i=>i.Reacts)
+                .Include(i=>i.User)
+				.FirstOrDefaultAsync(i => i.Id == id);
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (idea.Comments.Any() || idea.User != currentUser) 
+			{
+				return RedirectToAction("Error", "Home");
+            }
+          
+            _context.Ideas.Remove(idea);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+
+		[HttpGet]
+		public async Task<IActionResult> Edit(string id)
+		{
+			var idea = await _context.Ideas
+				.Include(i => i.Topic)
+				.Include(i => i.Category)
+				.FirstOrDefaultAsync(i => i.Id == id);
+
+			if (idea == null)
+			{
+				return NotFound();
+			}
+
+			var model = new CreateIdeasVM
+			{
+				Id = idea.Id,
+				Text = idea.Text,
+				TopicId = idea.Topic.Id,
+				CategoryId = idea.Category.Id,
+				Topics = await _context.Topics.Where(t => t.ClosureDate >= DateTime.Now).Select(t => new SelectListItem
+				{
+					Value = t.Id,
+					Text = t.Name,
+					Selected = t.Id == idea.Topic.Id
+				}).ToListAsync(),
+				Categories = await _context.Categories.Select(c => new SelectListItem
+				{
+					Value = c.Id,
+					Text = c.Name,
+					Selected = c.Id == idea.Category.Id
+				}).ToListAsync()
+			};
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (idea.User != currentUser)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            return View(model);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Edit([Bind("Id,Text,CategoryId,TopicId,IsAnonymous,AgreeTerms")] CreateIdeasVM model, IFormFile? file)
+		{
+			if (!ModelState.IsValid)
+			{
+				model.Topics = await _context.Topics.Where(t => t.ClosureDate >= DateTime.Now).Select(t => new SelectListItem
+				{
+					Value = t.Id,
+					Text = t.Name
+				}).ToListAsync();
+				model.Categories = await _context.Categories.Select(c => new SelectListItem
+				{
+					Value = c.Id,
+					Text = c.Name
+				}).ToListAsync();
+				return View(model);
+			}
+
+			var idea = await _context.Ideas
+				.Include(i => i.Topic)
+				.Include(i => i.Category)
+				.FirstOrDefaultAsync(i => i.Id == model.Id);
+
+			if (idea == null)
+			{
+				return NotFound();
+			}
+
+			var topic = await _context.Topics.FirstOrDefaultAsync(t => t.Id == model.TopicId);
+			var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == model.CategoryId);
+
+			idea.Text = model.Text;
+			idea.Topic = topic;
+			idea.Category = category;
+			idea.IsAnonymous = model.IsAnonymous;
+
+			if (file != null)
+			{
+				string uploadDir = Path.Combine(_hostingEnvironment.WebRootPath, "files");
+				var extension = Path.GetExtension(file.FileName);
+				var randomFileName = Path.ChangeExtension(Guid.NewGuid().ToString(), extension);
+				string filePath = Path.Combine(uploadDir, randomFileName);
+
+				using (var fileStream = new FileStream(filePath, FileMode.Create))
+				{
+					file.CopyTo(fileStream);
+				}
+
+				idea.FilePath = @"files\" + randomFileName;
+			}
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (idea.User != currentUser)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            _context.Ideas.Update(idea);
+			await _context.SaveChangesAsync();
+
+			return RedirectToAction("ListIdeaByUser");
+		}
+
+
+	}
 }
