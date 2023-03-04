@@ -11,7 +11,7 @@
 				<div class="gapbreak">
 					<label asp-for="TopicId"><b>Accessible Topic</b></label>
 					<select asp-for="TopicId" asp-items="@Model.Topics" class="form-control">
-						<option selected disabled>-- Select Topics -- </option>
+						<option selected disabled>-- Select Topic -- </option>
 					</select>
 					<span asp-validation-for="TopicId" class="text-danger"></span>
 				</div>	
@@ -41,8 +41,10 @@
 					<label class="form-check-label" for="chk-anonymous" asp-for="AgreeTerms">I agree to the terms and conditions</label>
 					<span asp-validation-for="AgreeTerms" class="text-danger"></span>
 				</div>
-				<button class="btn btn-dark" type="submit"><i class="bi bi-plus-circle"></i> New idea</button>
-				<a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-return-left"></i> Back to list</a>
+				<div class="form-group text-right">
+					<button class="btn btn-dark" type="submit"><i class="bi bi-plus-circle"></i> New idea</button>
+					<a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-return-left"></i> Back to list</a>
+				</div>
 			</div>
 		</div>
 	</form>

@@ -60,3 +60,15 @@ thead {
     border-top: none;
     border-bottom: none;
 }
+
+.home-section {
+    border-radius: 10px;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: none;
+}
+
+.bg-purple {
+    background-color: #c27fdf;
+}
