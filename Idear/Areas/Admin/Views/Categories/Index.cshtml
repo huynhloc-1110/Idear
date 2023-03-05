@@ -22,7 +22,7 @@
             <div class="modal-body">
                 <form id="form-modal" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group gapbreak">
+                    <div class="form-group gapbreak" hidden>
                         <label asp-for="Category.Id" class="control-label text-bold"></label>
                         <input asp-for="Category.Id" disabled class="form-control" />
                     </div>
@@ -77,6 +77,8 @@
             // show modal button
             $('#btn-show-modal').click(function() {
                 clearForm();
+
+                $('#Category_Name').prop('disabled', false);
                 $('#btn-edit').hide();
                 $('#btn-delete').hide();
                 $('#btn-create').show();
@@ -110,6 +112,7 @@
                     }
                 });
 
+                $('#Category_Name').prop('disabled', false);
                 $('#btn-create').hide();
                 $('#btn-delete').hide();
                 $('#btn-edit').show();
@@ -145,6 +148,7 @@
                     }
                 });
 
+                $('#Category_Name').prop('disabled', true);
                 $('#btn-create').hide();
                 $('#btn-edit').hide();
                 $('#btn-delete').show();
