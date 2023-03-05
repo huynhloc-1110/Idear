@@ -71,7 +71,7 @@ namespace Idear.Areas.Admin.Controllers
                 _context.Add(category);
                 await _context.SaveChangesAsync();
 
-                return Json(category);
+                return Ok();
             }
             return BadRequest();
         }
@@ -89,7 +89,7 @@ namespace Idear.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            return View(category);
+            return Json(category);
         }
 
         // POST: Admin/Categories/Edit/5
@@ -97,17 +97,13 @@ namespace Idear.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Edit(string id, [Bind("Name")] Category category)
         {
-            if (id != category.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
+                    category.Id = id;
                     _context.Update(category);
                     await _context.SaveChangesAsync();
                 }
@@ -122,9 +118,9 @@ namespace Idear.Areas.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
-            return View(category);
+            return BadRequest();
         }
 
         // GET: Admin/Categories/Delete/5
