@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Idear.Data;
 using Idear.Models;
 using Microsoft.AspNetCore.Authorization;
+using Idear.Areas.Admin.ViewModels;
 
 namespace Idear.Areas.Admin.Controllers
 {
@@ -25,7 +26,12 @@ namespace Idear.Areas.Admin.Controllers
         // GET: Admin/Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            var categoriesVM = new CategoriesVM()
+            {
+                Categories = await _context.Categories.ToListAsync()
+            };
+
+            return View(categoriesVM);
         }
 
         // GET: Admin/Categories/Details/5
@@ -64,9 +70,10 @@ namespace Idear.Areas.Admin.Controllers
                 category.Id = Guid.NewGuid().ToString();
                 _context.Add(category);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                return Json(category);
             }
-            return View(category);
+            return BadRequest();
         }
 
         // GET: Admin/Categories/Edit/5
