@@ -43,19 +43,13 @@ namespace Idear.Areas.Admin.Controllers
             }
 
             var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FindAsync(id);
             if (category == null)
             {
                 return NotFound();
             }
 
-            return View(category);
-        }
-
-        // GET: Admin/Categories/Create
-        public IActionResult Create()
-        {
-            return View();
+            return Json(category);
         }
 
         // POST: Admin/Categories/Create
@@ -74,22 +68,6 @@ namespace Idear.Areas.Admin.Controllers
                 return Ok();
             }
             return BadRequest();
-        }
-
-        // GET: Admin/Categories/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null || _context.Categories == null)
-            {
-                return NotFound();
-            }
-
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-            return Json(category);
         }
 
         // POST: Admin/Categories/Edit/5
@@ -123,28 +101,10 @@ namespace Idear.Areas.Admin.Controllers
             return BadRequest();
         }
 
-        // GET: Admin/Categories/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null || _context.Categories == null)
-            {
-                return NotFound();
-            }
-
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return View(category);
-        }
-
         // POST: Admin/Categories/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (_context.Categories == null)
             {
@@ -157,7 +117,7 @@ namespace Idear.Areas.Admin.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Ok();
         }
 
         private bool CategoryExists(string id)
