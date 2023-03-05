@@ -110,12 +110,17 @@ namespace Idear.Areas.Admin.Controllers
             {
                 return Problem("Entity set 'ApplicationDbContext.Categories'  is null.");
             }
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+
+            var category = await _context.Categories
+                .Include(c => c.Ideas)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (category == null || category.Ideas.Any())
             {
-                _context.Categories.Remove(category);
+                return BadRequest();
             }
 
+            _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
             return Ok();
         }
