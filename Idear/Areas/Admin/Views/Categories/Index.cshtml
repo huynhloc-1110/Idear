@@ -124,7 +124,7 @@
                 if ($('#form-modal').valid()) {
                     $.ajax({
                         url: `/Admin/Categories/Edit/${itemId}`,
-                        type: "POST",
+                        type: "PUT",
                         data: $('#form-modal').serialize(),
                         success: function (result) {
                             location.reload();
@@ -159,7 +159,7 @@
                 if ($('#form-modal').valid()) {
                     $.ajax({
                         url: `/Admin/Categories/Delete/${itemId}`,
-                        type: "POST",
+                        type: "DELETE",
                         data: $('#form-modal').serialize(),
                         success: function (result) {
                             location.reload();

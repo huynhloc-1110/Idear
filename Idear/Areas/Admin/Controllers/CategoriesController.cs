@@ -73,7 +73,7 @@ namespace Idear.Areas.Admin.Controllers
         // POST: Admin/Categories/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPut]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Name")] Category category)
         {
@@ -102,7 +102,7 @@ namespace Idear.Areas.Admin.Controllers
         }
 
         // POST: Admin/Categories/Delete/5
-        [HttpPost]
+        [HttpDelete]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {
