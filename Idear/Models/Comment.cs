@@ -14,6 +14,7 @@ namespace Idear.Models
         [Display(Name = "Date Time")]
         public DateTime Datetime { get; set; }
 
+        public bool IsAnonymous { get; set; }
         public ApplicationUser? User { get; set; }
 
         public Idea? Idea { get; set; }

@@ -9,9 +9,10 @@
 
 <h1>View Topics</h1>
 
-<table class="table table-hover" id="table_id">
+<table class="table table-hover bg-white table-striped" id="table_id">
     <thead>
         <tr>
+            <th>Status</th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
@@ -22,13 +23,16 @@
                 @Html.DisplayNameFor(model => model.FinalClosureDate)
             </th>
             <th>Number of Ideas</th>
-            <th></th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr class="@(item.ClosureDate >= DateTime.Now ? "table-success" : item.FinalClosureDate >= DateTime.Now ? "table-warning" : "table-danger")">
+            <tr>
+                <td>
+                    <i class="@(item.ClosureDate >= DateTime.Now ? "bi bi-check-circle" : item.FinalClosureDate >= DateTime.Now ? "bi bi-volume-mute" : "bi bi-lock")"></i>
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
@@ -42,7 +46,7 @@
                     @Html.DisplayFor(modelItem => item.Ideas!.Count)
                 </td>
                 <td>
-                    <a asp-area="Staff" asp-controller="Ideas" asp-action="Index" class="btn btn-primary" asp-route-id="@item.Id">Details</a>
+                    <a asp-area="Staff" asp-controller="Topics" asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Details</a>
                     @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
                         <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Export ZIP</a>

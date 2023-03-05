@@ -79,7 +79,7 @@ namespace Idear.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,Name")] Department department)
         {
-            if (id != department.Id)
+			if (id != department.Id)
             {
                 return NotFound();
             }

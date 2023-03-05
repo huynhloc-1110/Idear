@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Idear.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 </head>
 <body>
     <header>
@@ -24,12 +25,12 @@
                 @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                 {
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Manage
                         </button>
                         <ul class="dropdown-menu">
                             <li class="nav-item">
-                                <a class="dropdown-item" asp-area="Admin" asp-controller="Roles" asp-action="Index">Roles</a>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Roles" asp-action="Index">Role</a>
                             </li>
                             <li class="nav-item">
                                 <a class="dropdown-item" asp-area="Admin" asp-controller="Departments" asp-action="Index">Department</a>
@@ -46,6 +47,22 @@
                         </ul>
                     </div>
                 }
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Idea
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Staff" asp-controller="Ideas" asp-action="ListIdeaByUser">My Ideas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Staff" asp-controller="Ideas" asp-action="Index">All Ideas</a>
+                            </li>
+                        </ul>
+                    </div>
+                }
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
@@ -56,9 +73,9 @@
                         </li>
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Staff" asp-controller="Topics" asp-action="Index">All Topics</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Staff" asp-controller="Topics" asp-action="Index">All Topics</a>
+                        </li>
                         }
                     </ul>
                     <partial name="_LoginPartial" />
@@ -72,7 +89,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted bg-white">
         <div class="container">
             &copy; 2023 - Idear - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
