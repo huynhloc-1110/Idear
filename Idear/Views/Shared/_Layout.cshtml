@@ -47,6 +47,22 @@
                         </ul>
                     </div>
                 }
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Idea
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Staff" asp-controller="Ideas" asp-action="ListIdeaByUser">My Ideas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Staff" asp-controller="Ideas" asp-action="Index">All Ideas</a>
+                            </li>
+                        </ul>
+                    </div>
+                }
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
@@ -57,12 +73,9 @@
                         </li>
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Staff" asp-controller="Topics" asp-action="Index">All Topics</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Staff" asp-controller="Ideas" asp-action="Index">All Ideas</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Staff" asp-controller="Topics" asp-action="Index">All Topics</a>
+                        </li>
                         }
                     </ul>
                     <partial name="_LoginPartial" />
