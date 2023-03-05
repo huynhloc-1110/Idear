@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Idear.Models.Department>
+﻿@model Idear.Areas.Admin.ViewModels.DepartmentsVM
 
 @{
     ViewData["Title"] = "Department";
@@ -6,9 +6,43 @@
 
 <h1>View Departments</h1>
 
+<!-- Button trigger modal -->
 <p>
-    <a class="btn btn-dark" asp-action="Create"><i class="bi bi-clipboard-plus"></i> Create New</a>
+    <button type="button" class="btn btn-dark" id="btn-show-modal"><i class="bi bi-clipboard-plus"></i> Create New</button>
 </p>
+
+<!-- Create Modal -->
+<div class="modal fade" id="backdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="backdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="backdropLabel">Change department</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-modal" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group gapbreak" hidden>
+                        <label asp-for="Department.Id" class="control-label text-bold"></label>
+                        <input asp-for="Department.Id" disabled class="form-control" />
+                    </div>
+                    <div class="form-group gapbreak">
+                        <label asp-for="Department.Name" class="control-label text-bold"></label>
+                        <input asp-for="Department.Name" class="form-control" />
+                        <span asp-validation-for="Department.Name" class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button id="btn-edit" type="button" class="btn btn-primary">Edit</button>
+                <button id="btn-create" type="button" class="btn btn-primary">Create</button>
+                <button id="btn-delete" type="button" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <table class="table table-hover table-striped bg-white">
     <thead>
         <tr>
@@ -18,16 +52,134 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Departments)
         {
             <tr>
                 <td>@item.Id</td>
                 <td>@item.Name</td>
                 <td>
-                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil"></i> Edit</a>
-                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i> Delete</a>
+                    <button class="btn btn-primary" data-modal-action="Edit" data-modal-id="@item.Id"><i class="bi bi-pencil"></i> Edit</button>
+                    <button class="btn btn-danger" data-modal-action="Delete" data-modal-id="@item.Id"><i class="bi bi-trash"></i> Delete</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            // show modal button
+            $('#btn-show-modal').click(function () {
+                clearForm();
+
+                $('#Department_Name').prop('disabled', false);
+                $('#btn-edit').hide();
+                $('#btn-delete').hide();
+                $('#btn-create').show();
+                $('#backdrop').modal('show');
+            })
+
+            // create item
+            $('#btn-create').click(function (e) {
+                // check if form is valid
+                if ($('#form-modal').valid()) {
+                    $.ajax({
+                        url: '/Admin/Departments/Create',
+                        type: "POST",
+                        data: $('#form-modal').serialize(),
+                        success: function (result) {
+                            location.reload();
+                        }
+                    });
+                }
+            });
+
+            // show modal to edit the targetted item
+            $('button[data-modal-action=Edit]').click(function () {
+                var itemId = this.getAttribute('data-modal-id');
+                $.ajax({
+                    url: `/Admin/Departments/Details/${itemId}`,
+                    type: "GET",
+                    data: $('#form-modal').serialize(),
+                    success: function (result) {
+                        updateForm(result);
+                    }
+                });
+
+                $('#Department_Name').prop('disabled', false);
+                $('#btn-create').hide();
+                $('#btn-delete').hide();
+                $('#btn-edit').show();
+                $('#backdrop').modal('show');
+            });
+
+            // edit item
+            $('#btn-edit').click(function (e) {
+                var itemId = $('#Department_Id').val();
+
+                // check if form is valid
+                if ($('#form-modal').valid()) {
+                    $.ajax({
+                        url: `/Admin/Departments/Edit/${itemId}`,
+                        type: "PUT",
+                        data: $('#form-modal').serialize(),
+                        success: function (result) {
+                            location.reload();
+                        }
+                    });
+                }
+            })
+
+            // show modal to delete the targetted item
+            $('button[data-modal-action=Delete]').click(function () {
+                var itemId = this.getAttribute('data-modal-id');
+                $.ajax({
+                    url: `/Admin/Departments/Details/${itemId}`,
+                    type: "GET",
+                    data: $('#form-modal').serialize(),
+                    success: function (result) {
+                        updateForm(result);
+                    }
+                });
+
+                $('#Department_Name').prop('disabled', true);
+                $('#btn-create').hide();
+                $('#btn-edit').hide();
+                $('#btn-delete').show();
+                $('#backdrop').modal('show');
+            });
+
+            // delete item
+            $('#btn-delete').click(function (e) {
+                var itemId = $('#Department_Id').val();
+
+                // check if form is valid
+                if ($('#form-modal').valid()) {
+                    $.ajax({
+                        url: `/Admin/Departments/Delete/${itemId}`,
+                        type: "DELETE",
+                        data: $('#form-modal').serialize(),
+                        success: function (result) {
+                            location.reload();
+                        }
+                    });
+                }
+            })
+        });
+
+        function updateForm(result) {
+            $("#Department_Id").val(result.id);
+            $("#Department_Name").val(result.name);
+        }
+
+        function clearForm() {
+            $("#Department_Id").val('');
+            $("#Department_Name").val('');
+        }
+    </script>
+}
