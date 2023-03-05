@@ -3,7 +3,7 @@
 
 // Write your JavaScript code.
 
-function crudIndex(modelName, controllerName) {
+function crudIndex(modelIdName, controllerName) {
     let btnShowModel = $('#btn-show-modal');
     let btnCreate = $('#btn-create');
     let btnEdit = $('#btn-edit');
@@ -51,7 +51,7 @@ function crudIndex(modelName, controllerName) {
 
     // edit item
     btnEdit.click(function (e) {
-        var itemId = $(`#${modelName}_Id`).val();
+        var itemId = $(`#${modelIdName}`).val();
 
         // check if form is valid
         if (form.valid()) {
@@ -70,7 +70,7 @@ function crudIndex(modelName, controllerName) {
     $('button[data-modal-action=Delete]').click(function () {
         var itemId = this.getAttribute('data-modal-id');
         $.ajax({
-            url: `/Admin/Categories/Details/${itemId}`,
+            url: `/Admin/${controllerName}/Details/${itemId}`,
             type: "GET",
             data: $('#form-modal').serialize(),
             success: function (result) {
@@ -84,7 +84,7 @@ function crudIndex(modelName, controllerName) {
 
     // delete item
     btnDelete.click(function (e) {
-        var itemId = $(`#${modelName}_Id`).val();
+        var itemId = $(`#${modelIdName}`).val();
 
         // check if form is valid
         if (form.valid()) {
