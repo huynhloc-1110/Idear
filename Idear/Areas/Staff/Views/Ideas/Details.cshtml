@@ -181,7 +181,7 @@
     <script>
         function ajaxPostReact(flag) {
             // Get the CSRF token from the server
-            $.get("/Staff/Ideas/GetCsrfToken", function (token) {
+            $.get("/Staff/Helpers/GetCsrfToken", function (token) {
                 // Add the CSRF token to the AJAX request header
                 var headers = {};
                 headers["RequestVerificationToken"] = token;
@@ -191,7 +191,7 @@
 
                 // Send the AJAX request with the CSRF token included in the header
                 $.ajax({
-                    url: '/Staff/Ideas/Like',
+                    url: '/Staff/Reacts/Like',
                     type: "POST",
                     data: { reactFlag: flag, ideaId: id },
                     headers: headers,
@@ -221,7 +221,7 @@
 
         function ajaxPostCmt() {
             // Get the CSRF token from the server
-            $.get("/Staff/Ideas/GetCsrfToken", function (token) {
+            $.get("/Staff/Helpers/GetCsrfToken", function (token) {
                 // Add the CSRF token to the AJAX request header
                 var headers = {};
                 headers["RequestVerificationToken"] = token;

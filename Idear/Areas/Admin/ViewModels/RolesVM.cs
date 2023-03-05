@@ -1,4 +1,5 @@
 ﻿using Microsoft.Build.Framework;
+using Microsoft.AspNetCore.Identity;
 
 namespace Idear.Areas.Admin.ViewModels
 {
@@ -7,5 +8,7 @@ namespace Idear.Areas.Admin.ViewModels
         public string? Id { get; set; }
         [Required]
         public string? RoleName { get; set; }
+        public List<IdentityRole>? IdentityRoles { get; set; }
     }
+
 }

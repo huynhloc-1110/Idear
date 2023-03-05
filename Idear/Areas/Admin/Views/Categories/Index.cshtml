@@ -73,114 +73,26 @@
     }
 
     <script>
-        $(document).ready(function () {
-            // show modal button
-            $('#btn-show-modal').click(function() {
-                clearForm();
-
-                $('#Category_Name').prop('disabled', false);
-                $('#btn-edit').hide();
-                $('#btn-delete').hide();
-                $('#btn-create').show();
-                $('#backdrop').modal('show');
-            })
-
-            // create item
-            $('#btn-create').click(function (e) {
-                // check if form is valid
-                if ($('#form-modal').valid()) {
-                    $.ajax({
-                        url: '/Admin/Categories/Create',
-                        type: "POST",
-                        data: $('#form-modal').serialize(),
-                        success: function (result) {
-                            location.reload();
-                        }
-                    });
-                }
-            });
-
-            // show modal to edit the targetted item
-            $('button[data-modal-action=Edit]').click(function () {
-                var itemId = this.getAttribute('data-modal-id');
-                $.ajax({
-                    url: `/Admin/Categories/Details/${itemId}`,
-                    type: "GET",
-                    data: $('#form-modal').serialize(),
-                    success: function (result) {
-                        updateForm(result);
-                    }
-                });
-
-                $('#Category_Name').prop('disabled', false);
-                $('#btn-create').hide();
-                $('#btn-delete').hide();
-                $('#btn-edit').show();
-                $('#backdrop').modal('show');
-            });
-
-            // edit item
-            $('#btn-edit').click(function(e) {
-                var itemId = $('#Category_Id').val();
-
-                // check if form is valid
-                if ($('#form-modal').valid()) {
-                    $.ajax({
-                        url: `/Admin/Categories/Edit/${itemId}`,
-                        type: "PUT",
-                        data: $('#form-modal').serialize(),
-                        success: function (result) {
-                            location.reload();
-                        }
-                    });
-                }
-            })
-
-            // show modal to delete the targetted item
-            $('button[data-modal-action=Delete]').click(function () {
-                var itemId = this.getAttribute('data-modal-id');
-                $.ajax({
-                    url: `/Admin/Categories/Details/${itemId}`,
-                    type: "GET",
-                    data: $('#form-modal').serialize(),
-                    success: function (result) {
-                        updateForm(result);
-                    }
-                });
-
-                $('#Category_Name').prop('disabled', true);
-                $('#btn-create').hide();
-                $('#btn-edit').hide();
-                $('#btn-delete').show();
-                $('#backdrop').modal('show');
-            });
-
-            // delete item
-            $('#btn-delete').click(function (e) {
-                var itemId = $('#Category_Id').val();
-
-                // check if form is valid
-                if ($('#form-modal').valid()) {
-                    $.ajax({
-                        url: `/Admin/Categories/Delete/${itemId}`,
-                        type: "DELETE",
-                        data: $('#form-modal').serialize(),
-                        success: function (result) {
-                            location.reload();
-                        }
-                    });
-                }
-            })
+        // pass modelIdName and controllerName to crudIndex function
+        $(document).ready(function() {
+            crudIndex("Category_Id", "Categories");
         });
 
+        // used for update the form with json response from Details action
         function updateForm(result) {
             $("#Category_Id").val(result.id);
             $("#Category_Name").val(result.name);
         }
 
+        // used for clearing form before creating new category
         function clearForm() {
             $("#Category_Id").val('');
             $("#Category_Name").val('');
+        }
+
+        // used for disabling form editting when deleting a category
+        function disablePropEdit(disable) {
+            $('#Category_Name').prop('disabled', disable);
         }
     </script>
 }
