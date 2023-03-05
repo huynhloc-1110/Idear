@@ -14,10 +14,12 @@ namespace Idear.Areas.Admin.Controllers
     public class RolesController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public RolesController(RoleManager<IdentityRole> roleManager)
+        public RolesController(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
         {
             _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         //ListAllroles
@@ -114,6 +116,12 @@ namespace Idear.Areas.Admin.Controllers
             if (role == null)
             {
                 return NotFound();
+            }
+            var usersWithRole = await _userManager.GetUsersInRoleAsync(role.Name);
+            if (usersWithRole.Any())
+            {
+                ModelState.AddModelError("", "Cannot delete role as it is chosen by one or more users.");
+                return BadRequest(ModelState);
             }
             var result = await _roleManager.DeleteAsync(role);
             if (result.Succeeded)
