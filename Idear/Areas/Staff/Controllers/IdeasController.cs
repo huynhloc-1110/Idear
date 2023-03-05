@@ -22,13 +22,11 @@ namespace Idear.Areas.Staff.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly IAntiforgery _antiforgery;
 
-        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IAntiforgery antiforgery, IWebHostEnvironment hostingEnvironment)
+        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
             _userManager = userManager;
-            _antiforgery = antiforgery;
             _hostingEnvironment = hostingEnvironment;
         }
 
@@ -73,10 +71,6 @@ namespace Idear.Areas.Staff.Controllers
                 .Include(i => i.Comments)
                 .Include(i => i.Reacts)
                 .ToListAsync();
-
-
-
-
             return View(ideas);
         }
 
@@ -103,7 +97,7 @@ namespace Idear.Areas.Staff.Controllers
                 return NotFound();
             }
             var relatedIdeas = await _context.Ideas
-                .Where(i => i.Category!.Id == idea.Category!.Id && i.Id != idea.Id)
+                .Where(i => i.Category == idea.Category && i.Id != idea.Id)
                 .Include(i => i.User)
                 .ToListAsync();
 
@@ -121,6 +115,7 @@ namespace Idear.Areas.Staff.Controllers
                 ReactFlag = (currentUserReact != null) ? currentUserReact.ReactFlag : 0
             };
 
+            // Add view when user load the idea detail page
             var view = await _context.Views.Where(v=>v.User == user && v.Idea == idea).FirstOrDefaultAsync();
             if (view != null)
             {
@@ -131,74 +126,18 @@ namespace Idear.Areas.Staff.Controllers
                 _context.Views.Add(
                     new View
                     {
-
                         Id = Guid.NewGuid().ToString(),
                         VisitTime = 1,
                         Idea = idea,
                         User = user
-
                     }
                 );
             }
             _context.SaveChanges();
-
             return View(ideaVM);
         }
 
-
-        // Add react feature
-        [HttpGet]
-        public IActionResult GetCsrfToken()
-        {
-            var token = _antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
-            return Json(token);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Like(string ideaId, int reactFlag)
-        {
-            var idea = await _context.Ideas.FirstOrDefaultAsync(i => i.Id ==ideaId);
-            var user = await _userManager.GetUserAsync(User);
-            var react = await _context.Reactes.Where(r => r.User == user && r.Idea == idea).FirstOrDefaultAsync();
-            if (react != null)
-            {
-                if (react.ReactFlag == reactFlag)
-                {
-                    react.ReactFlag = 0;
-                }
-                else
-                {
-                    react.ReactFlag = reactFlag;
-                }         
-            }
-            else
-            {
-                react = new React
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    User = user,
-                    Idea = idea,
-                    ReactFlag = reactFlag,
-                };
-                _context.Reactes.Add(react);
-            }
-            await _context.SaveChangesAsync();
-
-            var likeCount = await _context.Reactes
-                .Where(r => r.Idea == idea)
-                .CountAsync(r => r.ReactFlag == 1);
-            var dislikeCount = await _context.Reactes
-                .Where(r => r.Idea == idea)
-                .CountAsync(r => r.ReactFlag == -1);
-
-            return Json(new { flag = react.ReactFlag, likeCount, dislikeCount });
-        }
-
-
-
 		// Create idea
-
 		[HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -294,16 +233,13 @@ namespace Idear.Areas.Staff.Controllers
             return File(fileStream, "application/octet-stream", Path.GetFileName(filePath));
         }
 
-
         //ListIdeaByUser
         public async Task<IActionResult> ListIdeaByUser()
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            var ideas = await _context.Ideas.Where(i => i.User.Id == currentUser.Id).ToListAsync();
+            var ideas = await _context.Ideas.Where(i => i.User == currentUser).ToListAsync();
             return View(ideas);
         }
-
-
 
         // Delete idea
         [HttpGet]
@@ -338,15 +274,26 @@ namespace Idear.Areas.Staff.Controllers
                 .Include(i=>i.Reacts)
                 .Include(i=>i.User)
 				.FirstOrDefaultAsync(i => i.Id == id);
-            var currentUser = await _userManager.GetUserAsync(User);
 
+            var currentUser = await _userManager.GetUserAsync(User);
             if (idea.Comments.Any() || idea.User != currentUser) 
 			{
 				return RedirectToAction("Error", "Home");
             }
-          
+            _context.Views.RemoveRange(idea.Views);
+            _context.Reactes.RemoveRange(idea.Reacts);          
             _context.Ideas.Remove(idea);
             await _context.SaveChangesAsync();
+
+            // Delte file in server
+            if (!string.IsNullOrEmpty(idea.FilePath))
+            {
+                string oldFilePath = Path.Combine(_hostingEnvironment.WebRootPath, idea.FilePath);
+                if (System.IO.File.Exists(oldFilePath))
+                {
+                    System.IO.File.Delete(oldFilePath);
+                }
+            }
 
             return RedirectToAction("ListIdeaByUser");
         }
@@ -416,7 +363,12 @@ namespace Idear.Areas.Staff.Controllers
 				.Include(i => i.Category)
 				.FirstOrDefaultAsync(i => i.Id == model.Id);
 
-			if (idea == null)
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (idea.User != currentUser)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            if (idea == null)
 			{
 				return NotFound();
 			}
@@ -431,7 +383,16 @@ namespace Idear.Areas.Staff.Controllers
 
 			if (file != null)
 			{
-				string uploadDir = Path.Combine(_hostingEnvironment.WebRootPath, "files");
+                if (!string.IsNullOrEmpty(idea.FilePath))
+                {
+                    string oldFilePath = Path.Combine(_hostingEnvironment.WebRootPath, idea.FilePath);
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+                }
+
+                string uploadDir = Path.Combine(_hostingEnvironment.WebRootPath, "files");
 				var extension = Path.GetExtension(file.FileName);
 				var randomFileName = Path.ChangeExtension(Guid.NewGuid().ToString(), extension);
 				string filePath = Path.Combine(uploadDir, randomFileName);
@@ -443,11 +404,6 @@ namespace Idear.Areas.Staff.Controllers
 
 				idea.FilePath = @"files\" + randomFileName;
 			}
-            var currentUser = await _userManager.GetUserAsync(User);
-            if (idea.User != currentUser)
-            {
-                return RedirectToAction("Error", "Home");
-            }
             _context.Ideas.Update(idea);
 			await _context.SaveChangesAsync();
 
