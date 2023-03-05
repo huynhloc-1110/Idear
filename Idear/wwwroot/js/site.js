@@ -99,6 +99,7 @@ function crudIndex(modelName, controllerName) {
         }
     })
 
+    // hide unncessary buttons and popup the modal
     function showModalWith(shownButton) {
         btnCreate.hide();
         btnEdit.hide();

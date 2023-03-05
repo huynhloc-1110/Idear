@@ -73,20 +73,24 @@
     }
 
     <script>
+        // pass modelName and controllerName to crudIndex function
         $(document).ready(function() {
             crudIndex("Category", "Categories");
         });
 
+        // used for update the form with json response from Details action
         function updateForm(result) {
             $("#Category_Id").val(result.id);
             $("#Category_Name").val(result.name);
         }
 
+        // used for clearing form before creating new category
         function clearForm() {
             $("#Category_Id").val('');
             $("#Category_Name").val('');
         }
 
+        // used for disabling form editting when deleting a category
         function disablePropEdit(disable) {
             $('#Category_Name').prop('disabled', disable);
         }
