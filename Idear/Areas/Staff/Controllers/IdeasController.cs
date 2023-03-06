@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Antiforgery;
 using System.Security.Claims;
+using System.Drawing.Printing;
 
 namespace Idear.Areas.Staff.Controllers
 {
@@ -31,7 +32,7 @@ namespace Idear.Areas.Staff.Controllers
         }
 
         // GET: Staff/Ideas
-        public async Task<IActionResult> Index(string orderBy, int? pageNumber)
+        public async Task<IActionResult> Index(string orderBy, int? page)
         {
             int pageSize = 5;
             IQueryable<Idea> ideaQuery = null;
@@ -72,7 +73,7 @@ namespace Idear.Areas.Staff.Controllers
                 .Include(i => i.Comments)
                 .Include(i => i.Reacts)
                 .ToListAsync();
-            return View(PaginatedList<Idea>.Create(ideas, pageNumber ?? 1, pageSize));
+            return View(PaginatedList<Idea>.Create(ideas, page ?? 1, pageSize));
       
         }
 
@@ -92,6 +93,7 @@ namespace Idear.Areas.Staff.Controllers
                     .ThenInclude(c => c.User)
                 .Include(i => i.Reacts)
                 .Include(i => i.Views)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (idea == null)
@@ -236,11 +238,13 @@ namespace Idear.Areas.Staff.Controllers
         }
 
         //ListIdeaByUser
-        public async Task<IActionResult> ListIdeaByUser()
+        public async Task<IActionResult> ListIdeaByUser( int ?page)
         {
+            int pageSize = 5;
             var currentUser = await _userManager.GetUserAsync(User);
-            var ideas = await _context.Ideas.Where(i => i.User == currentUser).ToListAsync();
-            return View(ideas);
+            var idea = await _context.Ideas.Where(i => i.User == currentUser).ToListAsync();
+            return View(PaginatedList<Idea>.Create(idea, page ?? 1, pageSize));
+
         }
 
         // Delete idea
