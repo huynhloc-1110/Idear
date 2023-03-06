@@ -5,8 +5,10 @@ using Idear.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Printing;
 using System.Reflection.Metadata.Ecma335;
 
 namespace Idear.Areas.Staff.Controllers
@@ -21,16 +23,17 @@ namespace Idear.Areas.Staff.Controllers
 		{
 			_context = context;
 		}
-		public async Task<IActionResult> Index(int? pageNumber)
+		public async Task<IActionResult> Index(int? page)
 		{
             int pageSize = 5;
 
             return View(PaginatedList<Topic>.Create(await _context.Topics.OrderByDescending(t => t.ClosureDate).
-                Include(t => t.Ideas).ToListAsync(), pageNumber ?? 1, pageSize));
+                Include(t => t.Ideas).ToListAsync(), page ?? 1, pageSize));
 		}
 
-		public async Task<IActionResult> Details(string id)
+		public async Task<IActionResult> Details(string id, int? page)
 		{
+            int pageSize = 5;
             var topic = await _context.Topics
                 .Include(t => t.Ideas)!
                     .ThenInclude(i => i.Views)
@@ -40,18 +43,12 @@ namespace Idear.Areas.Staff.Controllers
                     .ThenInclude(i => i.Reacts)
                 .FirstOrDefaultAsync(t => t.Id == id);
 
-            if (topic == null)
-            {
-                return NotFound();
-            }
-            var model = new TopicIdeasVM
-            {
-                Id = topic.Id!,
-                Name = topic.Name!,
-                Ideas = topic.Ideas!
-            };
+            ViewBag.TopicId = id;
+            ViewBag.Topic = topic;
 
-            return View(model);
+            return View(PaginatedList<Idea>.Create(await _context.Ideas
+                .Where(i => i.Topic == topic)
+                .ToListAsync(), page ?? 1, pageSize));
         }
     }
 }
