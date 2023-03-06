@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Idear.Areas.Staff.ViewModels;
 using Microsoft.EntityFrameworkCore;
 namespace Idear
 {
@@ -15,14 +16,13 @@ namespace Idear
             this.AddRange(items);
         }
 
-        public bool HasPreviousPage => PageIndex > 1;
-        public bool HasNextPage => PageIndex < TotalPages;
-
         public static PaginatedList<T> Create (List<T> source, int pageIndex, int pageSize) 
         {
             var count = source.Count;
             var items = source.Skip((pageIndex-1)*pageSize).Take(pageSize).ToList();
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
+
+
     }
 }
