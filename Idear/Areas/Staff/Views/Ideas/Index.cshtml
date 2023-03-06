@@ -7,9 +7,6 @@
 <h1>All Ideas</h1>
 <div class="row justify-content-between">
     <div class="col-4">
-        <a class="btn btn-dark" asp-controller="Ideas" asp-action="Create" asp-route-id="Id"> <i class="bi bi-clipboard-plus"></i> Create New</a>
-    </div>
-    <div class="col-4">
         <form method="get">
             <label for="select-order"><b><h6>Choose order</h6></b></label>
             <select class="form-select inline-select" id="select-order" name="orderBy">
@@ -59,15 +56,8 @@
         }
     </tbody>
 </table>
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
-<td>
-    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex-1)" class="btn btn-default @prevDisabled">Previous</a>
-    <span>Page @(Model.PageIndex) of @(Model.TotalPages)</span>
-    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex+1)" class="btn btn-default @nextDisabled">Next</a>
-</td>
+<partial name="_PaginatedList" />
+
 @section Scripts{
     <script>
         $(document).ready(function() {
