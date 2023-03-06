@@ -102,17 +102,10 @@
 
         // used for update the form with json response from Details action
         function updateForm(result) {
-            console.log(result.closureDate);
-            var date = new Date(result.closureDate);
-            console.log(date);
-            var closureDate = date.toISOString().split('T')[0];
-            console.log(closureDate);
-            date = new Date(result.finalClosureDate);
-            var finalClosureDate = date.toISOString().split('T')[0];
             $("#Topic_Id").val(result.id);
             $("#Topic_Name").val(result.name);
-            $("#Topic_ClosureDate").val(closureDate);
-            $("#Topic_FinalClosureDate").val(finalClosureDate);
+            $("#Topic_ClosureDate").val(formatDate(result.closureDate));
+            $("#Topic_FinalClosureDate").val(formatDate(result.finalClosureDate));
         }
 
         // used for clearing form before creating new category
@@ -128,6 +121,13 @@
             $('#Topic_Name').prop('disabled', disable);
             $('#Topic_ClosureDate').prop('disabled', disable);
             $('#Topic_FinalClosureDate').prop('disabled', disable);
+        }
+
+        function formatDate(dateString) {
+            let date = new Date(dateString);
+            let offset = date.getTimezoneOffset();
+            let uniformDate = new Date(date.getTime() - (offset * 60 * 1000));
+            return uniformDate.toISOString().split('T')[0];
         }
     </script>
 }
