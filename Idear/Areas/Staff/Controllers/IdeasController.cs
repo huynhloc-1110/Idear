@@ -90,6 +90,7 @@ namespace Idear.Areas.Staff.Controllers
                     .ThenInclude(c => c.User)
                 .Include(i => i.Reacts)
                 .Include(i => i.Views)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (idea == null)
