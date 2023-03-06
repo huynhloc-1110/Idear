@@ -31,8 +31,9 @@ namespace Idear.Areas.Staff.Controllers
         }
 
         // GET: Staff/Ideas
-        public async Task<IActionResult> Index(string orderBy)
+        public async Task<IActionResult> Index(string orderBy, int? pageNumber)
         {
+            int pageSize = 5;
             IQueryable<Idea> ideaQuery = null;
 
             switch (orderBy)
@@ -71,7 +72,8 @@ namespace Idear.Areas.Staff.Controllers
                 .Include(i => i.Comments)
                 .Include(i => i.Reacts)
                 .ToListAsync();
-            return View(ideas);
+            return View(PaginatedList<Idea>.Create(ideas, pageNumber ?? 1, pageSize));
+      
         }
 
         //Details 

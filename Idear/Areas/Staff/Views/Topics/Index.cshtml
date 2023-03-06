@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Idear.Models.Topic>
+﻿@model PaginatedList<Idear.Models.Topic>
 @using Microsoft.AspNetCore.Identity;
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -14,13 +14,13 @@
         <tr>
             <th>Status</th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ClosureDate)
+                ClosureDate
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FinalClosureDate)
+                FinalClosureDate
             </th>
             <th>Number of Ideas</th>
             <th>Action</th>
@@ -58,3 +58,12 @@
         }
     </tbody>
 </table>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+<td>
+    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex-1)" class="btn btn-default @prevDisabled">Previous</a>
+    <span>Page @(Model.PageIndex) of @(Model.TotalPages)</span>
+    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex+1)" class="btn btn-default @nextDisabled">Next</a>
+</td>

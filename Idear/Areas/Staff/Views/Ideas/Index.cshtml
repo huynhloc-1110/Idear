@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Idear.Models.Idea>
+﻿@model PaginatedList<Idear.Models.Idea>
 
 @{
     ViewData["Title"] = "Details";
@@ -59,10 +59,15 @@
         }
     </tbody>
 </table>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
 <td>
-    <a asp-area="Staff" asp-controller="Topics" asp-action="Index" class="btn btn-outline-dark">Back To All Topics</a>
+    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex-1)" class="btn btn-default @prevDisabled">Previous</a>
+    <span>Page @(Model.PageIndex) of @(Model.TotalPages)</span>
+    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex+1)" class="btn btn-default @nextDisabled">Next</a>
 </td>
-
 @section Scripts{
     <script>
         $(document).ready(function() {

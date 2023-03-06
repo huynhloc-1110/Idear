@@ -21,9 +21,12 @@ namespace Idear.Areas.Staff.Controllers
 		{
 			_context = context;
 		}
-		public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index(int? pageNumber)
 		{
-			return View(await _context.Topics.OrderByDescending(t => t.ClosureDate).Include(t => t.Ideas).ToListAsync());
+            int pageSize = 5;
+
+            return View(PaginatedList<Topic>.Create(await _context.Topics.OrderByDescending(t => t.ClosureDate).
+                Include(t => t.Ideas).ToListAsync(), pageNumber ?? 1, pageSize));
 		}
 
 		public async Task<IActionResult> Details(string id)
