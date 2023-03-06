@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Idear.Data;
 using Idear.Models;
 using Microsoft.AspNetCore.Authorization;
+using Idear.Areas.Admin.ViewModels;
 
 namespace Idear.Areas.Admin.Controllers
 {
@@ -22,13 +23,18 @@ namespace Idear.Areas.Admin.Controllers
             _context = context;
         }
 
-        // GET: Admin/Topics
+        // List Topic
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Topics.ToListAsync());
+            var TopicsVM = new TopicsVM()
+            {
+                Topics = await _context.Topics.ToListAsync()
+            };
+
+            return View(TopicsVM);
         }
 
-        // GET: Admin/Topics/Details/5
+        // Detail Topic
         public async Task<IActionResult> Details(string id)
         {
             if (id == null || _context.Topics == null)
@@ -43,64 +49,34 @@ namespace Idear.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            return View(topic);
+            return Json(topic);
         }
 
-        // GET: Admin/Topics/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Admin/Topics/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Create Topic
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,ClosureDate,FinalClosureDate")] Topic topic)
+        public async Task<IActionResult> Create(Topic topic)
         {
             if (ModelState.IsValid)
             {
                 topic.Id = Guid.NewGuid().ToString();
                 _context.Add(topic);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
-            return View(topic);
+            return BadRequest();
         }
 
-        // GET: Admin/Topics/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null || _context.Topics == null)
-            {
-                return NotFound();
-            }
-
-            var topic = await _context.Topics.FindAsync(id);
-            if (topic == null)
-            {
-                return NotFound();
-            }
-            return View(topic);
-        }
-
-        // POST: Admin/Topics/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        // Edit Topic
+        [HttpPut]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,Name,ClosureDate,FinalClosureDate")] Topic topic)
         {
-            if (id != topic.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
+                    topic.Id = id;
                     _context.Update(topic);
                     await _context.SaveChangesAsync();
                 }
@@ -115,46 +91,29 @@ namespace Idear.Areas.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
-            return View(topic);
+            return BadRequest();
         }
 
-        // GET: Admin/Topics/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null || _context.Topics == null)
-            {
-                return NotFound();
-            }
-
-            var topic = await _context.Topics
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (topic == null)
-            {
-                return NotFound();
-            }
-
-            return View(topic);
-        }
-
-        // POST: Admin/Topics/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // Delete Topic
+        [HttpDelete]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (_context.Topics == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Topics'  is null.");
             }
-            var topic = await _context.Topics.FindAsync(id);
-            if (topic != null)
+            var topic = await _context.Topics.Include(t => t.Ideas).FirstOrDefaultAsync(d => d.Id == id);
+            if (topic == null || topic!.Ideas.Any())
             {
-                _context.Topics.Remove(topic);
+                return BadRequest();
             }
 
+            _context.Topics.Remove(topic);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Ok();
         }
 
         private bool TopicExists(string id)

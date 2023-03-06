@@ -35,9 +35,6 @@ namespace Idear.Areas.Admin.Controllers
 			return View(rolesVM);
         }
 
-
-
-
 		//Details
 		public async Task<IActionResult> Details(string id)
 		{
@@ -60,11 +57,6 @@ namespace Idear.Areas.Admin.Controllers
 
 			return Json(model);
 		}
-
-
-
-
-
 
         //CreateRoles
         [HttpPost]
