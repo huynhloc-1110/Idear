@@ -12,6 +12,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Antiforgery;
 using System.Security.Claims;
+using System.Data;
+using MailKit.Net.Smtp;
+using MimeKit;
+using Microsoft.Extensions.Logging;
+using MailKit.Security;
+using Microsoft.Extensions.Configuration;
 
 namespace Idear.Areas.Staff.Controllers
 {
@@ -220,6 +226,36 @@ namespace Idear.Areas.Staff.Controllers
             _context.Ideas.Add(idea);
             await _context.SaveChangesAsync();
 
+
+            //Sending Email to all users who have a QA Coordinator role
+            var usersWithRole = await _userManager.GetUsersInRoleAsync("QA Coordinator");
+            foreach (var user in usersWithRole)
+            {
+                var email = "trilodai@gmail.com";
+                var password = "kglaxrohkpzjmatp";
+
+                var message = new MimeMessage();
+                message.From.Add(MailboxAddress.Parse(email));
+                message.To.Add(MailboxAddress.Parse(user.Email));
+                message.Subject = "Someone commented on your idea!";
+
+                message.Body = new TextPart("plain")
+                {
+                    Text = $"A new idea has been created: {idea.Text}"
+                };
+
+                using (var client = new SmtpClient())
+                {
+                    client.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+
+                    client.Authenticate(email, password);
+
+                    client.Send(message);
+
+                    client.Disconnect(true);
+                }
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -412,7 +448,5 @@ namespace Idear.Areas.Staff.Controllers
 
 			return RedirectToAction("ListIdeaByUser");
 		}
-
-
 	}
 }
