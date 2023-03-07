@@ -38,11 +38,11 @@
 				</div>
 				<div class="form-switch gapbreak">
 					<input type="checkbox" class="form-check-input" id="chk-agree" asp-for="AgreeTerms">
-					<label class="form-check-label" for="chk-anonymous" asp-for="AgreeTerms">I agree to the terms and conditions</label>
+					<label class="form-check-label" asp-for="AgreeTerms">I agree to the terms and conditions</label>
 					<span asp-validation-for="AgreeTerms" class="text-danger"></span>
 				</div>
 				<div class="form-group text-right">
-					<button class="btn btn-dark" type="submit"><i class="bi bi-card-checklist"></i>Edit idea</button>
+					<button class="btn btn-dark" type="submit"><i class="bi bi-card-checklist"></i> Edit idea</button>
 					<a asp-action="ListIdeaByUser" class="btn btn-light"><i class="bi bi-arrow-return-left"></i> Back to list</a>
 				</div>
 			</div>
