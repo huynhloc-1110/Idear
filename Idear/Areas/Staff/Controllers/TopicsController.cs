@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Drawing.Printing;
 using System.Reflection.Metadata.Ecma335;
 
 namespace Idear.Areas.Staff.Controllers
@@ -25,30 +24,26 @@ namespace Idear.Areas.Staff.Controllers
 		}
 		public async Task<IActionResult> Index(int? page)
 		{
-            int pageSize = 5;
-
-            return View(PaginatedList<Topic>.Create(await _context.Topics.OrderByDescending(t => t.ClosureDate).
-                Include(t => t.Ideas).ToListAsync(), page ?? 1, pageSize));
+            return View(PaginatedList<Topic>.Create(
+                await _context.Topics.OrderByDescending(t => t.ClosureDate)
+                .Include(t => t.Ideas)
+                .ToListAsync(), page ?? 1
+            ));
 		}
 
 		public async Task<IActionResult> Details(string id, int? page)
 		{
-            int pageSize = 5;
-            var topic = await _context.Topics
-                .Include(t => t.Ideas)!
-                    .ThenInclude(i => i.Views)
-                .Include(t => t.Ideas)!
-                    .ThenInclude(i => i.Comments)
-                .Include(t => t.Ideas)!
-                    .ThenInclude(i => i.Reacts)
-                .FirstOrDefaultAsync(t => t.Id == id);
-
+            var ideas = await _context.Ideas
+                .Include(i => i.Topic)
+                .Where(i => i.Topic.Id == id)
+                .Include(i => i.Views)
+                .Include(i => i.Comments)
+                .Include(i => i.Reacts)
+                .AsSplitQuery()
+                .ToListAsync();
             ViewBag.TopicId = id;
-            ViewBag.Topic = topic;
-
-            return View(PaginatedList<Idea>.Create(await _context.Ideas
-                .Where(i => i.Topic == topic)
-                .ToListAsync(), page ?? 1, pageSize));
+            return View(PaginatedList<Idea>
+                .Create(ideas, page ?? 1));
         }
     }
 }

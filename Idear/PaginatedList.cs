@@ -23,6 +23,8 @@ namespace Idear
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
 
+        public static PaginatedList<T> Create(List<T> source, int pageIndex)
+            => Create(source, pageIndex, 5);
 
     }
 }
