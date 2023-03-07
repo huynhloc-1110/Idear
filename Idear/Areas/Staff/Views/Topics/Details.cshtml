@@ -17,6 +17,7 @@
             <th>Likes</th>
             <th>Dislikes</th>
             <th>Comments</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -31,6 +32,9 @@
                     <td>@idea.Reacts.Where(i => i.ReactFlag == 1).Count()</td>
                     <td>@idea.Reacts.Where(i => i.ReactFlag == -1).Count()</td>
                     <td>@idea.Comments.Count</td>
+                    <td>
+                        <a class="btn btn-primary" asp-controller="Ideas" asp-action="Details" asp-route-id="@idea.Id">Details</a>
+                    </td>
                 </tr>
 
             }
