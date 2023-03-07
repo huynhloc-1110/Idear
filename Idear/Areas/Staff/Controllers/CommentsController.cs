@@ -5,6 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using MailKit.Net.Smtp;
+using MimeKit;
+using Microsoft.Extensions.Logging;
+using MailKit.Security;
 
 namespace Idear.Areas.Staff.Controllers
 {
@@ -14,12 +19,15 @@ namespace Idear.Areas.Staff.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
 
         public CommentsController(ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -32,7 +40,7 @@ namespace Idear.Areas.Staff.Controllers
             {
                 return BadRequest("The request is invalid.");
             }
-            if (cmtText == "" || cmtText == null || topicFinalClosureDate < DateTime.Now )
+            if (cmtText == "" || cmtText == null || topicFinalClosureDate < DateTime.Now)
             {
                 return BadRequest("The request is invalid.");
             }
@@ -49,6 +57,34 @@ namespace Idear.Areas.Staff.Controllers
 
             _context.Comments.Add(cmt);
             await _context.SaveChangesAsync();
+
+            var user = await _userManager.GetUserAsync(User);
+
+            // send email using MailKit
+            var emailSettings = _configuration.GetSection("EmailSettings");
+            var email = emailSettings["Email"];
+            var password = emailSettings["Password"];
+
+            var message = new MimeMessage();
+            message.From.Add(MailboxAddress.Parse(email));
+            message.To.Add(MailboxAddress.Parse(user.Email));
+            message.Subject = "Someone commented on your idea!";
+
+            message.Body = new TextPart("plain")
+            {
+                Text = $"A new comment has been added: {cmtText}"
+            };
+
+            using (var client = new SmtpClient())
+            {
+                client.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+
+                client.Authenticate(email, password);
+
+                client.Send(message);
+
+                client.Disconnect(true);
+            }
 
             return Json(new { id = cmt.Id, user = cmt.User.FullName, dateTime = cmt.Datetime.ToString("d/M/yyyy HH:mm:ss") });
         }
