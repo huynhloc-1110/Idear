@@ -70,6 +70,7 @@ namespace Idear.Areas.Staff.Controllers
                 .Include(i => i.Views)
                 .Include(i => i.Comments)
                 .Include(i => i.Reacts)
+                .AsSplitQuery()
                 .ToListAsync();
             return View(ideas);
         }
