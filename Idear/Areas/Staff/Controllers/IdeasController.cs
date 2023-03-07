@@ -31,10 +31,9 @@ namespace Idear.Areas.Staff.Controllers
         }
 
         // GET: Staff/Ideas
-        public async Task<IActionResult> Index(string orderBy)
+        public async Task<IActionResult> Index(string orderBy, int? page)
         {
             IQueryable<Idea> ideaQuery = null;
-
             switch (orderBy)
             {
                 case "like":
@@ -71,7 +70,8 @@ namespace Idear.Areas.Staff.Controllers
                 .Include(i => i.Comments)
                 .Include(i => i.Reacts)
                 .ToListAsync();
-            return View(ideas);
+            return View(PaginatedList<Idea>.Create(ideas, page ?? 1));
+      
         }
 
         //Details 
@@ -90,6 +90,7 @@ namespace Idear.Areas.Staff.Controllers
                     .ThenInclude(c => c.User)
                 .Include(i => i.Reacts)
                 .Include(i => i.Views)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (idea == null)
@@ -234,11 +235,12 @@ namespace Idear.Areas.Staff.Controllers
         }
 
         //ListIdeaByUser
-        public async Task<IActionResult> ListIdeaByUser()
+        public async Task<IActionResult> ListIdeaByUser( int ?page)
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            var ideas = await _context.Ideas.Where(i => i.User == currentUser).ToListAsync();
-            return View(ideas);
+            var idea = await _context.Ideas.Where(i => i.User == currentUser).ToListAsync();
+            return View(PaginatedList<Idea>.Create(idea, page ?? 1));
+
         }
 
         // Delete idea

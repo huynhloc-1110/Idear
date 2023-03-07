@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Idear.Models.Idea>
+﻿@model PaginatedList<Idear.Models.Idea>
 
 @{
     ViewData["Title"] = "Details";
@@ -59,9 +59,7 @@
         }
     </tbody>
 </table>
-<td>
-    <a asp-area="Staff" asp-controller="Topics" asp-action="Index" class="btn btn-outline-dark">Back To All Topics</a>
-</td>
+<partial name="_PaginatedList" />
 
 @section Scripts{
     <script>
