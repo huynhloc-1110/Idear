@@ -10,6 +10,7 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using Microsoft.Extensions.Logging;
 using MailKit.Security;
+using Org.BouncyCastle.Crypto;
 
 namespace Idear.Areas.Staff.Controllers
 {
@@ -66,13 +67,15 @@ namespace Idear.Areas.Staff.Controllers
             var password = emailSettings["Password"];
 
             var message = new MimeMessage();
-            message.From.Add(MailboxAddress.Parse(email));
+            message.From.Add(new MailboxAddress("please do not reply", "plsdonotreply@gmail.com"));
             message.To.Add(MailboxAddress.Parse(user.Email));
             message.Subject = "Someone commented on your idea!";
 
-            message.Body = new TextPart("plain")
+            var url = Url.Action("Details", "Ideas", new { id = ideaId }, Request.Scheme);
+
+            message.Body = new TextPart("html")
             {
-                Text = $"A new comment has been added: {cmtText}"
+                Text = $"<p>{cmt.User.FullName} has added a <a href=\"{url}#{cmt.Id}\">comment</a> on your \"<b>{cmt.Idea!.Text}</b>\" idea</p>"
             };
 
             using (var client = new SmtpClient())
