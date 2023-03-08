@@ -82,9 +82,8 @@ namespace Idear.Areas.Staff.Controllers
                 // add the associated file to the folder.
                 foreach (var idea in ideas)
                 {
-                    var folderName = $"{idea.Text}";
                     var fileStream = new FileStream(Path.Combine(_hostingEnvironment.WebRootPath, idea.FilePath), FileMode.Open);
-                    var entryName = Path.Combine(Path.GetFileName(folderName), Path.GetFileName(idea.FilePath));
+                    var entryName = Path.Combine(Path.GetFileName(idea.Text), Path.GetFileName(idea.FilePath));
                     var zipEntry = zipArchive.CreateEntry(entryName);
                     using (var zipEntryStream = zipEntry.Open())
                     {
@@ -93,7 +92,6 @@ namespace Idear.Areas.Staff.Controllers
                     }
                 }
             }
-
             // return the ZIP archive as a file response with the appropriate MIME type and file name
             return File(new FileStream(zipFilePath, FileMode.Open), "application/octet-stream", zipFileName);
         }
@@ -144,7 +142,6 @@ namespace Idear.Areas.Staff.Controllers
                     worksheet.Cells[i + 2, 5].Value = ideas[i].Reacts.Where(i => i.ReactFlag == 1).Count();
                     worksheet.Cells[i + 2, 6].Value = ideas[i].Reacts.Where(i => i.ReactFlag == -1).Count();
                 }
-
                 // set column widths
                 worksheet.Column(1).AutoFit();
                 worksheet.Column(2).AutoFit();
@@ -152,14 +149,11 @@ namespace Idear.Areas.Staff.Controllers
                 worksheet.Column(4).AutoFit();
                 worksheet.Column(5).AutoFit();
                 worksheet.Column(6).AutoFit();
-
                 // create a memory stream and write the package to it
                 var stream = new MemoryStream();
                 package.SaveAs(stream);
-
                 // set the position of the stream to the beginning
                 stream.Position = 0;
-
                 // return the stream as a file with the topic name as the filename
                 return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{topic.Name}.xlsx");
             }
