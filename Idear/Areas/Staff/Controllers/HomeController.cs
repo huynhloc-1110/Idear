@@ -44,8 +44,13 @@ namespace Idear.Areas.Staff.Controllers
                     .Include(i => i.Topic)
                     .ToListAsync(),
                 MostViewedIdeas = await _context.Ideas
-                    .OrderByDescending(i => i.Views!.Count)
+                    .Select(idea => new {
+                        Idea = idea,
+                        ActualViews = idea.Views.Sum(v => v.VisitTime)
+                    })
+                    .OrderByDescending(idea => idea.ActualViews)
                     .Take(3)
+                    .Select(idea => idea.Idea)
                     .Include(i => i.Views)
                     .ToListAsync(),
                 MostLikedIdeas = await _context.Ideas
