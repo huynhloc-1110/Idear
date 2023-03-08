@@ -28,12 +28,14 @@ namespace Idear.Areas.Staff.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly IConfiguration _configuration;
 
-        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment)
+        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
             _hostingEnvironment = hostingEnvironment;
+            _configuration = configuration;
         }
 
         // GET: Staff/Ideas
@@ -231,17 +233,20 @@ namespace Idear.Areas.Staff.Controllers
             var usersWithRole = await _userManager.GetUsersInRoleAsync("QA Coordinator");
             foreach (var user in usersWithRole)
             {
-                var email = "trilodai@gmail.com";
-                var password = "kglaxrohkpzjmatp";
+                var emailSettings = _configuration.GetSection("EmailSettings");
+                var email = emailSettings["Email"];
+                var password = emailSettings["Password"];
 
                 var message = new MimeMessage();
-                message.From.Add(MailboxAddress.Parse(email));
+                message.From.Add(new MailboxAddress("please do not reply", "plsdonotreply@gmail.com"));
                 message.To.Add(MailboxAddress.Parse(user.Email));
-                message.Subject = "Someone commented on your idea!";
+                message.Subject = "Someone has created a new idea!";
 
-                message.Body = new TextPart("plain")
+                var url = Url.Action("Details", "Ideas", new { id = idea.Id }, Request.Scheme);
+
+                message.Body = new TextPart("html")
                 {
-                    Text = $"A new idea has been created: {idea.Text}"
+                    Text = $"<p>{idea.User.FullName} has created a new idea called: <a href=\"{url}\">{idea.Text}</a></p>"
                 };
 
                 using (var client = new SmtpClient())
