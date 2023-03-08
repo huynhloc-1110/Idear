@@ -56,7 +56,7 @@ namespace Idear.Areas.QAManager.Controllers
                     // create fileStream from idea.FilePath and copy from zip entry to it
                     using var fileStream = new FileStream(Path.Combine(_hostingEnvironment.WebRootPath, idea.FilePath), FileMode.Open);
                     using var zipEntryStream = zipEntry.Open();
-                    await fileStream.CopyToAsync(zipEntryStream);
+                    fileStream.CopyTo(zipEntryStream);
                 }
             }
             byte[] fileBytes = System.IO.File.ReadAllBytes(zipFilePath);
