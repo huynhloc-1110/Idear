@@ -41,10 +41,10 @@
                 </td>
                 <td>
                     <a asp-area="Staff" asp-controller="Topics" asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Details</a>
-                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("QA Manager"))
                     {
-                        <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Export ZIP</a>
-                        <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Export Excel</a>
+                        <a asp-action="ExportZip" asp-controller="Export" asp-area="QAManager" asp-route-id="@item.Id" class="btn btn-primary">Export Zip</a>
+                        <a asp-action="ExportExcel" asp-controller="Export" asp-area="QAManager" asp-route-id="@item.Id" class="btn btn-primary">Export Excel</a>
                     }
                 </td>
 

@@ -9,11 +9,13 @@ using Idear.Data;
 using Idear.Models;
 using Microsoft.AspNetCore.Authorization;
 using Idear.Areas.Admin.ViewModels;
+using OfficeOpenXml;
+using System.IO.Compression;
 
 namespace Idear.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, QA Manager")]
     public class TopicsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -120,5 +122,6 @@ namespace Idear.Areas.Admin.Controllers
         {
             return _context.Topics.Any(e => e.Id == id);
         }
+
     }
 }
