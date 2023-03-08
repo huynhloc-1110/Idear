@@ -12,7 +12,7 @@ using System.Runtime.Intrinsics.Arm;
 namespace Idear.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, QA Manager")]
 
     public class ApplicationUsersController : Controller
     {
