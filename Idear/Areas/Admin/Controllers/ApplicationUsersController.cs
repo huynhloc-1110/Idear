@@ -13,6 +13,7 @@ namespace Idear.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "QA Manager")]
 
     public class ApplicationUsersController : Controller
     {

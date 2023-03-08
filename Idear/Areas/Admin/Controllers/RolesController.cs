@@ -11,6 +11,7 @@ namespace Idear.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "QA Manager")]
     public class RolesController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;

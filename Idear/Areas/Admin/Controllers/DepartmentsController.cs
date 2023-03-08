@@ -16,6 +16,7 @@ namespace Idear.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "QA Manager")]
     public class DepartmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
