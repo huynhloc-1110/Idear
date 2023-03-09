@@ -1,7 +1,9 @@
 using Idear.Data;
 using Idear.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Idear.Data.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,9 @@ builder.Services.AddDefaultIdentity<ApplicationUser>().AddDefaultTokenProviders(
     .AddUserManager<UserManager<ApplicationUser>>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+// Register your service here
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
+builder.Services.AddTransient<ISendMailService, SendMailService>();
 
 builder.Services.AddControllersWithViews();
 

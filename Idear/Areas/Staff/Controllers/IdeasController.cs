@@ -18,6 +18,7 @@ using MimeKit;
 using Microsoft.Extensions.Logging;
 using MailKit.Security;
 using Microsoft.Extensions.Configuration;
+using Idear.Data.Services;
 
 namespace Idear.Areas.Staff.Controllers
 {
@@ -29,13 +30,15 @@ namespace Idear.Areas.Staff.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IConfiguration _configuration;
+        private readonly ISendMailService _sendMailService;
 
-        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment, IConfiguration configuration)
+        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment, IConfiguration configuration, ISendMailService sendMailService)
         {
             _context = context;
             _userManager = userManager;
             _hostingEnvironment = hostingEnvironment;
             _configuration = configuration;
+            _sendMailService = sendMailService;
         }
 
         // GET: Staff/Ideas
@@ -228,37 +231,20 @@ namespace Idear.Areas.Staff.Controllers
             _context.Ideas.Add(idea);
             await _context.SaveChangesAsync();
 
+            var url = Url.Action("Details", "Ideas", new { id = idea.Id }, Request.Scheme);
 
             //Sending Email to all users who have a QA Coordinator role
             var usersWithRole = await _userManager.GetUsersInRoleAsync("QA Coordinator");
             foreach (var user in usersWithRole)
             {
-                var emailSettings = _configuration.GetSection("EmailSettings");
-                var email = emailSettings["Email"];
-                var password = emailSettings["Password"];
-
-                var message = new MimeMessage();
-                message.From.Add(new MailboxAddress("please do not reply", "plsdonotreply@gmail.com"));
-                message.To.Add(MailboxAddress.Parse(user.Email));
-                message.Subject = "Someone has created a new idea!";
-
-                var url = Url.Action("Details", "Ideas", new { id = idea.Id }, Request.Scheme);
-
-                message.Body = new TextPart("html")
+                MailContent content = new MailContent
                 {
-                    Text = $"<p>{idea.User.FullName} has created a new idea called: <a href=\"{url}\">{idea.Text}</a></p>"
+                    To = user.Email,
+                    Subject = "Someone has created a new idea",
+                    Body = $"<p>{idea.User.FullName} has created a new idea called: <a href=\"{url}\">{idea.Text}</a></p>"
                 };
 
-                using (var client = new SmtpClient())
-                {
-                    client.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-
-                    client.Authenticate(email, password);
-
-                    client.Send(message);
-
-                    client.Disconnect(true);
-                }
+                _ = _sendMailService.SendMail(content);
             }
 
             return RedirectToAction("Index");

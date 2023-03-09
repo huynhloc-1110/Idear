@@ -11,6 +11,7 @@ using MimeKit;
 using Microsoft.Extensions.Logging;
 using MailKit.Security;
 using Org.BouncyCastle.Crypto;
+using Idear.Data.Services;
 
 namespace Idear.Areas.Staff.Controllers
 {
@@ -21,14 +22,17 @@ namespace Idear.Areas.Staff.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly ISendMailService _sendMailService;
 
         public CommentsController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ISendMailService sendMailService)
         {
             _context = context;
             _userManager = userManager;
             _configuration = configuration;
+            _sendMailService = sendMailService;
         }
 
         [HttpPost]
@@ -62,32 +66,16 @@ namespace Idear.Areas.Staff.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             // send email using MailKit
-            var emailSettings = _configuration.GetSection("EmailSettings");
-            var email = emailSettings["Email"];
-            var password = emailSettings["Password"];
-
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("please do not reply", "plsdonotreply@gmail.com"));
-            message.To.Add(MailboxAddress.Parse(user.Email));
-            message.Subject = "Someone commented on your idea!";
-
             var url = Url.Action("Details", "Ideas", new { id = ideaId }, Request.Scheme);
 
-            message.Body = new TextPart("html")
+            MailContent content = new MailContent
             {
-                Text = $"<p>{cmt.User.FullName} has added a <a href=\"{url}#{cmt.Id}\">comment</a> on your \"<b>{cmt.Idea!.Text}</b>\" idea</p>"
+                To = user.Email,
+                Subject = "Someone commented on your idea!",
+                Body = $"<p>{cmt.User.FullName} has added a <a href=\"{url}#{cmt.Id}\">comment</a> on your \"<b>{cmt.Idea!.Text}</b>\" idea</p>",
             };
 
-            using (var client = new SmtpClient())
-            {
-                client.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-
-                client.Authenticate(email, password);
-
-                client.Send(message);
-
-                client.Disconnect(true);
-            }
+            _ = _sendMailService.SendMail(content);
 
             return Json(new { id = cmt.Id, user = cmt.User.FullName, dateTime = cmt.Datetime.ToString("d/M/yyyy HH:mm:ss") });
         }

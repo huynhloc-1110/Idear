@@ -270,6 +270,10 @@
             // update comment count of this idea page
             var cmtCount = $('#cmt-count');
             cmtCount.text(parseInt(cmtCount.text()) + 1);
+            
+            // Clear text area after commenting
+            var cmtArea = $('#input-cmt');
+            cmtArea.val('');
         } 
 
         $(document).ready(function() {
