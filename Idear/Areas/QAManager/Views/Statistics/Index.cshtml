@@ -71,9 +71,9 @@
                     </div>
                 </div>
             </div>
+            <br />
         </div>
         <div class="col-md-6">
-            <br />
             <div class="card mx-3 mt-n5 shadow-lg home-section">
                 <div class="card-header bg-primary bg-opacity-50 header-section">
                     <h4><i class="bi bi-pencil-square"></i> Anonymous Comments</h4>
@@ -82,7 +82,7 @@
                     @foreach (var comment in Model.AnonymousComments)
                     {
                         <div class="card">
-                            <a class="card-body" href="@Url.Action("Details", "Ideas", new { id = @comment.Idea!.Id})#@comment.Id">
+                            <a class="card-body" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@comment.Idea!.Id" asp-fragment="@comment.Id">
                                 <p class="card-text" id="@comment.Id">
                                     @comment.Text
                                     <small class="text-muted">- by @comment.User!.FullName</small>
@@ -92,7 +92,7 @@
                         </div>
                     }
                     <div class="text-right">
-                        <a asp-area="Staff" asp-controller="Ideas" asp-action="Index" asp-route-orderBy="latest" class="btn bg-primary bg-opacity-50">See more <i class="bi bi-forward"></i></a>
+                        <a asp-area="QAManager" asp-controller="Statistics" asp-action="ListComment" class="btn bg-primary bg-opacity-50">See more <i class="bi bi-forward"></i></a>
                     </div>
                 </div>
             </div>

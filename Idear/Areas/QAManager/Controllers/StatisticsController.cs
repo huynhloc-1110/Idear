@@ -1,4 +1,5 @@
 ﻿using Idear.Areas.QAManager.ViewModels;
+using Idear.Areas.Staff.ViewModels;
 using Idear.Data;
 using Idear.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -118,6 +119,17 @@ namespace Idear.Areas.QAManager.Controllers
                 .AsSplitQuery()
                 .ToListAsync();
             return View(PaginatedList<Idea>.Create(ideas, page ?? 1));
+        }
+
+        public async Task<IActionResult> ListComment(int? page)
+        {
+            var anonymousComments = await _context.Comments
+                .Include(c => c.Idea)
+                .Include(c => c.User)
+                .Where(c => c.IsAnonymous)
+                .OrderByDescending(c => c.Datetime)
+                .ToListAsync();
+            return View(PaginatedList<Comment>.Create(anonymousComments, page ?? 1));
         }
     }
 }
