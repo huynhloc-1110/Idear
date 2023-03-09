@@ -1,6 +1,6 @@
 ﻿using Idear.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Build.Framework;
+using System.ComponentModel.DataAnnotations;
 
 namespace Idear.Areas.Admin.ViewModels
 {
