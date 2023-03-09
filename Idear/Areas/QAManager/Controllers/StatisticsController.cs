@@ -27,16 +27,20 @@ namespace Idear.Areas.QAManager.Controllers
                 .Include(i => i.Comments)
                 .Include(i => i.User)
                 .Where(i => i.Comments!.Count == 0)
+                .OrderByDescending(i => i.DateTime)
                 .Take(5)
                 .ToListAsync();
             var anonymousIdeas = await _context.Ideas
                 .Include(i => i.User)
                 .Where(i => i.IsAnonymous)
+                .OrderByDescending(i => i.DateTime)
                 .Take(5)
                 .ToListAsync();
             var anonymousComments = await _context.Comments
                 .Include(c => c.Idea)
+                .Include(c => c.User)
                 .Where(c => c.IsAnonymous)
+                .OrderByDescending(c => c.Datetime)
                 .Take(5)
                 .ToListAsync();
 
@@ -84,6 +88,36 @@ namespace Idear.Areas.QAManager.Controllers
             data["userCounts"] = userCounts;
 
             return data;
+        }
+
+        public async Task<IActionResult> ListIdea(string filter, int? page)
+        {
+            IQueryable<Idea> ideaQuery = null;
+            switch (filter)
+            {
+                case "anonymous":
+                    ideaQuery = _context.Ideas
+                        .Where(i => i.IsAnonymous)
+                        .OrderByDescending(i => i.DateTime);
+                    break;
+                case "noComment":
+                    ideaQuery = _context.Ideas
+                        .Where(i => i.Comments!.Count == 0)
+                        .OrderByDescending(i => i.DateTime);
+                    break;
+                default:
+                    ideaQuery = _context.Ideas
+                        .OrderByDescending(i => i.DateTime);
+                    break;
+            }
+            var ideas = await ideaQuery
+                .Include(i => i.User)
+                .Include(i => i.Views)
+                .Include(i => i.Comments)
+                .Include(i => i.Reacts)
+                .AsSplitQuery()
+                .ToListAsync();
+            return View(PaginatedList<Idea>.Create(ideas, page ?? 1));
         }
     }
 }

@@ -1,7 +1,14 @@
 ﻿<nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
         <li class="page-item">
-            <a class="page-link" asp-action="@ViewBag.ViewName" asp-route-orderBy="@Context.Request.Query["orderBy"].ToString()" asp-route-id="@ViewBag.TopicId" asp-route-page="1"><<</a>
+            <a class="page-link"
+                asp-action="@ViewBag.ViewName"
+                asp-route-orderBy="@Context.Request.Query["orderBy"].ToString()"
+                asp-route-filter="@Context.Request.Query["filter"].ToString()"
+                asp-route-id="@ViewBag.TopicId"
+                asp-route-page="1">
+                <<
+            </a>
         </li>
         @* show ... at the start *@
         @if (Model.PageIndex > 3)
@@ -32,7 +39,14 @@
             </li>
         }
         <li class="page-item">
-            <a class="page-link" asp-action="@ViewBag.ViewName" asp-route-orderBy="@Context.Request.Query["orderBy"].ToString()" asp-route-id="@ViewBag.TopicId" asp-route-page="@Model.TotalPages">>></a>
+            <a class="page-link"
+                asp-action="@ViewBag.ViewName"
+                asp-route-orderBy="@Context.Request.Query["orderBy"].ToString()"
+                asp-route-filter="@Context.Request.Query["filter"].ToString()"
+                asp-route-id="@ViewBag.TopicId"
+                asp-route-page="@Model.TotalPages">
+                >>
+            </a>
         </li>
     </ul>
     
