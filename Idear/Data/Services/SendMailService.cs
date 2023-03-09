@@ -38,25 +38,17 @@ namespace Idear.Data.Services
             builder.HtmlBody = mailContent.Body;
             message.Body = builder.ToMessageBody();
 
-            using var client = new MailKit.Net.Smtp.SmtpClient();
-            try {
-                client.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
-
-                client.Authenticate(_mailSettings.Mail, _mailSettings.Password);
-
-                await client.SendAsync(message);
-
-            } catch (Exception ex)
+            using (var client = new MailKit.Net.Smtp.SmtpClient())
             {
-                System.IO.Directory.CreateDirectory("mailssave");
-                var emailsaveFile = string.Format(@"mailssave/{0}.eml", Guid.NewGuid());
-                await message.WriteToAsync(emailsaveFile);
 
-                logger.LogInformation("There is an error while sending a mail, it is saved at " + emailsaveFile);
-                logger.LogError(ex.Message);
-            }
+            client.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
+
+            client.Authenticate(_mailSettings.Mail, _mailSettings.Password);
+
+            await client.SendAsync(message);
 
             client.Disconnect(true);
+            }
             
             logger.LogInformation("Send mail to " + mailContent.To);
         }
