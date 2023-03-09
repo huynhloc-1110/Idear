@@ -1,4 +1,5 @@
-﻿using Idear.Data;
+﻿using Idear.Areas.QAManager.ViewModels;
+using Idear.Data;
 using Idear.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -9,20 +10,44 @@ namespace Idear.Areas.QAManager.Controllers
 {
     [Area("QAManager")]
     [Authorize(Roles = "QA Manager")]
-    public class ChartsController : Controller
+    public class StatisticsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ChartsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public StatisticsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var noCommentIdeas = await _context.Ideas
+                .Include(i => i.Comments)
+                .Include(i => i.User)
+                .Where(i => i.Comments!.Count == 0)
+                .Take(5)
+                .ToListAsync();
+            var anonymousIdeas = await _context.Ideas
+                .Include(i => i.User)
+                .Where(i => i.IsAnonymous)
+                .Take(5)
+                .ToListAsync();
+            var anonymousComments = await _context.Comments
+                .Include(c => c.Idea)
+                .Where(c => c.IsAnonymous)
+                .Take(5)
+                .ToListAsync();
+
+            var reportVM = new ExceptionReportsVM
+            {
+                NoCommentIdeas = noCommentIdeas,
+                AnonymousIdeas = anonymousIdeas,
+                AnonymousComments = anonymousComments
+            };
+
+            return View(reportVM);
         }
 
         public async Task<Dictionary<string, object>> GetDepartIdeaCount()
