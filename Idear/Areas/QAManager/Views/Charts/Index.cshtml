@@ -1,0 +1,158 @@
+﻿@model Dictionary<string, object>
+
+@{
+    ViewData["Title"] = "Statistics";
+}
+
+<div class="container-fluid">
+    <div class="card mx-3 mt-n5 shadow-lg home-section">
+        <div class="card-header bg-warning bg-opacity-50 header-section">
+            <h4><i class="bi bi-star"></i> Statistics</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <canvas id="chart-bar-depart"></canvas>
+                </div>
+                <div class="col-md-4">
+                    <canvas id="chart-donut-depart"></canvas>
+                </div>
+                <div class="col-md-4">
+                    <canvas id="chart-contributors"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.umd.js" integrity="sha512-vCUbejtS+HcWYtDHRF2T5B0BKwVG/CLeuew5uT2AiX4SJ2Wff52+kfgONvtdATqkqQMC9Ye5K+Td0OTaz+P7cw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(function () {
+            showDepartCharts();
+            showContributorsChart();
+        });
+        
+        function showDepartCharts() {
+            $.ajax({
+                type: 'GET',
+                url: '/QAManager/Charts/GetDepartIdeaCount',
+                contextType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: onSuccessResult
+            })
+
+            function onSuccessResult(data) {
+                var _chartLabels = data['labels'];
+                var _chartData = data['ideaCounts'];
+
+                new Chart('chart-bar-depart', {
+                    type: 'bar',
+                    data: {
+                        labels: _chartLabels,
+                        datasets: [{
+                            label: 'Number of Ideas',
+                            data: _chartData,
+                            barThickness: 40,
+                            borderWidth: 1,
+                            backgroundColor: [
+                                'rgba(255, 99, 132)',
+                                'rgba(255, 159, 64)',
+                                'rgba(75, 192, 192)',
+                                'rgba(54, 162, 235)',
+                                'rgba(153, 102, 255)',
+                                'rgba(201, 203, 207)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Number of Ideas by each Department',
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+
+                const sum = _chartData.reduce((total, num) => total + num);
+                const _donutData = _chartData.map(num => ((num / sum) * 100).toFixed(1));
+                new Chart('chart-donut-depart', {
+                    type: 'doughnut',
+                    data: {
+                        labels: _chartLabels,
+                        datasets: [{
+                            label: '% of Idea',
+                            data: _donutData,
+                            barThickness: 40,
+                            borderWidth: 1,
+                            backgroundColor: [
+                                'rgba(255, 99, 132)',
+                                'rgba(255, 159, 64)',
+                                'rgba(75, 192, 192)',
+                                'rgba(54, 162, 235)',
+                                'rgba(153, 102, 255)',
+                                'rgba(201, 203, 207)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Percentage of Ideas by each Department',
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        
+        function showContributorsChart() {
+            $.ajax({
+                type: 'GET',
+                url: '/QAManager/Charts/GetDepartUserCount',
+                contextType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: onSuccessResult
+            })
+
+            function onSuccessResult(data) {
+                var _chartLabels = data['labels'];
+                var _chartData = data['userCounts'];
+
+                new Chart('chart-contributors', {
+                    type: 'bar',
+                    data: {
+                        labels: _chartLabels,
+                        datasets: [{
+                            label: 'Number of Contributors',
+                            data: _chartData,
+                            borderWidth: 1,
+                            backgroundColor: [
+                                'rgba(255, 99, 132)',
+                                'rgba(255, 159, 64)',
+                                'rgba(75, 192, 192)',
+                                'rgba(54, 162, 235)',
+                                'rgba(153, 102, 255)',
+                                'rgba(201, 203, 207)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Number of Contributors by each Department',
+                                position: 'bottom'
+                            }
+                        },
+                        indexAxis: 'y'
+                    }
+                });
+            }
+        }
+    </script>
+}
