@@ -28,7 +28,16 @@
             }
             else
             {
-                <li class="page-item"><a class="page-link" asp-action="@ViewBag.ViewName" asp-route-orderBy="@Context.Request.Query["orderBy"].ToString()" asp-route-id="@ViewBag.TopicId" asp-route-page="@i">@i</a></li>
+                <li class="page-item">
+                    <a class="page-link"
+                        asp-action="@ViewBag.ViewName"
+                        asp-route-orderBy="@Context.Request.Query["orderBy"].ToString()"
+                        asp-route-filter="@Context.Request.Query["filter"].ToString()"
+                        asp-route-id="@ViewBag.TopicId"
+                        asp-route-page="@i">
+                        @i
+                    </a>
+                </li>
             }
         }
         @* show ... at the end *@
