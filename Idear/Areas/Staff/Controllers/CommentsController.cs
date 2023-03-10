@@ -74,7 +74,6 @@ namespace Idear.Areas.Staff.Controllers
                 Subject = "Someone commented on your idea!",
                 Body = $"<p>{cmt.User.FullName} has added a <a href=\"{url}#{cmt.Id}\">comment</a> on your \"<b>{cmt.Idea!.Text}</b>\" idea</p>",
             };
-
             _ = _sendMailService.SendMail(content);
 
             return Json(new { id = cmt.Id, user = cmt.User.FullName, dateTime = cmt.Datetime.ToString("d/M/yyyy HH:mm:ss") });

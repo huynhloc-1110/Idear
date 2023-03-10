@@ -31,36 +31,19 @@ namespace Idear.Data.Services
             message.To.Add(MailboxAddress.Parse(mailContent.To));
             message.Subject = mailContent.Subject;
 
-
-            //var url = Url.Action("Details", "Ideas", new { id = idea.Id }, Request.Scheme);
-
             var builder = new BodyBuilder();
             builder.HtmlBody = mailContent.Body;
             message.Body = builder.ToMessageBody();
 
             using (var client = new MailKit.Net.Smtp.SmtpClient())
             {
-
-            client.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
-
-            client.Authenticate(_mailSettings.Mail, _mailSettings.Password);
-
-            await client.SendAsync(message);
-
-            client.Disconnect(true);
+                client.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
+                client.Authenticate(_mailSettings.Mail, _mailSettings.Password);
+                await client.SendAsync(message);
+                client.Disconnect(true);
             }
             
             logger.LogInformation("Send mail to " + mailContent.To);
         }
-        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
-        {
-            await SendMail(new MailContent()
-            {
-                To = email,
-                Subject = subject,
-                Body = htmlMessage
-            });
-        }
-
     }
 }

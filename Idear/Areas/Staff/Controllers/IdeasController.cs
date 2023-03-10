@@ -29,15 +29,13 @@ namespace Idear.Areas.Staff.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly IConfiguration _configuration;
         private readonly ISendMailService _sendMailService;
 
-        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment, IConfiguration configuration, ISendMailService sendMailService)
+        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment, ISendMailService sendMailService)
         {
             _context = context;
             _userManager = userManager;
             _hostingEnvironment = hostingEnvironment;
-            _configuration = configuration;
             _sendMailService = sendMailService;
         }
 
@@ -231,11 +229,11 @@ namespace Idear.Areas.Staff.Controllers
             _context.Ideas.Add(idea);
             await _context.SaveChangesAsync();
 
-            var url = Url.Action("Details", "Ideas", new { id = idea.Id }, Request.Scheme);
-
             //Sending Email to all users who have a QA Coordinator role
+            var url = Url.Action("Details", "Ideas", new { id = idea.Id }, Request.Scheme);
             var usersWithRole = await _userManager.GetUsersInRoleAsync("QA Coordinator");
-            foreach (var user in usersWithRole)
+            var usersWithDepartment = usersWithRole.Where(u => u.Department == currentUser.Department);
+            foreach (var user in usersWithDepartment)
             {
                 MailContent content = new MailContent
                 {
