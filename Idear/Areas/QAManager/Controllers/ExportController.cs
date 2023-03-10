@@ -30,6 +30,10 @@ namespace Idear.Areas.QAManager.Controllers
             {
                 return NotFound();
             }
+            if (topic.ClosureDate > DateTime.Now)
+            {
+                return BadRequest("Cannot export until closure date.");
+            }
 
             // get ideas of the topic that have file
             var ideas = await _context.Ideas
@@ -75,7 +79,10 @@ namespace Idear.Areas.QAManager.Controllers
             {
                 return NotFound();
             }
-
+            if (topic.ClosureDate > DateTime.Now)
+            {
+                return BadRequest("Cannot export until closure date.");
+            }
             // get ideas to list
             var ideas = await _context.Ideas
                 .Include(i => i.Topic)
