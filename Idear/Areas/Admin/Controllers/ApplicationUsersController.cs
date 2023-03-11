@@ -155,6 +155,7 @@ namespace Idear.Areas.Admin.Controllers
 
             user.Email = model.Email;
             user.FullName = model.FullName;
+            user.UserName = model.Email;
             user.Department = await _context.Departments.FirstOrDefaultAsync(d => d.Id == model.DepartmentId);
 
             var result = await _userManager.UpdateAsync(user);
