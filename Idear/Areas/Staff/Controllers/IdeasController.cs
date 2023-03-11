@@ -12,6 +12,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Antiforgery;
 using System.Security.Claims;
+using System.Data;
+using MailKit.Net.Smtp;
+using MimeKit;
+using Microsoft.Extensions.Logging;
+using MailKit.Security;
+using Microsoft.Extensions.Configuration;
+using Idear.Services;
 
 namespace Idear.Areas.Staff.Controllers
 {
@@ -22,12 +29,14 @@ namespace Idear.Areas.Staff.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly ISendMailService _sendMailService;
 
-        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment)
+        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment, ISendMailService sendMailService)
         {
             _context = context;
             _userManager = userManager;
             _hostingEnvironment = hostingEnvironment;
+            _sendMailService = sendMailService;
         }
 
         // GET: Staff/Ideas
@@ -219,6 +228,31 @@ namespace Idear.Areas.Staff.Controllers
 
             _context.Ideas.Add(idea);
             await _context.SaveChangesAsync();
+
+            // Get the email receiver which are QA Coordinators and in the same depart
+            var qaCoordinator = await _userManager.GetUsersInRoleAsync("QA Coordinator");
+            foreach (var person in qaCoordinator)
+            {
+                await _context.Entry(person).Reference(u => u.Department).LoadAsync();
+            }
+            await _context.Entry(currentUser).Reference(u => u.Department).LoadAsync();
+            var emailReceivers = qaCoordinator
+                .Where(u => u.Department == currentUser.Department)
+                .ToList();
+
+            //Send email to them
+            var url = Url.Action("Details", "Ideas", new { id = idea.Id }, Request.Scheme);
+            foreach (var user in emailReceivers)
+            {
+                MailContent content = new MailContent
+                {
+                    To = user.Email,
+                    Subject = "Someone has created a new idea",
+                    Body = $"<p>{idea.User.FullName} has created a new idea called: <a href=\"{url}\">{idea.Text}</a></p>"
+                };
+
+                _ = _sendMailService.SendMail(content);
+            }
 
             return RedirectToAction("Index");
         }
@@ -412,7 +446,5 @@ namespace Idear.Areas.Staff.Controllers
 
 			return RedirectToAction("ListIdeaByUser");
 		}
-
-
 	}
 }
