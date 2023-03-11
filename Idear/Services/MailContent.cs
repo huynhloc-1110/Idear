@@ -1,4 +1,4 @@
-﻿namespace Idear.Data.Services
+﻿namespace Idear.Services
 {
     public class MailContent
     {

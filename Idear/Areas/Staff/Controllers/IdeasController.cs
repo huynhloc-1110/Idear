@@ -18,7 +18,7 @@ using MimeKit;
 using Microsoft.Extensions.Logging;
 using MailKit.Security;
 using Microsoft.Extensions.Configuration;
-using Idear.Data.Services;
+using Idear.Services;
 
 namespace Idear.Areas.Staff.Controllers
 {
@@ -229,21 +229,19 @@ namespace Idear.Areas.Staff.Controllers
             _context.Ideas.Add(idea);
             await _context.SaveChangesAsync();
 
-            //Sending Email to all users who have a QA Coordinator role and in the same department
-            var url = Url.Action("Details", "Ideas", new { id = idea.Id }, Request.Scheme);
-
+            // Get the email receiver which are QA Coordinators and in the same depart
             var qaCoordinator = await _userManager.GetUsersInRoleAsync("QA Coordinator");
-
             foreach (var person in qaCoordinator)
             {
                 await _context.Entry(person).Reference(u => u.Department).LoadAsync();
             }
             await _context.Entry(currentUser).Reference(u => u.Department).LoadAsync();
-
             var emailReceivers = qaCoordinator
                 .Where(u => u.Department == currentUser.Department)
                 .ToList();
 
+            //Send email to them
+            var url = Url.Action("Details", "Ideas", new { id = idea.Id }, Request.Scheme);
             foreach (var user in emailReceivers)
             {
                 MailContent content = new MailContent

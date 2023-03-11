@@ -271,9 +271,9 @@
             var cmtCount = $('#cmt-count');
             cmtCount.text(parseInt(cmtCount.text()) + 1);
             
-            // Clear text area after commenting
-            var cmtArea = $('#input-cmt');
-            cmtArea.val('');
+            // clear comment textarea and checkbox
+            $('#input-cmt').val('');
+            $('#chk-anonymous').prop('checked', false);
         } 
 
         $(document).ready(function() {

@@ -11,7 +11,7 @@ using MimeKit;
 using Microsoft.Extensions.Logging;
 using MailKit.Security;
 using Org.BouncyCastle.Crypto;
-using Idear.Data.Services;
+using Idear.Services;
 
 namespace Idear.Areas.Staff.Controllers
 {
@@ -21,17 +21,14 @@ namespace Idear.Areas.Staff.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IConfiguration _configuration;
         private readonly ISendMailService _sendMailService;
 
         public CommentsController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            IConfiguration configuration,
             ISendMailService sendMailService)
         {
             _context = context;
             _userManager = userManager;
-            _configuration = configuration;
             _sendMailService = sendMailService;
         }
 
@@ -63,14 +60,16 @@ namespace Idear.Areas.Staff.Controllers
             _context.Comments.Add(cmt);
             await _context.SaveChangesAsync();
 
-            var user = await _userManager.GetUserAsync(User);
+            var currentIdea = cmt.Idea!;
+            await _context.Entry(currentIdea).Reference(i => i.User).LoadAsync();
+            var emailReceiver = currentIdea.User!;
 
             // send email using MailKit
             var url = Url.Action("Details", "Ideas", new { id = ideaId }, Request.Scheme);
 
             MailContent content = new MailContent
             {
-                To = user.Email,
+                To = emailReceiver.Email,
                 Subject = "Someone commented on your idea!",
                 Body = $"<p>{cmt.User.FullName} has added a <a href=\"{url}#{cmt.Id}\">comment</a> on your \"<b>{cmt.Idea!.Text}</b>\" idea</p>",
             };

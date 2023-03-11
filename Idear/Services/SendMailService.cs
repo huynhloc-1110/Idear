@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 
-namespace Idear.Data.Services
+namespace Idear.Services
 {
     public class SendMailService : ISendMailService
     {

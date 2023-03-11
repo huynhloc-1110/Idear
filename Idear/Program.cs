@@ -3,7 +3,7 @@ using Idear.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using Idear.Data.Services;
+using Idear.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

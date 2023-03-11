@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Idear.Data.Services
+namespace Idear.Services
 {
     public interface ISendMailService
     {
