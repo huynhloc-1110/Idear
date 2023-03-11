@@ -229,11 +229,22 @@ namespace Idear.Areas.Staff.Controllers
             _context.Ideas.Add(idea);
             await _context.SaveChangesAsync();
 
-            //Sending Email to all users who have a QA Coordinator role
+            //Sending Email to all users who have a QA Coordinator role and in the same department
             var url = Url.Action("Details", "Ideas", new { id = idea.Id }, Request.Scheme);
-            var usersWithRole = await _userManager.GetUsersInRoleAsync("QA Coordinator");
-            var usersWithDepartment = usersWithRole.Where(u => u.Department == currentUser.Department);
-            foreach (var user in usersWithDepartment)
+
+            var qaCoordinator = await _userManager.GetUsersInRoleAsync("QA Coordinator");
+
+            foreach (var person in qaCoordinator)
+            {
+                await _context.Entry(person).Reference(u => u.Department).LoadAsync();
+            }
+            await _context.Entry(currentUser).Reference(u => u.Department).LoadAsync();
+
+            var emailReceivers = qaCoordinator
+                .Where(u => u.Department == currentUser.Department)
+                .ToList();
+
+            foreach (var user in emailReceivers)
             {
                 MailContent content = new MailContent
                 {
