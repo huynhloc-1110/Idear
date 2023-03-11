@@ -117,7 +117,7 @@
                     @foreach (var comment in Model.LatestComments)
                     {
                         <div class="card">
-                            <a class="card-body" href="@Url.Action("Details", "Ideas", new { id = @comment.Idea!.Id})#@comment.Id">
+                            <a class="card-body" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@comment.Idea!.Id" asp-fragment="@comment.Id">
                                 <p class="card-text" id="@comment.Id">
                                     @comment.Text
                                     <small class="text-muted">- on idea "@comment.Idea!.Text"</small>

@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
+using System.IO.Compression;
 using System.Reflection.Metadata.Ecma335;
 
 namespace Idear.Areas.Staff.Controllers
@@ -16,9 +18,9 @@ namespace Idear.Areas.Staff.Controllers
     [Area("Staff")]
     public class TopicsController : Controller
 	{
-		private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-		public TopicsController(ApplicationDbContext context)
+        public TopicsController(ApplicationDbContext context)
 		{
 			_context = context;
 		}
@@ -42,8 +44,10 @@ namespace Idear.Areas.Staff.Controllers
                 .AsSplitQuery()
                 .ToListAsync();
             ViewBag.TopicId = id;
+            ViewBag.TopicName = ideas.FirstOrDefault()?.Topic?.Name;
             return View(PaginatedList<Idea>
                 .Create(ideas, page ?? 1));
         }
+
     }
 }

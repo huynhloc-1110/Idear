@@ -22,7 +22,7 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                @if (SignInManager.IsSignedIn(User) && (User.IsInRole("Admin") || User.IsInRole("QA Manager")))
                 {
                     <div class="dropdown">
                         <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -68,13 +68,16 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
                         @if (SignInManager.IsSignedIn(User))
                         {
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Staff" asp-controller="Topics" asp-action="Index">All Topics</a>
+                        </li>
+                        }
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("QA Manager"))
+                        {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="QAManager" asp-controller="Statistics" asp-action="Index">Statistics</a>
                         </li>
                         }
                     </ul>

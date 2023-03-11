@@ -12,7 +12,7 @@ using System.Runtime.Intrinsics.Arm;
 namespace Idear.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, QA Manager")]
 
     public class ApplicationUsersController : Controller
     {
@@ -142,6 +142,11 @@ namespace Idear.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditUserVM model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             var user = await _userManager.FindByIdAsync(model.Id);
             if (user == null)
             {

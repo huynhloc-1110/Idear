@@ -1,0 +1,233 @@
+﻿@model Idear.Areas.QAManager.ViewModels.ExceptionReportsVM;
+
+@{
+    ViewData["Title"] = "Statistics";
+}
+
+<div class="container-fluid">
+    <div class="card mx-3 mt-n5 shadow-lg home-section">
+        <div class="card-header bg-warning bg-opacity-50 header-section">
+            <h4><i class="bi bi-star"></i> Department Statistics</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <canvas id="chart-bar-depart"></canvas>
+                </div>
+                <div class="col-md-4">
+                    <canvas id="chart-donut-depart"></canvas>
+                </div>
+                <div class="col-md-4">
+                    <canvas id="chart-contributors"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mx-3 mt-n5 shadow-lg home-section">
+                <div class="card-header bg-success bg-opacity-50 header-section">
+                    <h4><i class="bi bi-lightbulb"></i> Anonymous Ideas</h4>
+                </div>
+                <div class="card-body">
+                    @foreach (var idea in Model.AnonymousIdeas)
+                    {
+                        <div class="card">
+                            <a class="card-body" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@idea.Id">
+                                <p class="card-text">
+                                    @idea.Text
+                                    <small class="text-muted">- by @idea.User!.FullName</small>
+                                    <small class="text-muted">- at @idea.DateTime</small>
+                                </p>
+                            </a>
+                        </div>
+                    }
+                    <div class="text-right">
+                        <a asp-area="QAManager" asp-controller="Statistics" asp-action="ListIdea" asp-route-filter="anonymous" class="btn bg-success bg-opacity-50">See more <i class="bi bi-forward"></i></a>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="card mx-3 mt-n5 shadow-lg home-section">
+                <div class="card-header bg-success bg-opacity-50 header-section">
+                    <h4><i class="bi bi-lightbulb"></i> Ideas with no Comment</h4>
+                </div>
+                <div class="card-body">
+                    @foreach (var idea in Model.NoCommentIdeas)
+                    {
+                        <div class="card">
+                            <a class="card-body" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@idea.Id">
+                                <p class="card-text">
+                                    @idea.Text
+                                    <small class="text-muted">- by @idea.User!.FullName</small>
+                                    <small class="text-muted">- at @idea.DateTime</small>
+                                </p>
+                            </a>
+                        </div>
+                    }
+                    <div class="text-right">
+                        <a asp-area="QAManager" asp-controller="Statistics" asp-action="ListIdea" asp-route-filter="noComment" class="btn bg-success bg-opacity-50">See more <i class="bi bi-forward"></i></a>
+                    </div>
+                </div>
+            </div>
+            <br />
+        </div>
+        <div class="col-md-6">
+            <div class="card mx-3 mt-n5 shadow-lg home-section">
+                <div class="card-header bg-primary bg-opacity-50 header-section">
+                    <h4><i class="bi bi-pencil-square"></i> Anonymous Comments</h4>
+                </div>
+                <div class="card-body">
+                    @foreach (var comment in Model.AnonymousComments)
+                    {
+                        <div class="card">
+                            <a class="card-body" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@comment.Idea!.Id" asp-fragment="@comment.Id">
+                                <p class="card-text" id="@comment.Id">
+                                    @comment.Text
+                                    <small class="text-muted">- by @comment.User!.FullName</small>
+                                    <small class="text-muted">- on idea "@comment.Idea!.Text"</small>
+                                </p>
+                            </a>
+                        </div>
+                    }
+                    <div class="text-right">
+                        <a asp-area="QAManager" asp-controller="Statistics" asp-action="ListComment" class="btn bg-primary bg-opacity-50">See more <i class="bi bi-forward"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.umd.js" integrity="sha512-vCUbejtS+HcWYtDHRF2T5B0BKwVG/CLeuew5uT2AiX4SJ2Wff52+kfgONvtdATqkqQMC9Ye5K+Td0OTaz+P7cw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(function () {
+            showDepartCharts();
+            showContributorsChart();
+        });
+
+        function showDepartCharts() {
+            $.ajax({
+                type: 'GET',
+                url: '/QAManager/Statistics/GetDepartIdeaCount',
+                contextType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: onSuccessResult
+            })
+
+            function onSuccessResult(data) {
+                var _chartLabels = data['labels'];
+                var _chartData = data['ideaCounts'];
+
+                new Chart('chart-bar-depart', {
+                    type: 'bar',
+                    data: {
+                        labels: _chartLabels,
+                        datasets: [{
+                            label: 'Number of Ideas',
+                            data: _chartData,
+                            barThickness: 40,
+                            borderWidth: 1,
+                            backgroundColor: [
+                                'rgba(255, 99, 132)',
+                                'rgba(255, 159, 64)',
+                                'rgba(75, 192, 192)',
+                                'rgba(54, 162, 235)',
+                                'rgba(153, 102, 255)',
+                                'rgba(201, 203, 207)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Number of Ideas by each Department',
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+
+                const sum = _chartData.reduce((total, num) => total + num);
+                const _donutData = _chartData.map(num => ((num / sum) * 100).toFixed(1));
+                new Chart('chart-donut-depart', {
+                    type: 'doughnut',
+                    data: {
+                        labels: _chartLabels,
+                        datasets: [{
+                            label: '% of Idea',
+                            data: _donutData,
+                            barThickness: 40,
+                            borderWidth: 1,
+                            backgroundColor: [
+                                'rgba(255, 99, 132)',
+                                'rgba(255, 159, 64)',
+                                'rgba(75, 192, 192)',
+                                'rgba(54, 162, 235)',
+                                'rgba(153, 102, 255)',
+                                'rgba(201, 203, 207)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Percentage of Ideas by each Department',
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function showContributorsChart() {
+            $.ajax({
+                type: 'GET',
+                url: '/QAManager/Statistics/GetDepartUserCount',
+                contextType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: onSuccessResult
+            })
+
+            function onSuccessResult(data) {
+                var _chartLabels = data['labels'];
+                var _chartData = data['userCounts'];
+
+                new Chart('chart-contributors', {
+                    type: 'bar',
+                    data: {
+                        labels: _chartLabels,
+                        datasets: [{
+                            label: 'Number of Contributors',
+                            data: _chartData,
+                            borderWidth: 1,
+                            backgroundColor: [
+                                'rgba(255, 99, 132)',
+                                'rgba(255, 159, 64)',
+                                'rgba(75, 192, 192)',
+                                'rgba(54, 162, 235)',
+                                'rgba(153, 102, 255)',
+                                'rgba(201, 203, 207)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Number of Contributors by each Department',
+                                position: 'bottom'
+                            }
+                        },
+                        indexAxis: 'y'
+                    }
+                });
+            }
+        }
+    </script>
+}
