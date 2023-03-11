@@ -81,6 +81,8 @@ namespace Idear.Data
                 "QA");
             CreateUser("Tri456@gmail.com", "Tat Khai Tri", "Tri456@gmail.com", "QA Coordinator",
                 "IT");
+            CreateUser("Admin1@gmail.com", "Admin", "Admin1@gmail.com", "Admin",
+                "HR");
         }
 
         private void CreateUser(string email, string fullName, string password, string role,

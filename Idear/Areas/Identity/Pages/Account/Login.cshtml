@@ -12,38 +12,40 @@
                 <div class="card-body">
                     <section>
                         <form id="account" method="post">
-                            <h2>Welcome</h2>
-                            <hr />
+                            <h3 class="text-center">Welcome</h3>
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="form-floating">
+                            <div class="form-floating gapbreak">
                                 <input id="email" asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
                                 <label asp-for="Input.Email" class="form-label"></label>
                                 <span asp-validation-for="Input.Email" class="text-danger"></span>
                             </div>
-                            <div class="form-floating">
+                            <div class="form-floating gapbreak">
                                 <input id="pass" asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
                                 <label asp-for="Input.Password" class="form-label"></label>
                                 <span asp-validation-for="Input.Password" class="text-danger"></span>
                             </div>
-                            <div>
-                                <div class="checkbox">
-                                    <label asp-for="Input.RememberMe" class="form-label">
-                                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                                    </label>
+                            <div class="row align-items-center">
+                                <div class="col-6">
+                                    <div class="checkbox">
+                                        <label asp-for="Input.RememberMe" class="form-label">
+                                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-6 text-right">
+                                    <button id="login-submit" type="submit" class="btn btn-lg btn-primary">Log in</button>
                                 </div>
                             </div>
-                            <div>
-                                <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                            </div>
-                            <div>
+                         
+@*                            <div>
                                 <p>
                                     <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
                                 </p>
                                 <p>
                                     <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
                                 </p>
-                            </div>
+                            </div>*@
                         </form>
                     </section>
                 </div>
@@ -55,17 +57,29 @@
                     <h4><i class="bi bi-person-square"></i> Account</h4>
                 </div>
                 <div class="card-body">
-                    <div class="card-body d-flex justify-content-between">
-                        <p>Admin</p>
-                        <button type="button" class="btn btn-outline-info" onclick="Admin()">Copy</button>
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-between">
+                            <p>Admin 1</p>
+                            <button type="button" class="btn btn-outline-info" id="btn-admin1">Copy</button>
+                        </div>
                     </div>
-                    <div class="card-body d-flex justify-content-between">
-                        <p>QA Manager</p>
-                        <button type="button" class="btn btn-outline-info" onclick="QAManager()">Copy</button>
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-between">
+                            <p>Admin 2</p>
+                            <button type="button" class="btn btn-outline-info" id="btn-admin2">Copy</button>
+                        </div>
                     </div>
-                    <div class="card-body d-flex justify-content-between">
-                        <p>Staff</p>
-                        <button type="button" class="btn btn-outline-info" onclick="Staff()">Copy</button>
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-between">
+                            <p>QA Manager</p>
+                            <button type="button" class="btn btn-outline-info" id="btn-manager">Copy</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-between">
+                            <p>Staff</p>
+                            <button type="button" class="btn btn-outline-info" id="btn-staff">Copy</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -75,23 +89,26 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        function Admin(){
-            var emailInput = document.getElementById('email');
-            var passInput = document.getElementById('pass');
-            emailInput.value ="Khoa234@gmail.com"
-            passInput.value = "Khoa234@gmail.com"
-        }
-        function QAManager(){
-            var emailInput = document.getElementById('email');
-            var passInput = document.getElementById('pass');
-            emailInput.value = "Huy345@gmail.com"
-            passInput.value = "Huy345@gmail.com"
-        }
-        function Staff(){
-            var emailInput = document.getElementById('email');
-            var passInput = document.getElementById('pass');
-            emailInput.value = "Loc123@gmail.com"
-            passInput.value = "Loc123@gmail.com"
-        }
+        $(function() {
+            let emailInput = $('#email');
+            let passInput = $('#pass');
+            $('#btn-admin1').click(function() {
+                emailInput.val('Khoa234@gmail.com');
+                passInput.val('Khoa234@gmail.com');
+            });
+            $('#btn-admin2').click(function () {
+                emailInput.val('Admin1@gmail.com');
+                passInput.val('Admin1@gmail.com');
+            });
+            $('#btn-manager').click(function () {
+                emailInput.val('Huy345@gmail.com');
+                passInput.val('Huy345@gmail.com');
+            });
+            $('#btn-admin').click(function () {
+                emailInput.val('Loc123@gmail.com');
+                passInput.val('Loc123@gmail.com');
+            });
+
+        })
     </script>
 }
