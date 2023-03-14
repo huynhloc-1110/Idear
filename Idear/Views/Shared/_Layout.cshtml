@@ -82,6 +82,10 @@
                         }
                     </ul>
                     <partial name="_LoginPartial" />
+                    <div class="form-check form-switch">
+                        <input type="checkbox" class="form-check-input" id="dark-mode-toggle">
+                        <label class="form-check-label">Dark mode</label>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -103,3 +107,20 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+<script>
+    // Check local storage for user preference
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    $('body').toggleClass('dark-mode', isDarkMode);
+    $('#dark-mode-toggle').prop('checked', isDarkMode);
+
+    // Handle button click to toggle dark mode
+    $('#dark-mode-toggle').on('click', function () {
+        $('body').toggleClass('dark-mode');
+        // Update local storage with user preference
+        localStorage.setItem('darkMode', $('body').hasClass('dark-mode'));
+        $('#dark-mode-toggle').prop('checked', $('body').hasClass('dark-mode'));
+    });
+
+</script>
+
