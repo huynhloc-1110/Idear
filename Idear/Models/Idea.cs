@@ -20,7 +20,7 @@ namespace Idear.Models
         public Topic? Topic { get; set; }
 
         public Category? Category { get; set; }
-
+        public bool IsAnonymous { get; set; }
         public List<Comment>? Comments { get; set; }
         public List<View>? Views { get; set; }
 		public List<React>? Reacts { get; set; }

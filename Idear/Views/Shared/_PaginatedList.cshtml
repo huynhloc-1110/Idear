@@ -1,0 +1,66 @@
+﻿<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <a class="page-link"
+                asp-action="@ViewBag.ViewName"
+                asp-route-orderBy="@Context.Request.Query["orderBy"].ToString()"
+                asp-route-filter="@Context.Request.Query["filter"].ToString()"
+                asp-route-id="@ViewBag.TopicId"
+                asp-route-page="1">
+                <<
+            </a>
+        </li>
+        @* show ... at the start *@
+        @if (Model.PageIndex > 3)
+        {
+            <li class="page-item disabled">
+                <a class="page-link">...</a>
+            </li>
+        }
+
+        @* show the index that is 2-value *@
+        @for (int i = Math.Max(1, Model.PageIndex - 2); i <= Math.Min(Model.TotalPages, Model.PageIndex + 2); i++)
+        {
+            @* show 'active' class id in the current class *@
+            if (i == Model.PageIndex)
+            {
+                <li class="page-item active"><a class="page-link">@i</a></li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                        asp-action="@ViewBag.ViewName"
+                        asp-route-orderBy="@Context.Request.Query["orderBy"].ToString()"
+                        asp-route-filter="@Context.Request.Query["filter"].ToString()"
+                        asp-route-id="@ViewBag.TopicId"
+                        asp-route-page="@i">
+                        @i
+                    </a>
+                </li>
+            }
+        }
+        @* show ... at the end *@
+        @if (Model.PageIndex < Model.TotalPages - 2)
+        {
+            <li class="page-item disabled">
+                <a class="page-link">...</a>
+            </li>
+        }
+        <li class="page-item">
+            <a class="page-link"
+                asp-action="@ViewBag.ViewName"
+                asp-route-orderBy="@Context.Request.Query["orderBy"].ToString()"
+                asp-route-filter="@Context.Request.Query["filter"].ToString()"
+                asp-route-id="@ViewBag.TopicId"
+                asp-route-page="@Model.TotalPages">
+                >>
+            </a>
+        </li>
+    </ul>
+    
+    <div class="text-center">
+        <span class="bg bg-opacity-50">Page @(Model.PageIndex) of @(Model.TotalPages)</span>
+    </div>
+
+</nav>

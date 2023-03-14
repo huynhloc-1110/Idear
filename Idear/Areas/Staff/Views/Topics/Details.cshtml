@@ -1,0 +1,47 @@
+﻿@model PaginatedList<Idea>
+@{
+    ViewData["Title"] = "Details";
+    ViewBag.ViewName = "Details";
+}
+<h2>@ViewBag.TopicName</h2>
+<div class="col-4">
+    <a class="btn btn-dark" asp-controller="Ideas" asp-action="Create" asp-route-id="Id"> <i class="bi bi-clipboard-plus"></i> Create New</a>
+</div>
+
+<table class="table table-hover table-bordered bg-white table-striped">
+    <thead>
+        <tr>
+            <th>Ideas</th>
+            <th>View</th>
+            <th>Likes</th>
+            <th>Dislikes</th>
+            <th>Comments</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @if (Model.Any())
+        {
+            foreach (var idea in Model)
+            {
+                <tr>
+                    <td>@idea.Text</td>
+                    <td>@idea.Views!.Sum(v => v.VisitTime)</td>
+                    <td>@idea.Reacts.Where(i => i.ReactFlag == 1).Count()</td>
+                    <td>@idea.Reacts.Where(i => i.ReactFlag == -1).Count()</td>
+                    <td>@idea.Comments.Count</td>
+                    <td>
+                        <a class="btn btn-primary" asp-controller="Ideas" asp-action="Details" asp-route-id="@idea.Id">Details</a>
+                    </td>
+                </tr>
+
+            }
+        }
+        else
+        {
+            <h4 class="card-title"><p>You have not created any ideas yet.</p></h4>
+        }
+    </tbody>
+</table>
+<partial name="_PaginatedList" />

@@ -1,0 +1,44 @@
+﻿@model PaginatedList<Idea>
+
+@{
+    ViewData["Title"] = "ListIdeaByUser";
+    ViewBag.ViewName = "ListIdeaByUser";
+}
+
+<h2>My Ideas</h2>
+<div class="col-4">
+    <a class="btn btn-dark" asp-controller="Ideas" asp-action="Create" asp-route-id="Id"> <i class="bi bi-clipboard-plus"></i> Create New</a>
+</div>
+<br />
+<table class="table table-hover table-bordered bg-white table-striped">
+    <thead>
+        <tr>
+            <th>Ideas</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @if (Model.Any())
+        {
+            foreach (var idea in Model)
+            {
+                <tr>
+                    <td>@idea.Text</td>
+                    <td>
+                        <a class="btn btn-info" asp-controller="Ideas" asp-action="Details" asp-route-id="@idea.Id"><i class="bi bi-card-list"></i> Details</a>
+                        <a class="btn btn-danger" asp-action="Delete" asp-controller="Ideas" asp-route-id="@idea.Id"><i class="bi bi-trash"></i> Delete</a>
+                        <a class="btn btn-primary" asp-action="Edit" asp-controller="Ideas" asp-route-id="@idea.Id"><i class="bi bi-pencil"></i> Edit</a>
+
+                    </td>
+                </tr>
+
+            }
+        }
+        else
+        {
+            <h4 class="card-title"><p>You have not created any ideas yet.</p></h4>
+        }
+    </tbody>
+</table>
+<partial name="_PaginatedList" />

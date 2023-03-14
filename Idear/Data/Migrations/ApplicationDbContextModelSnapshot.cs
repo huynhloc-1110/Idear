@@ -123,6 +123,9 @@ namespace Idear.Data.Migrations
                     b.Property<string>("IdeaId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("IsAnonymous")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -168,6 +171,9 @@ namespace Idear.Data.Migrations
 
                     b.Property<string>("FilePath")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAnonymous")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Text")
                         .IsRequired()

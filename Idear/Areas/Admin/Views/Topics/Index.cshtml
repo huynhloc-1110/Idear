@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Idear.Models.Topic>
+﻿@model Idear.Areas.Admin.ViewModels.TopicsVM
 
 @{
     ViewData["Title"] = "Topic";
@@ -6,41 +6,129 @@
 
 <h1>View Topics</h1>
 
+<!-- Button trigger modal -->
 <p>
-    <a class="btn btn-dark" asp-action="Create">Create New</a>
+    <button type="button" class="btn btn-dark" id="btn-show-modal"><i class="bi bi-clipboard-plus"></i> Create New</button>
 </p>
-<table class="table">
+
+<!-- Create Modal -->
+<div class="modal fade" id="backdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="backdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="backdropLabel">Change topic</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-modal" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group gapbreak" hidden>
+                        <label asp-for="Topic.Id" class="control-label text-bold"></label>
+                        <input asp-for="Topic.Id" disabled class="form-control" />
+                    </div>
+                    <div class="form-group gapbreak">
+                        <label asp-for="Topic.Name" class="control-label text-bold"></label>
+                        <input asp-for="Topic.Name" class="form-control" />
+                        <span asp-validation-for="Topic.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group gapbreak">
+                        <label asp-for="Topic.ClosureDate" class="control-label text-bold"></label>
+                        <input asp-for="Topic.ClosureDate" class="form-control" />
+                        <span asp-validation-for="Topic.ClosureDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group gapbreak">
+                        <label asp-for="Topic.FinalClosureDate" class="control-label text-bold"></label>
+                        <input asp-for="Topic.FinalClosureDate" class="form-control" />
+                        <span asp-validation-for="Topic.FinalClosureDate" class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button id="btn-edit" type="button" class="btn btn-primary">Edit</button>
+                <button id="btn-create" type="button" class="btn btn-primary">Create</button>
+                <button id="btn-delete" type="button" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-hover table-bordered bg-white table-striped">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ClosureDate)
+               ClosureDate
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FinalClosureDate)
+                FinalClosureDate
             </th>
-            <th></th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClosureDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FinalClosureDate)
-            </td>
-            <td>
-                <a asp-action="Edit" class="btn btn-primary" asp-route-id="@item.Id">Edit</a> 
-                <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+    @foreach (var item in Model.Topics) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClosureDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FinalClosureDate)
+                </td>
+                <td>
+                    <button class="btn btn-primary" data-modal-action="Edit" data-modal-id="@item.Id"><i class="bi bi-pencil"></i> Edit</button>
+                    <button class="btn btn-danger" data-modal-action="Delete" data-modal-id="@item.Id"><i class="bi bi-trash"></i> Delete</button>
+                </td>
+            </tr>
+    }
     </tbody>
 </table>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // pass modelIdName and controllerName to crudIndex function
+        $(document).ready(function () {
+            crudIndex("Topic_Id", "Topics");
+        });
+
+        // used for update the form with json response from Details action
+        function updateForm(result) {
+            $("#Topic_Id").val(result.id);
+            $("#Topic_Name").val(result.name);
+            $("#Topic_ClosureDate").val(formatDate(result.closureDate));
+            $("#Topic_FinalClosureDate").val(formatDate(result.finalClosureDate));
+        }
+
+        // used for clearing form before creating new category
+        function clearForm() {
+            $("#Topic_Id").val('');
+            $("#Topic_Name").val('');
+            $("#Topic_ClosureDate").val('');
+            $("#Topic_FinalClosureDate").val('');
+        }
+
+        // used for disabling form editting when deleting a category
+        function disablePropEdit(disable) {
+            $('#Topic_Name').prop('disabled', disable);
+            $('#Topic_ClosureDate').prop('disabled', disable);
+            $('#Topic_FinalClosureDate').prop('disabled', disable);
+        }
+
+        function formatDate(dateString) {
+            let date = new Date(dateString);
+            let offset = date.getTimezoneOffset();
+            let uniformDate = new Date(date.getTime() - (offset * 60 * 1000));
+            return uniformDate.toISOString().split('T')[0];
+        }
+    </script>
+}
+

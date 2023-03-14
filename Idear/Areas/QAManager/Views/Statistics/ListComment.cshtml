@@ -1,0 +1,46 @@
+﻿@model PaginatedList<Idear.Models.Comment>
+
+@{
+    ViewData["Title"] = "Anonymous Comments";
+    ViewBag.ViewName = "ListComment";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table table-hover table-bordered bg-white table-striped">
+    <thead>
+        <tr>
+            <th>Comments</th>
+            <th>Poster</th>
+            <th>On Idea</th>
+            <th>Date Time</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @if (Model.Any())
+        {
+            foreach (var comment in Model)
+            {
+                <tr>
+                    <td>@comment.Text</td>
+                    <td>@comment.User!.FullName</td>
+                    <td>@comment.Idea!.Text</td>
+                    <td>@comment.Datetime</td>
+                    <td>
+                        <a class="btn btn-info" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@comment.Idea!.Id" asp-fragment="@comment.Id">
+                            <i class="bi bi-card-list"></i> Details
+                        </a>
+                    </td>
+                </tr>
+
+            }
+        }
+        else
+        {
+            <h5 class="card-title">None of ideas</h5>
+        }
+    </tbody>
+</table>
+<partial name="_PaginatedList" />

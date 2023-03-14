@@ -1,4 +1,4 @@
-﻿@model Idear.ViewModels.ApplicationUsersVM
+﻿@model Idear.Areas.Admin.ViewModels.ApplicationUsersVM
 
 @{
     ViewData["Title"] = "Update Roles";
@@ -31,8 +31,8 @@
 
     <div class="form-group row">
         <div class="col-10">
-            <button type="submit" class="btn btn-dark">Update</button>
-            <a asp-action="Index" class="btn btn-light">Cancel</a>
+            <button type="submit" class="btn btn-dark"><i class="bi bi-card-checklist"></i> Update</button>
+            <a asp-action="Index" class="btn btn-light"><i class="bi bi-arrow-return-left"></i> Back to list</a>
         </div>
     </div>
 </form>

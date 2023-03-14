@@ -1,0 +1,55 @@
+﻿@model PaginatedList<Idear.Models.Topic>
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Ideas";
+}
+
+<h1>View Topics</h1>
+
+<table class="table table-hover bg-white table-striped" id="table_id">
+    <thead>
+        <tr>
+            <th>Status</th>
+            <th>Name</th>
+            <th>ClosureDate</th>
+            <th>FinalClosureDate</th>
+            <th>Number of Ideas</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <i class="@(item.ClosureDate >= DateTime.Now ? "bi bi-check-circle" : item.FinalClosureDate >= DateTime.Now ? "bi bi-volume-mute" : "bi bi-lock")"></i>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClosureDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FinalClosureDate)
+                </td>
+                <td style="text-align:center">
+                    @Html.DisplayFor(modelItem => item.Ideas!.Count)
+                </td>
+                <td>
+                    <a asp-area="Staff" asp-controller="Topics" asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Details</a>
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("QA Manager"))
+                    {
+                        <a asp-action="ExportZip" asp-controller="Export" asp-area="QAManager" asp-route-id="@item.Id" class="btn btn-primary">Export Zip</a>
+                        <a asp-action="ExportExcel" asp-controller="Export" asp-area="QAManager" asp-route-id="@item.Id" class="btn btn-primary">Export Excel</a>
+                    }
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+<partial name="_PaginatedList" />

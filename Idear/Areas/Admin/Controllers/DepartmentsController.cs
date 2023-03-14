@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Idear.Data;
 using Idear.Models;
-using Idear.ViewModels;
+using Idear.Areas.Admin.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
@@ -15,7 +15,7 @@ using System.Data;
 namespace Idear.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, QA Manager")]
     public class DepartmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -29,14 +29,12 @@ namespace Idear.Areas.Admin.Controllers
         // GET: Admin/Departments
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Departments.ToListAsync());
-        }
+            var departmentVM = new DepartmentsVM()
+            {
+                Departments = await _context.Departments.ToListAsync()
+            };
 
-
-        // GET: Admin/Departments/Create
-        public IActionResult Create()
-        {
-            return View();
+            return View(departmentVM);
         }
 
         // POST: Admin/Departments/Create
@@ -51,13 +49,13 @@ namespace Idear.Areas.Admin.Controllers
                 department.Id=Guid.NewGuid().ToString();
                 _context.Add(department);
 				await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
-            return View(department);
+            return BadRequest();
         }
 
-        // GET: Admin/Departments/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        // POST: Admin/Departments/Details/5
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null || _context.Departments == null)
             {
@@ -69,25 +67,20 @@ namespace Idear.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            return View(department);
+            return Json(department);
         }
-
-        // POST: Admin/Departments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPut]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name")] Department department)
+        public async Task<IActionResult> Edit(string id, [Bind("Name")] Department department)
         {
-            if (id != department.Id)
-            {
-                return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    department.Id = id;
                     _context.Update(department);
                     await _context.SaveChangesAsync();
                 }
@@ -102,59 +95,37 @@ namespace Idear.Areas.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
-            return View(department);
+            return BadRequest();
         }
 
-        // GET: Admin/Departments/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null || _context.Departments == null)
-            {
-                return NotFound();
-            }
+		// POST: Admin/Departments/Delete/5
+		[HttpDelete]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Delete(string id)
+		{
+			if (_context.Departments == null)
+			{
+				return Problem("Entity set 'ApplicationDbContext.Departments'  is null.");
+			}
 
-            var department = await _context.Departments
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (department == null)
-            {
-                return NotFound();
-            }
+			var department = await _context.Departments.Include(d => d.Users).FirstOrDefaultAsync(d => d.Id == id);
 
-            return View(department);
-        }
+			if (department == null || department!.Users.Any())
+			{
+				return BadRequest();
+			}
 
-        // POST: Admin/Departments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            if (_context.Departments == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Departments'  is null.");
-            }
-            var department = await _context.Departments.FindAsync(id);
-            if (department != null)
-            {
-                _context.Departments.Remove(department);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+			_context.Departments.Remove(department);
+			await _context.SaveChangesAsync();
+			return Ok();
+		}
 
-        private bool DepartmentExists(string id)
+		private bool DepartmentExists(string id)
         {
           return _context.Departments.Any(e => e.Id == id);
         }
-
-
-
-
-
-
-
 
     }
 }

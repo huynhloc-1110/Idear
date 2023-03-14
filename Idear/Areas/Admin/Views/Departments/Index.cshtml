@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Idear.Models.Department>
+﻿@model Idear.Areas.Admin.ViewModels.DepartmentsVM
 
 @{
     ViewData["Title"] = "Department";
@@ -6,28 +6,90 @@
 
 <h1>View Departments</h1>
 
+<!-- Button trigger modal -->
 <p>
-    <a  class="btn btn-dark"asp-action="Create">Create New</a>
+    <button type="button" class="btn btn-dark" id="btn-show-modal"><i class="bi bi-clipboard-plus"></i> Create New</button>
 </p>
-<table class="table">
+
+<!-- Create Modal -->
+<div class="modal fade" id="backdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="backdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="backdropLabel">Change department</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-modal" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group gapbreak" hidden>
+                        <label asp-for="Department.Id" class="control-label text-bold"></label>
+                        <input asp-for="Department.Id" disabled class="form-control" />
+                    </div>
+                    <div class="form-group gapbreak">
+                        <label asp-for="Department.Name" class="control-label text-bold"></label>
+                        <input asp-for="Department.Name" class="form-control" />
+                        <span asp-validation-for="Department.Name" class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button id="btn-edit" type="button" class="btn btn-primary">Edit</button>
+                <button id="btn-create" type="button" class="btn btn-primary">Create</button>
+                <button id="btn-delete" type="button" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-hover table-striped bg-white">
     <thead>
         <tr>
-            <th>Id</th>
             <th>Name</th>
             <th>Action</th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-                <td>@item.Id</td>
+        @foreach (var item in Model.Departments)
+        {
+            <tr>
                 <td>@item.Name</td>
-            <td>
-                <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                <a class="btn btn-danger"asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+                <td>
+                    <button class="btn btn-primary" data-modal-action="Edit" data-modal-id="@item.Id"><i class="bi bi-pencil"></i> Edit</button>
+                    <button class="btn btn-danger" data-modal-action="Delete" data-modal-id="@item.Id"><i class="bi bi-trash"></i> Delete</button>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // pass modelIdName and controllerName to crudIndex function
+        $(document).ready(function () {
+            crudIndex("Department_Id", "Departments");
+        });
+
+        // used for update the form with json response from Details action
+        function updateForm(result) {
+            $("#Department_Id").val(result.id);
+            $("#Department_Name").val(result.name);
+        }
+
+        // used for clearing form before creating new category
+        function clearForm() {
+            $("#Department_Id").val('');
+            $("#Department_Name").val('');
+        }
+
+        // used for disabling form editting when deleting a category
+        function disablePropEdit(disable) {
+            $('#Department_Name').prop('disabled', disable);
+        }
+    </script>
+}
