@@ -1,0 +1,28 @@
+﻿@*bad request modal*@
+<div class="modal fade" id="badRequestModal" tabindex="-1" role="dialog" aria-labelledby="badRequestModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="alert alert-danger d-flex align-items-center" role="alert" >
+            <i class="bi bi-exclamation-triangle" style="color: rgb(255, 0, 0)"></i>
+            &nbsp;
+            <span id="error-msg"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+
+    $(function () {
+        // Handle bad request response
+        $(document).ajaxError(function (event, xhr) {
+            if (xhr.status === 400) {
+                $("#badRequestModal").modal("show");
+                $("#error-msg").text(xhr.responseText);
+            }
+        });
+    });
+</script>
+

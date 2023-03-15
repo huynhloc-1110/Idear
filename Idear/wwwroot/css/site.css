@@ -15,7 +15,7 @@ html {
 
 body {
     margin-bottom: 60px;
-    background-image: url("../img/bg.jpg");
+    background-image: url("../img/light.jpg");
     background-attachment: fixed;
     background-position: center;
     background-size: 100% 100%;
@@ -142,4 +142,55 @@ body.dark-mode table td {
 body.dark-mode .modal-content {
     background-color: #222 !important;
     color: #fff !important;
+}
+
+.popup-message {
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: linear-gradient(to bottom, #f44336, #c62828);
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
+    animation: fadein 0.5s;
+}
+
+    .popup-message span {
+        margin-right: 10px;
+    }
+
+.close-button {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    top: -2px;
+    right: 2px;
+}
+
+/* Define the animation with @keyframes */
+@keyframes example-animation {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(100%);
+    }
+}
+
+/* Apply the animation to an element */
+.example-element {
+    animation-name: example-animation;
+    animation-duration: 2s;
+    animation-timing-function: ease-in-out;
+    animation-delay: 0s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
 }
