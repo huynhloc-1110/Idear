@@ -112,7 +112,7 @@ namespace Idear.Areas.Admin.Controllers
             var usersWithRole = await _userManager.GetUsersInRoleAsync(role.Name);
             if (usersWithRole.Any())
             {
-                return BadRequest("Can not delete!");
+                return BadRequest("Cannot delete role as it is chosen by one or more users!");
             }
             var result = await _roleManager.DeleteAsync(role);
             if (result.Succeeded)
