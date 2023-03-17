@@ -68,17 +68,24 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
                         @if (SignInManager.IsSignedIn(User))
                         {
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Staff" asp-controller="Topics" asp-action="Index">All Topics</a>
                         </li>
                         }
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("QA Manager"))
+                        {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="QAManager" asp-controller="Statistics" asp-action="Index">Statistics</a>
+                        </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
+                    <button class="btn btn-group-lg" id="dark-mode-toggle">
+                        <i class="bi bi-sun" id="dark-mode-icon"></i>
+                    </button>
+                    <script src="~/js/dark-mode.js" asp-append-version="true"></script>
                 </div>
             </div>
         </nav>
@@ -95,8 +102,14 @@
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+
+
 </body>
 </html>
+
+

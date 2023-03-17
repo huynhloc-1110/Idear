@@ -5,6 +5,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using MailKit.Net.Smtp;
+using MimeKit;
+using Microsoft.Extensions.Logging;
+using MailKit.Security;
+using Org.BouncyCastle.Crypto;
+using Idear.Services;
 
 namespace Idear.Areas.Staff.Controllers
 {
@@ -14,12 +21,15 @@ namespace Idear.Areas.Staff.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ISendMailService _sendMailService;
 
         public CommentsController(ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            ISendMailService sendMailService)
         {
             _context = context;
             _userManager = userManager;
+            _sendMailService = sendMailService;
         }
 
         [HttpPost]
@@ -32,7 +42,7 @@ namespace Idear.Areas.Staff.Controllers
             {
                 return BadRequest("The request is invalid.");
             }
-            if (cmtText == "" || cmtText == null || topicFinalClosureDate < DateTime.Now )
+            if (cmtText == "" || cmtText == null || topicFinalClosureDate < DateTime.Now)
             {
                 return BadRequest("The request is invalid.");
             }
@@ -49,6 +59,21 @@ namespace Idear.Areas.Staff.Controllers
 
             _context.Comments.Add(cmt);
             await _context.SaveChangesAsync();
+
+            var currentIdea = cmt.Idea!;
+            await _context.Entry(currentIdea).Reference(i => i.User).LoadAsync();
+            var emailReceiver = currentIdea.User!;
+
+            // send email using MailKit
+            var url = Url.Action("Details", "Ideas", new { id = ideaId }, Request.Scheme);
+
+            MailContent content = new MailContent
+            {
+                To = emailReceiver.Email,
+                Subject = "Someone commented on your idea!",
+                Body = $"<p>{cmt.User.FullName} has added a <a href=\"{url}#{cmt.Id}\">comment</a> on your \"<b>{cmt.Idea!.Text}</b>\" idea</p>",
+            };
+            _ = _sendMailService.SendMail(content);
 
             return Json(new { id = cmt.Id, user = cmt.User.FullName, dateTime = cmt.Datetime.ToString("d/M/yyyy HH:mm:ss") });
         }
