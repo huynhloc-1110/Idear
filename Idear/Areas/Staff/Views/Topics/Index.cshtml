@@ -53,3 +53,22 @@
     </tbody>
 </table>
 <partial name="_PaginatedList" />
+
+<div id="popup-container">
+    @if (TempData.ContainsKey("ErrorMessage"))
+    {
+        <div class="popup-message">
+            <i class="bi bi-exclamation-triangle" style="color:#B22222"></i>
+            &nbsp;
+            <span>@TempData["ErrorMessage"]</span>
+            <button class="close-button" onclick="closePopup()">X</button>
+        </div>
+    }
+</div>
+<script>
+        // Handle close button
+    function closePopup() {
+        var container = $("#popup-container");
+        container.html("");
+    }
+</script>

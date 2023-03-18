@@ -117,7 +117,7 @@ namespace Idear.Areas.Admin.Controllers
 
             if (category == null || category.Ideas.Any())
             {
-                return BadRequest();
+                return BadRequest("Cannot delete category as it is chosen by one or more ideas!");
             }
 
             _context.Categories.Remove(category);
