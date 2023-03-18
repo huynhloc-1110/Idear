@@ -54,4 +54,12 @@
 	@{
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	}
+
+	@*Add script for AgreeTerms custom validation*@
+	<script>
+		$.validator.addMethod("istrue", function (value, element, params) {
+			return element.checked;
+		});
+		$.validator.unobtrusive.adapters.addBool("istrue");
+	</script>
 }
