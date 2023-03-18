@@ -127,10 +127,17 @@ namespace Idear.Areas.Staff.Controllers
             };
 
             // Add view when user load the idea detail page
-            var view = await _context.Views.Where(v=>v.User == user && v.Idea == idea).FirstOrDefaultAsync();
+            var view = await _context.Views.Where(v => v.User == user && v.Idea == idea).FirstOrDefaultAsync();
+            var currentTime = DateTime.Now;
+
             if (view != null)
             {
-                view.VisitTime++;
+                // prevent F5 to increase view by adding a 30s cooldown
+                if ((currentTime - view.ViewDateTime).TotalSeconds > 30)
+                {
+                    view.VisitTime++;
+                    view.ViewDateTime = currentTime;
+                }
             }
             else
             {
@@ -140,7 +147,8 @@ namespace Idear.Areas.Staff.Controllers
                         Id = Guid.NewGuid().ToString(),
                         VisitTime = 1,
                         Idea = idea,
-                        User = user
+                        User = user,
+                        ViewDateTime = currentTime
                     }
                 );
             }
