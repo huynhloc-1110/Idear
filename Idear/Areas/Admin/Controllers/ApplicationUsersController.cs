@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Crypto;
 using System.Data;
 using System.Runtime.Intrinsics.Arm;
 
@@ -196,13 +197,27 @@ namespace Idear.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
+			var user = await _userManager.Users
+                .Include(i => i.Ideas)!
+                    .ThenInclude(r => r.Reacts)
+				.Include(i => i.Ideas)!
+					.ThenInclude(r => r.Comments)
+				.Include(i => i.Ideas)!
+					.ThenInclude(v => v.Views)
+                .Include(c=>c.Comments)
+                .Include(r=>r.Reacts)
+                .Include(v=>v.Views)
+                .FirstOrDefaultAsync(i => i.Id == id);
+			if (user == null)
             {
                 return NotFound();
             }
+			_context.Ideas.RemoveRange(user.Ideas);
+			_context.Comments.RemoveRange(user.Comments);
+			_context.Reactes.RemoveRange(user.Reacts);
+			_context.Views.RemoveRange(user.Views);
 
-            var result = await _userManager.DeleteAsync(user);
+			var result = await _userManager.DeleteAsync(user);
             return RedirectToAction("Index");
         }
 

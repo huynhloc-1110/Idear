@@ -60,6 +60,9 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="Staff" asp-controller="Ideas" asp-action="Index">All Ideas</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Staff" asp-controller="Ideas" asp-action="Create">Create Ideas</a>
+                            </li>
                         </ul>
                     </div>
                 }
@@ -82,10 +85,10 @@
                         }
                     </ul>
                     <partial name="_LoginPartial" />
-                    <div class="form-check form-switch">
-                        <input type="checkbox" class="form-check-input" id="dark-mode-toggle">
-                        <label class="form-check-label">Dark mode</label>
-                    </div>
+                    <button class="btn btn-group-lg" id="dark-mode-toggle">
+                        <i class="bi bi-sun" id="dark-mode-icon"></i>
+                    </button>
+                    <script src="~/js/dark-mode.js" asp-append-version="true"></script>
                 </div>
             </div>
         </nav>
@@ -102,25 +105,14 @@
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+
+
 </body>
 </html>
 
-<script>
-    // Check local storage for user preference
-    const isDarkMode = localStorage.getItem('darkMode') === 'true';
-    $('body').toggleClass('dark-mode', isDarkMode);
-    $('#dark-mode-toggle').prop('checked', isDarkMode);
-
-    // Handle button click to toggle dark mode
-    $('#dark-mode-toggle').on('click', function () {
-        $('body').toggleClass('dark-mode');
-        // Update local storage with user preference
-        localStorage.setItem('darkMode', $('body').hasClass('dark-mode'));
-        $('#dark-mode-toggle').prop('checked', $('body').hasClass('dark-mode'));
-    });
-
-</script>
 

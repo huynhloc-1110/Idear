@@ -30,9 +30,11 @@ namespace Idear.Areas.QAManager.Controllers
             {
                 return NotFound();
             }
-            if (topic.ClosureDate > DateTime.Now)
+            if (topic.FinalClosureDate > DateTime.Now)
             {
-                return BadRequest("Cannot export until closure date.");
+
+                TempData["ErrorMessage"] = "This topic has not yet been closed.";
+                return RedirectToAction("Index", "Topics", new { area = "Staff" });
             }
 
             // get ideas of the topic that have file
@@ -41,7 +43,8 @@ namespace Idear.Areas.QAManager.Controllers
                 .ToListAsync();
             if (ideas.Count == 0)
             {
-                return BadRequest();
+                TempData["ErrorMessage"] = "There is nothing to export.";
+                return RedirectToAction("Index", "Topics", new { area = "Staff" });
             }
 
             // generate the zip archive path using top name
@@ -79,9 +82,10 @@ namespace Idear.Areas.QAManager.Controllers
             {
                 return NotFound();
             }
-            if (topic.ClosureDate > DateTime.Now)
+            if (topic.FinalClosureDate > DateTime.Now)
             {
-                return BadRequest("Cannot export until closure date.");
+                TempData["ErrorMessage"] = "This topic has not yet been closed.";
+                return RedirectToAction("Index", "Topics", new { area = "Staff" });
             }
             // get ideas to list
             var ideas = await _context.Ideas
@@ -92,7 +96,11 @@ namespace Idear.Areas.QAManager.Controllers
                 .Include(i => i.Reacts)
                 .AsSplitQuery()
                 .ToListAsync();
-
+            if (ideas.Count == 0)
+            {
+                TempData["ErrorMessage"] = "There is nothing to export.";
+                return RedirectToAction("Index", "Topics", new { area = "Staff" });
+            }
             // create a new Excel package
             using (var package = new ExcelPackage())
             {
