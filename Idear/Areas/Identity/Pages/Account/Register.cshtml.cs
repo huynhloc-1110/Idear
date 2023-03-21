@@ -204,6 +204,17 @@ namespace Idear.Areas.Identity.Pages.Account
                 }
             }
 
+            Input.RolesList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+            {
+                Text = i,
+                Value = i
+            });
+            Input.DepartmentList = _context.Departments.Select(d => d.Name).Select(i => new SelectListItem
+            {
+                Text = i,
+                Value = i
+            });
+
             // If we got this far, something failed, redisplay form
             return Page();
         }
