@@ -26,7 +26,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Idear.Areas.Identity.Pages.Account
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, QA Manager")]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
