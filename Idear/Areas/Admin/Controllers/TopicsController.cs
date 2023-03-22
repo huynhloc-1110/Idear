@@ -110,7 +110,7 @@ namespace Idear.Areas.Admin.Controllers
             var topic = await _context.Topics.Include(t => t.Ideas).FirstOrDefaultAsync(d => d.Id == id);
             if (topic == null || topic!.Ideas.Any())
             {
-                return BadRequest();
+                return BadRequest("Cannot delete topic as it is had one or more ideas!");
             }
 
             _context.Topics.Remove(topic);

@@ -7,8 +7,12 @@ namespace Idear.Models
     public class View
     {
         public string? Id { get; set; }
+
         [Required]
         public int VisitTime { get; set; }
+
+        [Required]
+        public DateTime ViewDateTime { get; set; }
 
         public ApplicationUser? User { get; set; }
 

@@ -114,7 +114,7 @@ namespace Idear.Areas.Admin.Controllers
 
 			if (department == null || department!.Users.Any())
 			{
-				return BadRequest();
+				return BadRequest("Cannot delete department as it is chosen by one or more users!");
 			}
 
 			_context.Departments.Remove(department);

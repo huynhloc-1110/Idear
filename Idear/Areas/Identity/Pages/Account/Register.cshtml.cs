@@ -26,7 +26,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Idear.Areas.Identity.Pages.Account
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, QA Manager")]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -203,6 +203,17 @@ namespace Idear.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
+
+            Input.RolesList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+            {
+                Text = i,
+                Value = i
+            });
+            Input.DepartmentList = _context.Departments.Select(d => d.Name).Select(i => new SelectListItem
+            {
+                Text = i,
+                Value = i
+            });
 
             // If we got this far, something failed, redisplay form
             return Page();

@@ -254,28 +254,32 @@ namespace Idear.Data
                     Id = Guid.NewGuid().ToString(),
                     VisitTime = 3,
                     Idea = _context.Ideas.First(i => i.Text == "Improve the air conditional for student room"),
-                    User = _context.ApplicationUsers.First(u => u.UserName == "N3@gmail.com")
+                    User = _context.ApplicationUsers.First(u => u.UserName == "N3@gmail.com"),
+                    ViewDateTime = DateTime.Now
                 },
                 new View
                 {
                     Id = Guid.NewGuid().ToString(),
                     VisitTime = 1,
                     Idea = _context.Ideas.First(i => i.Text == "Improve the air conditional for student room"),
-                    User = _context.ApplicationUsers.First(u => u.UserName == "Tri456@gmail.com")
+                    User = _context.ApplicationUsers.First(u => u.UserName == "Tri456@gmail.com"),
+                    ViewDateTime = DateTime.Now
                 },
                 new View
                 {
                     Id = Guid.NewGuid().ToString(),
                     VisitTime = 2,
                     Idea = _context.Ideas.First(i => i.Text == "Decorate the university's mainhall with balloon"),
-                    User = _context.ApplicationUsers.First(u => u.UserName == "Tri456@gmail.com")
+                    User = _context.ApplicationUsers.First(u => u.UserName == "Tri456@gmail.com"),
+                    ViewDateTime = DateTime.Now
                 },
                 new View
                 {
                     Id = Guid.NewGuid().ToString(),
                     VisitTime = 2,
                     Idea = _context.Ideas.First(i => i.Text == "Invite BlockChain experts to share with students"),
-                    User = _context.ApplicationUsers.First(u => u.UserName == "Tri456@gmail.com")
+                    User = _context.ApplicationUsers.First(u => u.UserName == "Tri456@gmail.com"),
+                    ViewDateTime = DateTime.Now
                 }
             );
             _context.SaveChanges();
