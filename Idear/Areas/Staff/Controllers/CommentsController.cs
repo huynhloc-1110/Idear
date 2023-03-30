@@ -67,13 +67,25 @@ namespace Idear.Areas.Staff.Controllers
             // send email using MailKit
             var url = Url.Action("Details", "Ideas", new { id = ideaId }, Request.Scheme);
 
-            MailContent content = new MailContent
+            if (isAnonymous)
             {
-                To = emailReceiver.Email,
-                Subject = "Someone commented on your idea!",
-                Body = $"<p>{cmt.User.FullName} has added a <a href=\"{url}#{cmt.Id}\">comment</a> on your \"<b>{cmt.Idea!.Text}</b>\" idea</p>",
-            };
-            _ = _sendMailService.SendMail(content);
+                MailContent content = new MailContent
+                {
+                    To = emailReceiver.Email,
+                    Subject = "Someone commented on your idea!",
+                    Body = $"<p>An anonymous user has added a <a href=\"{url}#{cmt.Id}\">comment</a> on your \"<b>{cmt.Idea!.Text}</b>\" idea</p>",
+                };
+                _ = _sendMailService.SendMail(content);
+            } else
+            {
+                MailContent content = new MailContent
+                {
+                    To = emailReceiver.Email,
+                    Subject = "Someone commented on your idea!",
+                    Body = $"<p>{cmt.User.FullName} has added a <a href=\"{url}#{cmt.Id}\">comment</a> on your \"<b>{cmt.Idea!.Text}</b>\" idea</p>",
+                };
+                _ = _sendMailService.SendMail(content);
+            }
 
             return Json(new { id = cmt.Id, user = cmt.User.FullName, dateTime = cmt.Datetime.ToString("d/M/yyyy HH:mm:ss") });
         }
