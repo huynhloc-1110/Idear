@@ -20,6 +20,7 @@ namespace Idear.Models
 
         public List<React>? Reacts { get; set; }
 
-        public DateTime? BannedDate { get; set; }
+		[DataType(DataType.Date)]
+		public DateTime? BannedDate { get; set; }
     }
 }

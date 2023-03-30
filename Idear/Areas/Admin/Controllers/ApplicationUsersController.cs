@@ -130,6 +130,7 @@ namespace Idear.Areas.Admin.Controllers
                 Email = user.Email,
                 FullName = user.FullName,
                 DepartmentId = user.Department!.Id,
+                BannedDate = user.BannedDate,
 				Departments = await _context.Departments.Select(d => new SelectListItem()
 				{
 					Value = d.Id,
@@ -157,6 +158,7 @@ namespace Idear.Areas.Admin.Controllers
             user.Email = model.Email;
             user.FullName = model.FullName;
             user.UserName = model.Email;
+            user.BannedDate= model.BannedDate;
             user.Department = await _context.Departments.FirstOrDefaultAsync(d => d.Id == model.DepartmentId);
 
             var result = await _userManager.UpdateAsync(user);
