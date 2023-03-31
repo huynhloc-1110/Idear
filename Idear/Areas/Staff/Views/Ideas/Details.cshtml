@@ -1,4 +1,6 @@
-﻿@model Idear.Areas.Staff.ViewModels.IdeasVM
+﻿@using Microsoft.AspNetCore.Identity;
+@model Idear.Areas.Staff.ViewModels.IdeasVM
+@inject UserManager<ApplicationUser> UserManager
 
 @{
 	ViewData["Title"] = "Details";
@@ -83,21 +85,21 @@
 
 				</div>
 			</div>
-		</div>
-		<br />
-		<div class="row">
-			<div class="col-md-8">
-				<div class="card mx-3 mt-n5 shadow-lg home-section">
-					<div class="card-header bg-purple header-section">
-						<h4><i class="bi bi-pencil-square"></i> Comments</h4>
-					</div>
-					<div class="card-body">
-						<div class="card" id="card-new-cmt">
-							<div class="card-body">
-								<p class="card-text text-bold"><span id="cmt-count">@Model.Idea.Comments!.Count</span> comments</p>
+	</div>
+	<br />
+	<div class="row">
+		<div class="col-md-8">
+			<div class="card mx-3 mt-n5 shadow-lg home-section">
+				<div class="card-header bg-purple header-section">
+					<h4><i class="bi bi-pencil-square"></i> Comments</h4>
+				</div>
+				<div class="card-body">
+					<div class="card" id="card-new-cmt">
+						<div class="card-body">
+							<p class="card-text text-bold"><span id="cmt-count">@Model.Idea.Comments!.Count</span> comments</p>
 
-								<!-- Create new comment Section -->
-								@if (Model.Idea.Topic!.FinalClosureDate >= DateTime.Now)
+							<!-- Create new comment Section -->
+							@if (Model.Idea.Topic!.FinalClosureDate >= DateTime.Now)
 							{
 								<form>
 									<div class="mb-3">
@@ -125,18 +127,33 @@
 					@foreach (var comment in Model.Idea.Comments!.OrderByDescending(c => c.Datetime))
 					{
 						<div class="card">
-							<div class="card-body">
-								<p class="card-text" id="@comment.Id">
-									@if (comment.IsAnonymous)
-									{
-										<b><text>Anonymous User</text></b>
-									}
-									else
-									{
-										<b>@comment.User!.FullName</b>
-									}
-
-								</p>
+							<div class="card-body" id="@comment.Id">
+								<div class="row align-items-center">
+									<p class="col-6">
+										@if (comment.IsAnonymous)
+										{
+											<b><text>Anonymous User</text></b>
+										}
+										else
+										{
+											<b>@comment.User!.FullName</b>
+										}
+									</p>
+									<p class="col-6 text-right">
+										@if (comment.User == await UserManager.GetUserAsync(User))
+										{
+											<button id="btn-edit-cmt" data-target-id="@comment.Id" type="button" class="btn btn-outline-primary"><i class="bi bi-pencil-square"></i></button>
+											<button id="btn-delete-cmt" data-target-id="@comment.Id" type="button" class="btn btn-outline-primary"><i class="bi bi-trash"></i></button>
+										}
+										else
+										{
+											<a class="btn btn-outline-primary" asp-controller="Reports" asp-action="Create" asp-route-type="Comment" asp-route-id="@comment.Id">
+												<i class="bi bi-flag"></i>
+											</a>
+										}
+									</p>
+								</div>
+								
 								<p>@comment.Text</p>
 								<p class="text-right">
 									<small class="text-muted">
@@ -257,20 +274,26 @@
 			var cmtOwner = isAnonymous ? 'Anonymous User' : result.user;
 			$('#card-new-cmt').after(
 				`
-						<div class="card">
-							<div class="card-body">
-								<p class="card-text" id="${result.id}">
-									<b><text>${cmtOwner}</text></b>
-								</p>
-								<p>${cmtText}</p>
-								<p class="text-right">
-									<small class="text-muted">
-										at ${result.dateTime}
-									</small>
-								</p>
-							</div>
+				<div class="card">
+					<div class="card-body" id="${result.id}">
+						<div class="row align-items-center">
+							<p class="col-6">
+								<b><text>${cmtOwner}</text></b>
+							</p>
+							<p class="col-6 text-right">
+								<button id="btn-edit-cmt" data-target-id="${result.id}" type="button" class="btn btn-outline-primary"><i class="bi bi-pencil-square"></i></button>
+								<button id="btn-delete-cmt" data-target-id="${result.id}" type="button" class="btn btn-outline-primary"><i class="bi bi-trash"></i></button>
+							</p>
 						</div>
-						`
+						<p>${cmtText}</p>
+						<p class="text-right">
+							<small class="text-muted">
+								at ${result.dateTime}
+							</small>
+						</p>
+					</div>
+				</div>
+				`
 			);
 
 			// update comment count of this idea page
