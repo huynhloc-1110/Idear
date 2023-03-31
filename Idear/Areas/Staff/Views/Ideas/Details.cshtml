@@ -74,6 +74,9 @@
 							<button id="btn-dislike" type="button" class="btn btn-dark">
 								<i class="bi bi-hand-thumbs-down@( Model.ReactFlag == -1 ? "-fill" : "" )"></i> <span>@Model.Idea.Reacts.Where(r => r.ReactFlag == -1).Count()</span> Dislikes
 							</button>
+							<a class="btn btn-danger" asp-controller="Reports" asp-action="Create" asp-route-type="Idea" asp-route-id="@Model.Idea.Id">
+								<i class="bi bi-flag"></i> Report
+							</a>
 						</div>
 					</div>
 					<!--/ View, Like, Dislike Section -->
