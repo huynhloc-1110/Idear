@@ -145,9 +145,12 @@ namespace Idear.Areas.QAManager.Controllers
         {
             var reports = await _context.Reports
                 .Include(r => r.ReportedIdea)
+                    .ThenInclude(i=>i!.User)
                 .Include(r => r.ReportedComment)
-                    .ThenInclude(c => c.Idea)
-                .Include(r => r.Reporter)
+                    .ThenInclude(c => c!.Idea)
+				.Include(r => r.ReportedComment)
+					.ThenInclude(c => c!.User)
+				.Include(r => r.Reporter)
                 .OrderByDescending(r => r.DateTime)
                 .AsSplitQuery()
                 .ToListAsync();
