@@ -24,7 +24,7 @@
         {
             foreach (var report in Model)
             {
-                <tr>
+                <tr id="rp-@report.Id">
                     <td>@report.Reporter!.FullName</td>
                     <td>
                         @if (report.ReportedIdea != null)

@@ -127,7 +127,7 @@
 					@foreach (var comment in Model.Idea.Comments!.OrderByDescending(c => c.Datetime))
 					{
 						<div class="card">
-							<div class="card-body" id="@comment.Id">
+							<div class="card-body" id="cmt-@comment.Id">
 								<div class="row align-items-center">
 									<p class="col-6">
 										@if (comment.IsAnonymous)
@@ -320,6 +320,5 @@
 			});
 			$('#btn-new-cmt').click(ajaxPostCmt);
 		})
-
 	</script>
 }
