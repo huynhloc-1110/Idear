@@ -7,5 +7,6 @@ namespace Idear.Areas.QAManager.ViewModels
         public List<Idea> NoCommentIdeas { get; set; } = default!;
         public List<Idea> AnonymousIdeas { get; set; } = default!;
         public List<Comment> AnonymousComments { get; set; } = default!;
+        public List<Report> Reports { get; set; } = default!;
     }
 }

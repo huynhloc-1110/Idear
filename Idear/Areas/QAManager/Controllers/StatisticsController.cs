@@ -44,12 +44,21 @@ namespace Idear.Areas.QAManager.Controllers
                 .OrderByDescending(c => c.Datetime)
                 .Take(5)
                 .ToListAsync();
+            var reports = await _context.Reports
+                .Include(r => r.ReportedIdea)
+                .Include(r => r.ReportedComment)
+                .Include(r => r.Reporter)
+                .OrderByDescending(r => r.DateTime)
+                .Take(5)
+                .AsSplitQuery()
+                .ToListAsync();
 
             var reportVM = new ExceptionReportsVM
             {
                 NoCommentIdeas = noCommentIdeas,
                 AnonymousIdeas = anonymousIdeas,
-                AnonymousComments = anonymousComments
+                AnonymousComments = anonymousComments,
+                Reports = reports
             };
 
             return View(reportVM);
@@ -130,6 +139,19 @@ namespace Idear.Areas.QAManager.Controllers
                 .OrderByDescending(c => c.Datetime)
                 .ToListAsync();
             return View(PaginatedList<Comment>.Create(anonymousComments, page ?? 1));
+        }
+
+        public async Task<IActionResult> ListReport(int? page)
+        {
+            var reports = await _context.Reports
+                .Include(r => r.ReportedIdea)
+                .Include(r => r.ReportedComment)
+                    .ThenInclude(c => c.Idea)
+                .Include(r => r.Reporter)
+                .OrderByDescending(r => r.DateTime)
+                .AsSplitQuery()
+                .ToListAsync();
+            return View(PaginatedList<Report>.Create(reports, page ?? 1));
         }
     }
 }
