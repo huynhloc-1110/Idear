@@ -220,7 +220,40 @@ namespace Idear.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("React");
+                    b.ToTable("Reactes");
+                });
+
+            modelBuilder.Entity("Idear.Models.Report", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ReportedCommentId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ReportedIdeaId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ReporterId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportedCommentId");
+
+                    b.HasIndex("ReportedIdeaId");
+
+                    b.HasIndex("ReporterId");
+
+                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("Idear.Models.Topic", b =>
@@ -465,6 +498,27 @@ namespace Idear.Data.Migrations
                     b.Navigation("Idea");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Idear.Models.Report", b =>
+                {
+                    b.HasOne("Idear.Models.Comment", "ReportedComment")
+                        .WithMany()
+                        .HasForeignKey("ReportedCommentId");
+
+                    b.HasOne("Idear.Models.Idea", "ReportedIdea")
+                        .WithMany()
+                        .HasForeignKey("ReportedIdeaId");
+
+                    b.HasOne("Idear.Models.ApplicationUser", "Reporter")
+                        .WithMany()
+                        .HasForeignKey("ReporterId");
+
+                    b.Navigation("ReportedComment");
+
+                    b.Navigation("ReportedIdea");
+
+                    b.Navigation("Reporter");
                 });
 
             modelBuilder.Entity("Idear.Models.View", b =>

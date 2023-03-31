@@ -17,7 +17,7 @@ namespace Idear.Data
         public DbSet<Department> Departments { get; set; } = default!;
         public DbSet<Idea> Ideas { get; set; } = default!;
         public DbSet<React> Reactes { get; set; } = default!;
-		public DbSet<React> Reports { get; set; } = default!;
+		public DbSet<Report> Reports { get; set; } = default!;
 		public DbSet<Topic> Topics { get; set; } = default!;
         public DbSet<View> Views { get; set; } = default!;
     }
