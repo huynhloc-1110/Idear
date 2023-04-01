@@ -35,7 +35,7 @@ namespace Idear.Areas.QAManager.Controllers
 
         [HttpPut]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ToggleHide(string id)
+        public async Task<IActionResult> UpdateHide(string id, string updateTo)
         {
             var report = await _context.Reports
                 .Include(r => r.ReportedIdea)
@@ -46,14 +46,22 @@ namespace Idear.Areas.QAManager.Controllers
                 return BadRequest("Report not found");
             }
 
-            // toggle is hidden
+            // update isHidden
             if (report.ReportedIdea != null)
             {
-                report.ReportedIdea.IsHidden = !report.ReportedIdea.IsHidden;
+                report.ReportedIdea.IsHidden = updateTo switch
+                {
+                    "Hide" => true,
+                    _ => false
+                };
             }
             if (report.ReportedComment != null)
             {
-                report.ReportedComment.IsHidden = !report.ReportedComment.IsHidden;
+                report.ReportedComment.IsHidden = updateTo switch
+                {
+                    "Hide" => true,
+                    _ => false
+                };
             }
             await _context.SaveChangesAsync();
 

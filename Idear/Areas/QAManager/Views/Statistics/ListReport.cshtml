@@ -88,7 +88,7 @@
                     <td>
                         <div class="dropdown">
                             <button class="btn btn-danger dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-lock"></i> Ban
+                                Ban
                             </button>
                             <ul class="dropdown-menu">
                                 <li>
@@ -108,7 +108,7 @@
 
                     <!-- Hide action-->
                     <td>
-                        <button class="btn btn-primary" type="button" data-action="ToggleHide" data-action-id="@report.Id">
+                        <button class="btn btn-primary" type="button" data-action="UpdateHide" data-action-id="@report.Id">
                             @if (report.ReportedIdea?.IsHidden == true || report.ReportedComment?.IsHidden == true)
                             {
                                 <text>UnHide</text>
@@ -182,17 +182,18 @@
             });
 
             // toggle hide for reported content
-            $('button[data-action=ToggleHide]').click(function () {
+            $('button[data-action=UpdateHide]').click(function () {
                 var reportId = this.getAttribute('data-action-id');
+                var updateTo = this.textContent.trim();
 
                 $.get("/Staff/Helpers/GetCsrfToken", function (token) {
                     var headers = {};
                     headers["RequestVerificationToken"] = token;
 
                     $.ajax({
-                        url: '/QAManager/Reports/ToggleHide/',
+                        url: '/QAManager/Reports/UpdateHide/',
                         type: "PUT",
-                        data: { id: reportId },
+                        data: { 'id': reportId, 'updateTo' : updateTo },
                         headers: headers,
                         success: function (result) {
                             location.reload();
