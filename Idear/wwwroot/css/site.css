@@ -131,7 +131,8 @@ body.dark-mode table {
 }
 
 body.dark-mode table th,
-body.dark-mode table td {
+body.dark-mode table td,
+body.dark-mode table td a {
     border-color: #fff !important;
     color: #fff !important;
 }
@@ -171,4 +172,13 @@ body.dark-mode .modal-content {
     position: absolute;
     top: -2px;
     right: 2px;
+}
+
+/*highlight fragment*/
+.card-body.highlight {
+    border: 3px solid yellow;
+}
+
+tr.highlight {
+    background-color: rgba(255,255,0,0.5);
 }

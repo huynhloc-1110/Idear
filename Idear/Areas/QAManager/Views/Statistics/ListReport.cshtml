@@ -1,0 +1,68 @@
+﻿@model PaginatedList<Idear.Models.Report>
+
+@{
+    ViewData["Title"] = "Reports";
+    ViewBag.ViewName = "ListReport";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table table-hover table-bordered bg-white table-striped">
+    <thead>
+        <tr>
+            <th>Reporter</th>
+            <th>Reported User</th>
+            <th>Reported Content</th>
+            <th>Reason</th>
+            <th>Date Time</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @if (Model.Any())
+        {
+            foreach (var report in Model)
+            {
+                <tr id="rp-@report.Id">
+                    <td>@report.Reporter!.FullName</td>
+                    <td>
+                        @if (report.ReportedIdea != null)
+                        {
+                            @report.ReportedIdea.User!.FullName
+                        }
+                        @if (report.ReportedComment != null)
+                        {
+                            @report.ReportedComment.User!.FullName
+                        }
+                    </td>
+                    <td>
+                        @if (report.ReportedIdea != null)
+                        {
+                            <a target="_blank" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@report.ReportedIdea.Id">
+                                @report.ReportedIdea.Text
+                            </a>
+                        }
+                        @if (report.ReportedComment != null)
+                        {
+                            <a target="_blank" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@report.ReportedComment.Idea!.Id" asp-fragment="cmt-@report.ReportedComment.Id">
+                                @report.ReportedComment.Text
+                            </a>
+                        }
+                    </td>
+                    <td>@report.Reason</td>
+                    <td>@report.DateTime</td>
+                    <td>
+                        <button type="button" class="btn btn-danger"><i class="bi bi-lock"></i> Ban reported user</button>
+                    </td>
+                </tr>
+
+            }
+        }
+        else
+        {
+            <h5 class="card-title">None of reports</h5>
+        }
+    </tbody>
+</table>
+<partial name="_PaginatedList" />

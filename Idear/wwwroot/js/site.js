@@ -109,3 +109,14 @@ function crudIndex(modelIdName, controllerName) {
         backdrop.modal('show');
     }
 }
+
+// highlight fragment
+$(function() {
+    let fragment = window.location.hash;
+    if (fragment) {
+        $(fragment).addClass("highlight");
+        $(fragment).click(function () {
+            $(fragment).removeClass("highlight");
+        });
+    }
+})
