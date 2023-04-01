@@ -102,7 +102,7 @@ namespace Idear.Areas.Staff.Controllers
 				targetUrlId = reportVM.ReportedComment.Idea!.Id;
 			}
 
-			TempData["Report"] = "Success";
+			TempData["SuccessMessage"] = "Your report has been sent successfully.";
             return RedirectToAction("Details", "Ideas", new { id = targetUrlId });
         }
 	}
