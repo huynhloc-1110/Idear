@@ -15,8 +15,8 @@ namespace Idear.Models
         public DateTime Datetime { get; set; }
 
         public bool IsAnonymous { get; set; }
+        public bool IsHidden { get; set; } = false;
         public ApplicationUser? User { get; set; }
-
         public Idea? Idea { get; set; }
     }
 }

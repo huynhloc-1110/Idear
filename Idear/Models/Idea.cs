@@ -21,9 +21,9 @@ namespace Idear.Models
 
         public Category? Category { get; set; }
         public bool IsAnonymous { get; set; }
+		public bool IsHidden { get; set; } = false;
         public List<Comment>? Comments { get; set; }
         public List<View>? Views { get; set; }
 		public List<React>? Reacts { get; set; }
-
     }
 }
