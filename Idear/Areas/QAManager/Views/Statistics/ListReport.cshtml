@@ -39,13 +39,13 @@
                     <td>
                         @if (report.ReportedIdea != null)
                         {
-                            <a asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@report.ReportedIdea.Id">
+                            <a target="_blank" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@report.ReportedIdea.Id">
                                 @report.ReportedIdea.Text
                             </a>
                         }
                         @if (report.ReportedComment != null)
                         {
-                            <a asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@report.ReportedComment.Idea!.Id" asp-fragment="@report.ReportedComment.Id">
+                            <a target="_blank" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@report.ReportedComment.Idea!.Id" asp-fragment="cmt-@report.ReportedComment.Id">
                                 @report.ReportedComment.Text
                             </a>
                         }

@@ -6,6 +6,18 @@
 	ViewData["Title"] = "Details";
 }
 
+<!-- Successful Report alert -->
+@if (TempData["Report"] as string == "Success")
+{
+	<div class="alert alert-success alert-dismissible fade show" role="alert" style="margin:25px">
+		<i class="bi bi-check-circle"></i>
+		Your report has been sent successfully.
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+}
+<!-- /Successful Report alert -->
+
+
 <div class="container-fluid">
 	<div class="card mx-3 mt-n5 shadow-lg home-section">
 		<div class="card-header bg-info bg-opacity-50 header-section">
@@ -143,11 +155,11 @@
 										@if (comment.User == await UserManager.GetUserAsync(User))
 										{
 											<button id="btn-edit-cmt" data-target-id="@comment.Id" type="button" class="btn btn-outline-primary"><i class="bi bi-pencil-square"></i></button>
-											<button id="btn-delete-cmt" data-target-id="@comment.Id" type="button" class="btn btn-outline-primary"><i class="bi bi-trash"></i></button>
+											<button id="btn-delete-cmt" data-target-id="@comment.Id" type="button" class="btn btn-outline-dark"><i class="bi bi-trash"></i></button>
 										}
 										else
 										{
-											<a class="btn btn-outline-primary" asp-controller="Reports" asp-action="Create" asp-route-type="Comment" asp-route-id="@comment.Id">
+											<a class="btn btn-outline-danger" asp-controller="Reports" asp-action="Create" asp-route-type="Comment" asp-route-id="@comment.Id">
 												<i class="bi bi-flag"></i>
 											</a>
 										}
@@ -282,7 +294,7 @@
 							</p>
 							<p class="col-6 text-right">
 								<button id="btn-edit-cmt" data-target-id="${result.id}" type="button" class="btn btn-outline-primary"><i class="bi bi-pencil-square"></i></button>
-								<button id="btn-delete-cmt" data-target-id="${result.id}" type="button" class="btn btn-outline-primary"><i class="bi bi-trash"></i></button>
+								<button id="btn-delete-cmt" data-target-id="${result.id}" type="button" class="btn btn-outline-dark"><i class="bi bi-trash"></i></button>
 							</p>
 						</div>
 						<p>${cmtText}</p>

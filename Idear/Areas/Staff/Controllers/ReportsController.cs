@@ -92,7 +92,18 @@ namespace Idear.Areas.Staff.Controllers
 			_context.Reports.Add(report);
 			await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index", "Home");
+			string? targetUrlId = "";
+			if (reportVM.ReportedIdea != null)
+			{
+				targetUrlId = reportVM.ReportedIdea.Id;
+			}
+			if (reportVM.ReportedComment != null)
+			{
+				targetUrlId = reportVM.ReportedComment.Idea!.Id;
+			}
+
+			TempData["Report"] = "Success";
+            return RedirectToAction("Details", "Ideas", new { id = targetUrlId });
         }
 	}
 }
