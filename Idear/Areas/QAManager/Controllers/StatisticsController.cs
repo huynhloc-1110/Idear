@@ -141,9 +141,28 @@ namespace Idear.Areas.QAManager.Controllers
             return View(PaginatedList<Comment>.Create(anonymousComments, page ?? 1));
         }
 
-        public async Task<IActionResult> ListReport(int? page)
+        public async Task<IActionResult> ListReport(string filter, int? page)
         {
-            var reports = await _context.Reports
+            IQueryable<Report> reportQuery = null;
+            switch (filter)
+            {
+                case "pending":
+                    reportQuery = _context.Reports
+                        .Where(r => r.Status == ReportStatus.Pending);
+                    break;
+                case "omitted":
+                    reportQuery = _context.Reports
+                        .Where(r => r.Status == ReportStatus.Omitted);
+                    break;
+                case "resolved":
+                    reportQuery = _context.Reports
+                        .Where(r => r.Status == ReportStatus.Resolved);
+                    break;
+                default:
+                    reportQuery = _context.Reports;
+                    break;
+            }
+            var reports = await reportQuery
                 .Include(r => r.ReportedIdea)
                     .ThenInclude(i=>i!.User)
                 .Include(r => r.ReportedComment)
