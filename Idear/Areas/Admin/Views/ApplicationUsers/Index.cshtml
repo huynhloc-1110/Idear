@@ -9,6 +9,20 @@
 <p>
 	<a class="btn btn-dark" id="register" asp-area="Identity" asp-page="/Account/Register"><i class="bi bi-clipboard-plus"></i> Create New </a></>
 </p>
+
+<div class="row justify-content-between">
+	<div class="col-4">
+		<form method="get">
+			<label for="select-order"><b><h6>Filter by</h6></b></label>
+			<select class="form-select inline-select" id="select-filter" name="filter">
+				<option value="">All</option>
+				<option value="banned">Banned User</option>
+			</select>
+		</form>
+	</div>
+</div>
+<br />
+
 <table class="table table-hover table-striped bg-white">
 	<thead>
 		<tr>
@@ -36,3 +50,23 @@
 		}
 	</tbody>
 </table>
+
+<partial name="_PaginatedList" />
+
+@section Scripts{
+	<script>
+		$(document).ready(function () {
+			$('#select-filter').change(function () {
+				// Get the selected sorting option
+				var selectedOption = $(this).val();
+				// Redirect to the current page with the sorting option as a query parameter
+				window.location.href = window.location.pathname + '?filter=' + selectedOption;
+			});
+			// get the select option from query string
+			var selectedOption = new URLSearchParams(window.location.search).get('filter');
+			if (selectedOption != "" && selectedOption != null) {
+				$('#select-filter').val(selectedOption);
+			}
+		});
+	</script>
+}
