@@ -6,9 +6,23 @@ namespace Idear.Models
 	public class Idea
 	{
 		public string? Id { get; set; }
+
+		private string? text;
+
 		[Required]
 		[StringLength(500)]
-		public string? Text { get; set; }
+		public string? Text
+		{
+			get
+			{
+				if (IsHidden)
+				{
+					return "*This idea is reported and hidden by a QA Manager.";
+				}
+				return text;
+			}
+			set { text = value; }
+		}
 		public string? FilePath { get; set; }
 
 		[Required]
