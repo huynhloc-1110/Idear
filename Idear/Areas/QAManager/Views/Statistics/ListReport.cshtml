@@ -53,10 +53,14 @@
                     <td>@report.Reason</td>
                     <td>@report.DateTime</td>
                     <td>
-                        <button type="button" class="btn btn-danger"><i class="bi bi-lock"></i> Ban reported user</button>
+                        <a class="btn btn-danger" target="_blank" asp-area="Admin" asp-controller="ApplicationUsers" asp-action="Edit" asp-route-id="@(report.ReportedIdea != null ? report.ReportedIdea.User.Id : report.ReportedComment.User.Id)">
+                            <i class="bi bi-lock"></i> reported user
+                        </a>
+                        <a class="btn btn-danger" target="_blank" asp-area="Admin" asp-controller="ApplicationUsers" asp-action="Edit" asp-route-id="@report.Reporter.Id">
+                            <i class="bi bi-lock"></i> reporter
+                        </a>
                     </td>
                 </tr>
-
             }
         }
         else
