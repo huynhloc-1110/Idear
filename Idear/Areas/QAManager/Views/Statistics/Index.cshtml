@@ -82,7 +82,7 @@
                     @foreach (var comment in Model.AnonymousComments)
                     {
                         <div class="card">
-                            <a class="card-body" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@comment.Idea!.Id" asp-fragment="@comment.Id">
+                            <a class="card-body" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@comment.Idea!.Id" asp-fragment="cmt-@comment.Id">
                                 <p class="card-text">
                                     @comment.Text
                                     <small class="text-muted">- by @comment.User!.FullName</small>
