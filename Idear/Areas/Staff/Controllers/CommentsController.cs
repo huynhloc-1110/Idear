@@ -77,5 +77,83 @@ namespace Idear.Areas.Staff.Controllers
 
             return Json(new { id = cmt.Id, user = cmt.User.FullName, dateTime = cmt.Datetime.ToString("d/M/yyyy HH:mm:ss") });
         }
-    }
+
+		public async Task<IActionResult> Details(string id)
+		{
+			if (id == null || _context.Comments == null)
+			{
+				return NotFound();
+			}
+
+			var comment = await _context.Comments
+				.FindAsync(id);
+			if (comment == null)
+			{
+				return NotFound();
+			}
+
+			return Json(comment);
+		}
+
+		[HttpPut]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Edit(string id, [Bind("Text,IsAnonymous")] Comment comment)
+		{
+			var cmt = _context.Comments
+				.Include(c => c.User)
+				.FirstOrDefault(c => c.Id == id);
+
+			if (cmt == null)
+			{
+				return BadRequest("No comment of that id found!");
+			}
+
+			// check if it's the current user's comment
+			var currentUser = await _userManager.GetUserAsync(User);
+			if (cmt.User != currentUser)
+			{
+				return BadRequest("You cannot edit other people's comment!");
+			}
+
+			if (ModelState.IsValid)
+			{
+				cmt.Text = comment.Text;
+				cmt.IsAnonymous = comment.IsAnonymous;
+				cmt.Datetime = DateTime.Now;
+				await _context.SaveChangesAsync();
+				return Ok();
+			}
+			return BadRequest();
+		}
+
+		[HttpDelete]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Delete(string id)
+		{
+			if (_context.Comments == null)
+			{
+				return Problem("Entity set 'ApplicationDbContext.Comments' is null.");
+			}
+
+			var comment = await _context.Comments
+				.Include(c => c.User)
+				.FirstOrDefaultAsync(c => c.Id == id);
+
+			if (comment == null)
+			{
+				return BadRequest("Cannot delete comment as it is null!");
+			}
+
+			// check if it's the current user's comment
+			var currentUser = await _userManager.GetUserAsync(User);
+			if (comment.User != currentUser)
+			{
+				return BadRequest("You cannot delete other people's comment!");
+			}
+
+			_context.Comments.Remove(comment);
+			await _context.SaveChangesAsync();
+			return Ok();
+		}
+	}
 }

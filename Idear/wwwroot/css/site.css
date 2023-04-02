@@ -36,7 +36,6 @@ a {
     color: black;
 }
 
-
 .inline-select {
     width: auto;
     display: inline-block;
@@ -149,4 +148,9 @@ body.dark-mode .modal-content {
 
 tr.highlight {
     background-color: rgba(255,255,0,0.5);
+}
+
+/*hidden*/
+.hidden {
+    display: none;
 }
