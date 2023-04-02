@@ -71,7 +71,7 @@ namespace Idear.Areas.Staff.Controllers
             {
                 To = emailReceiver.Email,
                 Subject = "Someone commented on your idea!",
-                Body = $"<p>{cmt.User.FullName} has added a <a href=\"{url}#{cmt.Id}\">comment</a> on your \"<b>{cmt.Idea!.Text}</b>\" idea</p>",
+                Body = $"<p>{cmt.User.FullName} has added a <a href=\"{url}#cmt-{cmt.Id}\">comment</a> on your \"<b>{cmt.Idea!.Text}</b>\" idea</p>",
             };
             _ = _sendMailService.SendMail(content);
 
