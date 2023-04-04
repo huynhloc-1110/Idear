@@ -23,16 +23,13 @@ namespace Idear.Areas.QAManager.Controllers
         public async Task<IActionResult> ExportZip(string id)
         {
             // find topic by id
-            var topic = await _context.Topics
-                .Include(t => t.Ideas)
-                .FirstOrDefaultAsync(t => t.Id == id);
+            var topic = await _context.Topics.FindAsync(id);
             if (topic == null)
             {
                 return NotFound();
             }
             if (topic.FinalClosureDate > DateTime.Now)
             {
-
                 TempData["ErrorMessage"] = "This topic has not yet been closed.";
                 return RedirectToAction("Index", "Topics", new { area = "Staff" });
             }
