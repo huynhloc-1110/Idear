@@ -1,7 +1,7 @@
 ﻿@*bad request modal*@
 <div class="modal fade" id="badRequestModal" tabindex="-1" role="dialog" aria-labelledby="badRequestModalLabel">
     <div class="modal-dialog" role="document">
-        <div class="alert alert-danger d-flex align-items-center" role="alert" >
+        <div class="alert alert-danger d-flex align-items-start" role="alert" >
             <i class="bi bi-exclamation-triangle" style="color:#B22222"></i>
             &nbsp;
             <span id="error-msg"></span>
@@ -9,11 +9,7 @@
     </div>
 </div>
 
-
-
-
 <script>
-
     $(function () {
         // Handle bad request response
         $(document).ajaxError(function (event, xhr) {
@@ -24,4 +20,3 @@
         });
     });
 </script>
-

@@ -19,5 +19,8 @@ namespace Idear.Models
         public List<View>? Views { get; set; }
 
         public List<React>? Reacts { get; set; }
+
+		[DataType(DataType.Date)]
+		public DateTime? BannedDate { get; set; }
     }
 }
