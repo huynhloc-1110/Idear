@@ -102,29 +102,20 @@ namespace Idear.Areas.QAManager.Controllers
 
         public async Task<IActionResult> ListIdea(string filter, int? page)
         {
-            IQueryable<Idea> ideaQuery = null;
-            switch (filter)
+            IQueryable<Idea> ideaQuery = filter switch
             {
-                case "anonymous":
-                    ideaQuery = _context.Ideas
-                        .Where(i => i.IsAnonymous)
-                        .OrderByDescending(i => i.DateTime);
-                    break;
-                case "noComment":
-                    ideaQuery = _context.Ideas
-                        .Where(i => i.Comments!.Count == 0)
-                        .OrderByDescending(i => i.DateTime);
-                    break;
-                default:
-                    ideaQuery = _context.Ideas
-                        .OrderByDescending(i => i.DateTime);
-                    break;
-            }
+                "anonymous" => _context.Ideas
+                    .Where(i => i.IsAnonymous),
+                "noComment" => _context.Ideas
+                    .Where(i => i.Comments!.Count == 0),
+                _ => _context.Ideas
+            };
             var ideas = await ideaQuery
                 .Include(i => i.User)
                 .Include(i => i.Views)
                 .Include(i => i.Comments)
                 .Include(i => i.Reacts)
+                .OrderByDescending(i => i.DateTime)
                 .AsSplitQuery()
                 .ToListAsync();
             return View(PaginatedList<Idea>.Create(ideas, page ?? 1));
@@ -141,9 +132,19 @@ namespace Idear.Areas.QAManager.Controllers
             return View(PaginatedList<Comment>.Create(anonymousComments, page ?? 1));
         }
 
-        public async Task<IActionResult> ListReport(int? page)
+        public async Task<IActionResult> ListReport(string filter, int? page)
         {
-            var reports = await _context.Reports
+            IQueryable<Report> reportQuery = filter switch
+            {
+                "pending" => _context.Reports
+                    .Where(r => r.Status == ReportStatus.Pending),
+                "omitted" => _context.Reports
+                    .Where(r => r.Status == ReportStatus.Omitted),
+                "resolved" => _context.Reports
+                    .Where(r => r.Status == ReportStatus.Resolved),
+                _ => _context.Reports
+            };
+            var reports = await reportQuery
                 .Include(r => r.ReportedIdea)
                     .ThenInclude(i=>i!.User)
                 .Include(r => r.ReportedComment)
