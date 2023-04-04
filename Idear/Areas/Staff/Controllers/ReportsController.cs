@@ -6,6 +6,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using MailKit.Net.Smtp;
+using MimeKit;
+using Microsoft.Extensions.Logging;
+using MailKit.Security;
+using Microsoft.Extensions.Configuration;
+using Idear.Services;
+using Org.BouncyCastle.Crypto;
 
 namespace Idear.Areas.Staff.Controllers
 {
@@ -15,12 +22,14 @@ namespace Idear.Areas.Staff.Controllers
 	{
 		private readonly ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ISendMailService _sendMailService;
 
-		public ReportsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public ReportsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ISendMailService sendMailService)
 		{
 			_context = context;
 			_userManager = userManager;
-		}
+            _sendMailService = sendMailService;
+        }
 
 		public async Task<IActionResult> Create(string id, string type)
 		{
@@ -92,7 +101,7 @@ namespace Idear.Areas.Staff.Controllers
 			_context.Reports.Add(report);
 			await _context.SaveChangesAsync();
 
-			string? targetUrlId = "";
+            string? targetUrlId = "";
 			if (reportVM.ReportedIdea != null)
 			{
 				targetUrlId = reportVM.ReportedIdea.Id;
@@ -102,8 +111,26 @@ namespace Idear.Areas.Staff.Controllers
 				targetUrlId = reportVM.ReportedComment.Idea!.Id;
 			}
 
+      // Get the email receiver which are QA Manager
+      var qaManagers = await _userManager.GetUsersInRoleAsync("QA Manager");
+
+      //Send email to them
+
+      var url = Url.Action("ListReport", "Statistics", new { Area = "QAManager" }, Request.Scheme);
+      foreach (var user in qaManagers)
+      {
+          MailContent content = new MailContent
+          {
+              To = user.Email,
+              Subject = "New report!",
+              Body = $"<p>{report.Reporter.FullName} has submitted a new report, <a href=\"{url}#rp-{@report.Id}\">check it out!</a></p>"
+          };
+
+          _ = _sendMailService.SendMail(content);
+      }
+
 			TempData["SuccessMessage"] = "Your report has been sent successfully.";
-            return RedirectToAction("Details", "Ideas", new { id = targetUrlId });
-        }
+      return RedirectToAction("Details", "Ideas", new { id = targetUrlId });
+    }
 	}
 }
