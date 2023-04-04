@@ -6,18 +6,6 @@
 	ViewData["Title"] = "Details";
 }
 
-<!-- Successful Report alert -->
-@if (TempData["Report"] as string == "Success")
-{
-	<div class="alert alert-success alert-dismissible fade show" role="alert" style="margin:25px">
-		<i class="bi bi-check-circle"></i>
-		Your report has been sent successfully.
-		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</div>
-}
-<!-- /Successful Report alert -->
-
-
 <div class="container-fluid">
 	<div class="card mx-3 mt-n5 shadow-lg home-section">
 		<div class="card-header bg-info bg-opacity-50 header-section">
@@ -213,6 +201,10 @@
 </div>
 
 @section Scripts {
+    @{
+        await Html.RenderPartialAsync("_TempDataModal");
+    }
+
 	<script>
 		function ajaxPostReact(flag) {
 			// Get the CSRF token from the server

@@ -142,38 +142,6 @@ body.dark-mode .modal-content {
     color: #fff !important;
 }
 
-
-/*popup error message*/
-.popup-message {
-    position: fixed;
-    top: 90px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    color: #721c24;
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
-    padding: 0.75rem 1.25rem;
-    border: 1px solid transparent;
-    border-radius: 0.25rem;
-}
-
-.popup-message span {
-    margin-right: 10px;
-}
-
-.close-button {
-    background-color: transparent;
-    color: #B22222;
-    border: none;
-    font-size: 15px;
-    cursor: pointer;
-    position: absolute;
-    top: -2px;
-    right: 2px;
-}
-
 /*highlight fragment*/
 .card-body.highlight {
     border: 3px solid yellow;

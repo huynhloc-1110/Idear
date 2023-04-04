@@ -6,16 +6,31 @@
 }
 
 <h1>@ViewData["Title"]</h1>
+<div class="row justify-content-between">
+    <div class="col-4">
+        <form method="get">
+            <label for="filter"><b><h6>Filter</h6></b></label>
+            <select class="form-select inline-select" id="filter" name="filter">
+                <option value="all">All</option>
+                <option value="pending">Pending</option>
+                <option value="omitted">Omitted</option>
+                <option value="resolved">Resolved</option>
+            </select>
+        </form>
+    </div>
+</div>
+<br />
 
 <table class="table table-hover table-bordered bg-white table-striped">
     <thead>
         <tr>
+            <th>Status</th>
             <th>Reporter</th>
             <th>Reported User</th>
             <th>Reported Content</th>
             <th>Reason</th>
             <th>Date Time</th>
-            <th>Action</th>
+            <th colspan="3">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -25,6 +40,23 @@
             foreach (var report in Model)
             {
                 <tr id="rp-@report.Id">
+                    <td>
+                        @switch (report.Status)
+                        {
+                            case ReportStatus.Pending:
+                                <i class="bi bi-hourglass-split"></i>
+                                break;
+                            case ReportStatus.Omitted:
+                                <i class="bi bi-x-circle"></i>
+                                break;
+                            case ReportStatus.Resolved:
+                                <i class="bi bi-check-circle"></i>
+                                break;
+                            default:
+                                <text></text>
+                                break;
+                        }
+                    </td>
                     <td>@report.Reporter!.FullName</td>
                     <td>
                         @if (report.ReportedIdea != null)
@@ -52,11 +84,55 @@
                     </td>
                     <td>@report.Reason</td>
                     <td>@report.DateTime</td>
+                    <!-- Ban action-->
                     <td>
-                        <button type="button" class="btn btn-danger"><i class="bi bi-lock"></i> Ban reported user</button>
+                        <div class="dropdown">
+                            <button class="btn btn-danger dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Ban
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" target="_blank" asp-area="Admin" asp-controller="ApplicationUsers" asp-action="Edit" asp-route-id="@(report.ReportedIdea != null ? report.ReportedIdea.User!.Id : report.ReportedComment!.User!.Id)">
+                                        Reported user
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" target="_blank" asp-area="Admin" asp-controller="ApplicationUsers" asp-action="Edit" asp-route-id="@report.Reporter.Id">
+                                        Reporter
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </td>
-                </tr>
+                    <!-- /Ban Action -->
 
+                    <!-- Hide action-->
+                    <td>
+                        <button class="btn btn-primary" type="button" data-action="UpdateHide" data-action-id="@report.Id">
+                            @if (report.ReportedIdea?.IsHidden == true || report.ReportedComment?.IsHidden == true)
+                            {
+                                <text>UnHide</text>
+                            }
+                            else
+                            {
+                                <text>Hide</text>
+                            }
+                        </button>
+                    </td>
+                    <!-- /Hide action-->
+
+                    <!-- Mark action-->
+                    <td>
+                        <select class="form-select inline-select" data-action="Mark" data-action-id="@report.Id">
+                            <optgroup label="Mark as">
+                                <option value="0" selected="@((int)report.Status == 0)">Pending</option>
+                                <option value="1" selected="@((int)report.Status == 1)">Omitted</option>
+                                <option value="2" selected="@((int)report.Status == 2)">Resolved</option>
+                            </optgroup>
+                        </select>
+                    </td>
+                    <!-- /Mark action-->
+                </tr>
             }
         }
         else
@@ -66,3 +142,65 @@
     </tbody>
 </table>
 <partial name="_PaginatedList" />
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#filter').change(function () {
+                // Get the selected sorting option
+                var selectedOption = $(this).val();
+
+                // Redirect to the current page with the sorting option as a query parameter
+                window.location.href = window.location.pathname + '?filter=' + selectedOption;
+            });
+
+            // get the select option from query string
+            var selectedOption = new URLSearchParams(window.location.search).get('filter');
+            if (selectedOption != "" && selectedOption != null) {
+                $('#filter').val(selectedOption);
+            }
+
+            // mark event for each report
+            $('select[data-action=Mark]').change(function () {
+                var reportId = this.getAttribute('data-action-id');
+                var reportStatus = this.value;
+
+                $.get("/Staff/Helpers/GetCsrfToken", function (token) {
+                    var headers = {};
+                    headers["RequestVerificationToken"] = token;
+
+                    $.ajax({
+                        url: '/QAManager/Reports/Mark/',
+                        type: "PUT",
+                        data: { id: reportId, status: reportStatus },
+                        headers: headers,
+                        success: function (result) {
+                            location.reload();
+                        },
+                    });
+                });
+            });
+
+            // toggle hide for reported content
+            $('button[data-action=UpdateHide]').click(function () {
+                var reportId = this.getAttribute('data-action-id');
+                var updateTo = this.textContent.trim();
+
+                $.get("/Staff/Helpers/GetCsrfToken", function (token) {
+                    var headers = {};
+                    headers["RequestVerificationToken"] = token;
+
+                    $.ajax({
+                        url: '/QAManager/Reports/UpdateHide/',
+                        type: "PUT",
+                        data: { 'id': reportId, 'updateTo' : updateTo },
+                        headers: headers,
+                        success: function (result) {
+                            location.reload();
+                        },
+                    });
+                });
+            });
+        });
+    </script>
+}

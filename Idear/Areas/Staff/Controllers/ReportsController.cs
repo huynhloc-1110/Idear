@@ -111,26 +111,26 @@ namespace Idear.Areas.Staff.Controllers
 				targetUrlId = reportVM.ReportedComment.Idea!.Id;
 			}
 
-            // Get the email receiver which are QA Manager
-            var qaManager = await _userManager.GetUsersInRoleAsync("QA Manager");
+      // Get the email receiver which are QA Manager
+      var qaManagers = await _userManager.GetUsersInRoleAsync("QA Manager");
 
-            //Send email to them
+      //Send email to them
 
-            var url = Url.Action("ListReport", "Statistics", new { Area = "QAManager" }, Request.Scheme);
-            foreach (var user in qaManager)
-            {
-                MailContent content = new MailContent
-                {
-                    To = user.Email,
-                    Subject = "New report!",
-                    Body = $"<p>{report.Reporter.FullName} has submitted a new report, <a href=\"{url}#rp-{@report.Id}\">check it out!</a></p>"
-                };
+      var url = Url.Action("ListReport", "Statistics", new { Area = "QAManager" }, Request.Scheme);
+      foreach (var user in qaManagers)
+      {
+          MailContent content = new MailContent
+          {
+              To = user.Email,
+              Subject = "New report!",
+              Body = $"<p>{report.Reporter.FullName} has submitted a new report, <a href=\"{url}#rp-{@report.Id}\">check it out!</a></p>"
+          };
 
-                _ = _sendMailService.SendMail(content);
-            }
+          _ = _sendMailService.SendMail(content);
+      }
 
-			TempData["Report"] = "Success";
-            return RedirectToAction("Details", "Ideas", new { id = targetUrlId });
-        }
+			TempData["SuccessMessage"] = "Your report has been sent successfully.";
+      return RedirectToAction("Details", "Ideas", new { id = targetUrlId });
+    }
 	}
 }
