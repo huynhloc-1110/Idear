@@ -123,7 +123,7 @@ namespace Idear.Areas.Staff.Controllers
                 {
                     To = user.Email,
                     Subject = "New report!",
-                    Body = $"<p>{report.Reporter} has submitted a new report, <a href=\"{url}#rp-{@report.Id}\">check it out!</a></p>"
+                    Body = $"<p>{report.Reporter.FullName} has submitted a new report, <a href=\"{url}#rp-{@report.Id}\">check it out!</a></p>"
                 };
 
                 _ = _sendMailService.SendMail(content);
