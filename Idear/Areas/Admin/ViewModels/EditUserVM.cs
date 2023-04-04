@@ -23,5 +23,8 @@ namespace Idear.Areas.Admin.ViewModels
 
         [ValidateNever]
         public List<SelectListItem>? Departments { get; set; }
-    }
+
+		[DataType(DataType.Date)]
+		public DateTime? BannedDate { get; set; }
+	}
 }

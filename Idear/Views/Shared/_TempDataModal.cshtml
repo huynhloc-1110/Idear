@@ -1,0 +1,36 @@
+﻿@if (TempData.ContainsKey("SuccessMessage"))
+{
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="alert alert-success d-flex align-items-start" role="alert">
+                <i class="bi bi-check-circle" style="color:var(--bs-success)"></i>
+                &nbsp;
+                <span id="error-msg">@TempData["SuccessMessage"]</span>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            $("#successModal").modal('show');
+        });
+    </script>
+}
+
+@if (TempData.ContainsKey("ErrorMessage"))
+{
+    <div class="modal fade" id="badRequestModal" tabindex="-1" role="dialog" aria-labelledby="badRequestModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="alert alert-danger d-flex align-items-start" role="alert">
+                <i class="bi bi-exclamation-triangle" style="color:#B22222"></i>
+                &nbsp;
+                <span id="error-msg">@TempData["ErrorMessage"]</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            $("#badRequestModal").modal('show');
+        });
+    </script>
+}

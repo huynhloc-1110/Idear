@@ -1,0 +1,36 @@
+﻿@model Idear.Models.Comment
+
+<div class="modal fade" id="backdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="backdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="backdropLabel">Change comment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-modal" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group gapbreak" hidden>
+                        <label asp-for="Id" class="control-label text-bold"></label>
+                        <input asp-for="Id" disabled class="form-control" />
+                    </div>
+                    <div class="form-group gapbreak">
+                        <label asp-for="Text" class="control-label text-bold"></label>
+                        <input asp-for="Text" class="form-control" />
+                        <span asp-validation-for="Text" class="text-danger"></span>
+                    </div>
+                    <div class="form-switch gapbreak">
+                        <input type="checkbox" class="form-check-input" asp-for="IsAnonymous">
+                        <label class="form-check-label" asp-for="IsAnonymous">Post this ideas as anonymous</label>
+                        <span asp-validation-for="IsAnonymous" class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button id="btn-edit" type="button" class="btn btn-primary">Edit</button>
+                <button id="btn-delete" type="button" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>

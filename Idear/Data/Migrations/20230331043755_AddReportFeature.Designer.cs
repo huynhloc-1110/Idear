@@ -4,6 +4,7 @@ using Idear.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Idear.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230331043755_AddReportFeature")]
+    partial class AddReportFeature
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,9 +131,6 @@ namespace Idear.Data.Migrations
                     b.Property<bool>("IsAnonymous")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsHidden")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -179,9 +178,6 @@ namespace Idear.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsAnonymous")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsHidden")
                         .HasColumnType("bit");
 
                     b.Property<string>("Text")
@@ -250,9 +246,6 @@ namespace Idear.Data.Migrations
 
                     b.Property<string>("ReporterId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
