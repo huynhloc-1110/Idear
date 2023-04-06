@@ -9,6 +9,7 @@ namespace Idear.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; } = default!;

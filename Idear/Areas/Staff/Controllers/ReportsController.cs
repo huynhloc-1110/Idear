@@ -5,62 +5,64 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
+using Idear.Services;
 
 namespace Idear.Areas.Staff.Controllers
 {
     [Authorize]
     [Area("Staff")]
     public class ReportsController : Controller
-	{
-		private readonly ApplicationDbContext _context;
-		private readonly UserManager<ApplicationUser> _userManager;
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ISendMailService _sendMailService;
 
-		public ReportsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
-		{
-			_context = context;
-			_userManager = userManager;
-		}
+        public ReportsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ISendMailService sendMailService)
+        {
+            _context = context;
+            _userManager = userManager;
+            _sendMailService = sendMailService;
+        }
 
-		public async Task<IActionResult> Create(string id, string type)
-		{
-			if (type == null || id == null)
-			{
-				return BadRequest();
-			}
-			ReportVM reportVM = new();
-			switch (type)
-			{
-				case "Idea":
-					reportVM.ReportedIdeaId = id;
-					reportVM.ReportedIdea = await _context.Ideas
-						.Include(i => i.User)
-						.FirstOrDefaultAsync(i => i.Id == id);
+        public async Task<IActionResult> Create(string id, string type)
+        {
+            if (type == null || id == null)
+            {
+                return BadRequest();
+            }
+            ReportVM reportVM = new();
+            switch (type)
+            {
+                case "Idea":
+                    reportVM.ReportedIdeaId = id;
+                    reportVM.ReportedIdea = await _context.Ideas
+                        .Include(i => i.User)
+                        .FirstOrDefaultAsync(i => i.Id == id);
                     break;
-				case "Comment":
-					reportVM.ReportedCommentId = id;
-					reportVM.ReportedComment = await _context.Comments
+                case "Comment":
+                    reportVM.ReportedCommentId = id;
+                    reportVM.ReportedComment = await _context.Comments
                         .Include(c => c.User)
-						.Include(c => c.Idea)
+                        .Include(c => c.Idea)
                         .FirstOrDefaultAsync(c => c.Id == id);
                     break;
-				default:
-					return BadRequest();
-			}
+                default:
+                    return BadRequest();
+            }
 
-			if (reportVM.ReportedComment == null && reportVM.ReportedIdea == null)
-			{
-				return BadRequest();
-			}
-			return View(reportVM);
-		}
+            if (reportVM.ReportedComment == null && reportVM.ReportedIdea == null)
+            {
+                return BadRequest();
+            }
+            return View(reportVM);
+        }
 
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create
-			([Bind("Reason,ReportedIdeaId,ReportedCommentId")]ReportVM reportVM)
-		{
-			// load reported idea or comment from the passed id from form submission
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create
+            ([Bind("Reason,ReportedIdeaId,ReportedCommentId")] ReportVM reportVM)
+        {
+            // load reported idea or comment from the passed id from form submission
             if (!string.IsNullOrEmpty(reportVM.ReportedIdeaId))
             {
                 reportVM.ReportedIdea = await _context.Ideas
@@ -76,23 +78,51 @@ namespace Idear.Areas.Staff.Controllers
             }
 
             if (!ModelState.IsValid)
-			{
-				return View(reportVM);
+            {
+                return View(reportVM);
             }
 
-			Report report = new()
-			{
-				Id = Guid.NewGuid().ToString(),
-				DateTime = DateTime.Now,
-				Reason = reportVM.Reason,
-				ReportedIdea = reportVM.ReportedIdea,
-				ReportedComment = reportVM.ReportedComment,
-				Reporter = await _userManager.GetUserAsync(User)
-			};
-			_context.Reports.Add(report);
-			await _context.SaveChangesAsync();
+            Report report = new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                DateTime = DateTime.Now,
+                Reason = reportVM.Reason,
+                ReportedIdea = reportVM.ReportedIdea,
+                ReportedComment = reportVM.ReportedComment,
+                Reporter = await _userManager.GetUserAsync(User)
+            };
+            _context.Reports.Add(report);
+            await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index", "Home");
+            string? targetUrlId = "";
+            if (reportVM.ReportedIdea != null)
+            {
+                targetUrlId = reportVM.ReportedIdea.Id;
+            }
+            if (reportVM.ReportedComment != null)
+            {
+                targetUrlId = reportVM.ReportedComment.Idea!.Id;
+            }
+
+            // Get the email receiver which are QA Manager
+            var qaManagers = await _userManager.GetUsersInRoleAsync("QA Manager");
+
+            //Send email to them
+            var url = Url.Action("ListReport", "Statistics", new { Area = "QAManager" }, Request.Scheme);
+            foreach (var user in qaManagers)
+            {
+                MailContent content = new()
+                {
+                    To = user.Email,
+                    Subject = "New report!",
+                    Body = $"<p>{report.Reporter.FullName} has submitted a new report, <a href=\"{url}#rp-{@report.Id}\">check it out!</a></p>"
+                };
+
+                _ = _sendMailService.SendMail(content);
+            }
+
+            TempData["SuccessMessage"] = "Your report has been sent successfully.";
+            return RedirectToAction("Details", "Ideas", new { id = targetUrlId });
         }
-	}
+    }
 }

@@ -10,8 +10,14 @@ namespace Idear.Models
 		public string? Reason { get; set; }
 		[Required]
 		public DateTime DateTime { get; set; }
-		public Comment? ReportedComment { get; set; }
+        public ReportStatus Status { get; set; } = ReportStatus.Pending;
+        public Comment? ReportedComment { get; set; }
 		public Idea? ReportedIdea { get; set; }
 		public ApplicationUser? Reporter { get; set; }
+	}
+
+    public enum ReportStatus
+	{
+		Pending, Omitted, Resolved
 	}
 }
