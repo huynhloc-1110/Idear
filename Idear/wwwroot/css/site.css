@@ -144,6 +144,11 @@ body.dark-mode .modal-content {
     color: #fff !important;
 }
 
+body.dark-mode ul.pagination a {
+    background-color: #222 !important;
+    color: #fff !important;
+}
+
 /*highlight fragment*/
 .card-body.highlight {
     border: 3px solid yellow;

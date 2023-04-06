@@ -364,6 +364,3 @@ FodyWeavers.xsd
 
 # Hide files when pushing supported ideas
 Idear/wwwroot/files/
-
-# Hide database file
-Idear/Idear.db
