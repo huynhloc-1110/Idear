@@ -205,8 +205,14 @@ namespace Idear.Areas.Staff.Controllers
                 //using the Path.Combine method
                 string uploadDir = Path.Combine(_hostingEnvironment.WebRootPath, "files");
 
-                //generate a random file name
-                var extension = Path.GetExtension(file.FileName);
+				// Create the directory if it doesn't exist
+				if (!Directory.Exists(uploadDir))
+				{
+					Directory.CreateDirectory(uploadDir);
+				}
+
+				//generate a random file name
+				var extension = Path.GetExtension(file.FileName);
                 var randomFileName = Path.ChangeExtension(Guid.NewGuid().ToString(), extension);
 
                 string filePath = Path.Combine(uploadDir, randomFileName);
@@ -363,6 +369,7 @@ namespace Idear.Areas.Staff.Controllers
 				Text = idea.Text,
 				TopicId = idea.Topic.Id,
 				CategoryId = idea.Category.Id,
+				IsAnonymous = idea.IsAnonymous,
 				Topics = await _context.Topics.Where(t => t.ClosureDate >= DateTime.Now).Select(t => new SelectListItem
 				{
 					Value = t.Id,
@@ -375,6 +382,7 @@ namespace Idear.Areas.Staff.Controllers
 					Text = c.Name,
 					Selected = c.Id == idea.Category.Id
 				}).ToListAsync()
+
 			};
             var currentUser = await _userManager.GetUserAsync(User);
             if (idea.User != currentUser)
