@@ -124,6 +124,9 @@ body.dark-mode .card .card-body {
 body.dark-mode .card .card-text {
     color: #fff !important;
 }
+    body.dark-mode a {
+        color: #fff !important;
+    }
 body.dark-mode table {
     background-color: #222 !important;
     color: #fff !important;
