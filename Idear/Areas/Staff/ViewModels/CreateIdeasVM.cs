@@ -30,6 +30,9 @@ namespace Idear.Areas.Staff.ViewModels
 		[Required]
 		[IsTrue(ErrorMessage = "Please agree to Terms and Conditions")]        
 		public bool AgreeTerms { get; set; }
+
+		[Required]
+		public bool DeleteCurrentFile { get; set; }
 	}
 
 	public class IsTrueAttribute : ValidationAttribute, IClientModelValidator

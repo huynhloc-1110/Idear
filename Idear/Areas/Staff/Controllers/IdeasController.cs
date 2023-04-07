@@ -370,6 +370,7 @@ namespace Idear.Areas.Staff.Controllers
 				TopicId = idea.Topic.Id,
 				CategoryId = idea.Category.Id,
 				IsAnonymous = idea.IsAnonymous,
+                FilePath = idea.FilePath,
 				Topics = await _context.Topics.Where(t => t.ClosureDate >= DateTime.Now).Select(t => new SelectListItem
 				{
 					Value = t.Id,
@@ -436,16 +437,16 @@ namespace Idear.Areas.Staff.Controllers
 
 			if (file != null)
 			{
-                if (!string.IsNullOrEmpty(idea.FilePath))
-                {
-                    string oldFilePath = Path.Combine(_hostingEnvironment.WebRootPath, idea.FilePath);
-                    if (System.IO.File.Exists(oldFilePath))
-                    {
-                        System.IO.File.Delete(oldFilePath);
-                    }
-                }
+				if (!string.IsNullOrEmpty(idea.FilePath))
+				{
+					string oldFilePath = Path.Combine(_hostingEnvironment.WebRootPath, idea.FilePath);
+					if (System.IO.File.Exists(oldFilePath))
+					{
+						System.IO.File.Delete(oldFilePath);
+					}
+				}
 
-                string uploadDir = Path.Combine(_hostingEnvironment.WebRootPath, "files");
+				string uploadDir = Path.Combine(_hostingEnvironment.WebRootPath, "files");
 				var extension = Path.GetExtension(file.FileName);
 				var randomFileName = Path.ChangeExtension(Guid.NewGuid().ToString(), extension);
 				string filePath = Path.Combine(uploadDir, randomFileName);
@@ -457,7 +458,7 @@ namespace Idear.Areas.Staff.Controllers
 
 				idea.FilePath = @"files\" + randomFileName;
 			}
-            _context.Ideas.Update(idea);
+			_context.Ideas.Update(idea);
 			await _context.SaveChangesAsync();
 
 			return RedirectToAction("ListIdeaByUser");
