@@ -25,7 +25,7 @@
         {
             <tr>
                 <td>
-                    <i class="@(item.ClosureDate >= DateTime.Now ? "bi bi-check-circle" : item.FinalClosureDate >= DateTime.Now ? "bi bi-volume-mute" : "bi bi-lock")"></i>
+                    <i class="@(item.ClosureDate >= DateTime.UtcNow ? "bi bi-check-circle" : item.FinalClosureDate >= DateTime.UtcNow ? "bi bi-volume-mute" : "bi bi-lock")"></i>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)

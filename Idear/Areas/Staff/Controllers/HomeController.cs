@@ -29,7 +29,7 @@ namespace Idear.Areas.Staff.Controllers
             var homeVM = new HomeVM()
             {
                 OpenedTopics = await _context.Topics
-                    .Where(t => t.ClosureDate > DateTime.Now)
+                    .Where(t => t.ClosureDate > DateTime.UtcNow)
                     .OrderByDescending(t => t.ClosureDate)
                     .Take(3)
                     .ToListAsync(),

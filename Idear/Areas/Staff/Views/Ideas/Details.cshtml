@@ -113,7 +113,7 @@
 							<p class="card-text text-bold"><span id="cmt-count">@Model.Idea.Comments!.Count</span> comments</p>
 
 							<!-- Create new comment Section -->
-							@if (Model.Idea.Topic!.FinalClosureDate >= DateTime.Now)
+							@if (Model.Idea.Topic!.FinalClosureDate >= DateTime.UtcNow)
 							{
 								<form>
 									<div class="mb-3">

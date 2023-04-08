@@ -128,7 +128,7 @@ namespace Idear.Areas.Staff.Controllers
 
             // Add view when user load the idea detail page
             var view = await _context.Views.Where(v => v.User == user && v.Idea == idea).FirstOrDefaultAsync();
-            var currentTime = DateTime.Now;
+            var currentTime = DateTime.UtcNow;
 
             if (view != null)
             {
@@ -162,7 +162,7 @@ namespace Idear.Areas.Staff.Controllers
         {
             var model = new CreateIdeasVM
             {
-                Topics = await _context.Topics.Where(t => t.ClosureDate >= DateTime.Now).Select(t => new SelectListItem
+                Topics = await _context.Topics.Where(t => t.ClosureDate >= DateTime.UtcNow).Select(t => new SelectListItem
                 {
                     Value = t.Id,
                     Text = t.Name
@@ -226,7 +226,7 @@ namespace Idear.Areas.Staff.Controllers
             {
                 Id = Guid.NewGuid().ToString(),
                 Text = model.Text,
-                DateTime = DateTime.Now,
+                DateTime = DateTime.UtcNow,
                 Topic = topic,
                 Category = category,
                 User = currentUser,
@@ -363,7 +363,7 @@ namespace Idear.Areas.Staff.Controllers
 				Text = idea.Text,
 				TopicId = idea.Topic.Id,
 				CategoryId = idea.Category.Id,
-				Topics = await _context.Topics.Where(t => t.ClosureDate >= DateTime.Now).Select(t => new SelectListItem
+				Topics = await _context.Topics.Where(t => t.ClosureDate >= DateTime.UtcNow).Select(t => new SelectListItem
 				{
 					Value = t.Id,
 					Text = t.Name,
@@ -390,7 +390,7 @@ namespace Idear.Areas.Staff.Controllers
 		{
 			if (!ModelState.IsValid)
 			{
-				model.Topics = await _context.Topics.Where(t => t.ClosureDate >= DateTime.Now).Select(t => new SelectListItem
+				model.Topics = await _context.Topics.Where(t => t.ClosureDate >= DateTime.UtcNow).Select(t => new SelectListItem
 				{
 					Value = t.Id,
 					Text = t.Name

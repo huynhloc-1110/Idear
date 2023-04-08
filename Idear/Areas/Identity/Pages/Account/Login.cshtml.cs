@@ -116,7 +116,7 @@ namespace Idear.Areas.Identity.Pages.Account
                 var user = await _userManager.FindByEmailAsync(Input.Email);
 
                 // Check if the user exists and is not banned
-                if (user != null && (user.BannedDate == null || user.BannedDate < DateTime.Now))
+                if (user != null && (user.BannedDate == null || user.BannedDate < DateTime.UtcNow))
                 {
                     // Attempt to sign in the user with the password
                     var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
@@ -141,7 +141,7 @@ namespace Idear.Areas.Identity.Pages.Account
                         return Page();
                     }
                 }
-                else if (user != null && user.BannedDate >= DateTime.Now)
+                else if (user != null && user.BannedDate >= DateTime.UtcNow)
                 {
                     // User is banned, display an error message
                     ModelState.AddModelError(string.Empty, $"Your account has been banned until {user.BannedDate.Value.ToShortDateString()}. Please contact the QA Manager for more information.");

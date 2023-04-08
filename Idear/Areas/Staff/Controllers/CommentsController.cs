@@ -42,7 +42,7 @@ namespace Idear.Areas.Staff.Controllers
             {
                 return BadRequest("The request is invalid.");
             }
-            if (cmtText == "" || cmtText == null || topicFinalClosureDate < DateTime.Now)
+            if (cmtText == "" || cmtText == null || topicFinalClosureDate < DateTime.UtcNow)
             {
                 return BadRequest("The request is invalid.");
             }
@@ -54,7 +54,7 @@ namespace Idear.Areas.Staff.Controllers
                 IsAnonymous = isAnonymous,
                 Idea = await _context.Ideas.FindAsync(ideaId),
                 User = await _userManager.GetUserAsync(User),
-                Datetime = DateTime.Now
+                Datetime = DateTime.UtcNow
             };
 
             _context.Comments.Add(cmt);
@@ -131,7 +131,7 @@ namespace Idear.Areas.Staff.Controllers
 			{
 				cmt.Text = comment.Text;
 				cmt.IsAnonymous = comment.IsAnonymous;
-				cmt.Datetime = DateTime.Now;
+				cmt.Datetime = DateTime.UtcNow;
 				await _context.SaveChangesAsync();
 				return Ok();
 			}

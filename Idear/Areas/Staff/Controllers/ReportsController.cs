@@ -85,7 +85,7 @@ namespace Idear.Areas.Staff.Controllers
             Report report = new()
             {
                 Id = Guid.NewGuid().ToString(),
-                DateTime = DateTime.Now,
+                DateTime = DateTime.UtcNow,
                 Reason = reportVM.Reason,
                 ReportedIdea = reportVM.ReportedIdea,
                 ReportedComment = reportVM.ReportedComment,

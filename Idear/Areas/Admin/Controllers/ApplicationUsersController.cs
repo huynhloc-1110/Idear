@@ -37,7 +37,7 @@ namespace Idear.Areas.Admin.Controllers
 			switch (filter)
 			{
 				case "banned":
-					userQuery = userQuery.Where(user => user.BannedDate.HasValue && user.BannedDate.Value >= DateTime.Now);
+					userQuery = userQuery.Where(user => user.BannedDate.HasValue && user.BannedDate.Value >= DateTime.UtcNow);
 					break;
 			}
 

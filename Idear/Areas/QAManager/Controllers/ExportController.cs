@@ -28,7 +28,7 @@ namespace Idear.Areas.QAManager.Controllers
             {
                 return NotFound();
             }
-            if (topic.FinalClosureDate > DateTime.Now)
+            if (topic.FinalClosureDate > DateTime.UtcNow)
             {
                 TempData["ErrorMessage"] = "This topic has not yet been closed.";
                 return RedirectToAction("Index", "Topics", new { area = "Staff" });
@@ -79,7 +79,7 @@ namespace Idear.Areas.QAManager.Controllers
             {
                 return NotFound();
             }
-            if (topic.FinalClosureDate > DateTime.Now)
+            if (topic.FinalClosureDate > DateTime.UtcNow)
             {
                 TempData["ErrorMessage"] = "This topic has not yet been closed.";
                 return RedirectToAction("Index", "Topics", new { area = "Staff" });
