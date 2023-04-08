@@ -167,8 +167,12 @@ namespace Idear.Areas.Admin.Controllers
 			user.Email = model.Email;
 			user.FullName = model.FullName;
 			user.UserName = model.Email;
-			user.BannedDate = model.BannedDate;
-			user.Department = await _context.Departments.FirstOrDefaultAsync(d => d.Id == model.DepartmentId);
+            // add Utc Kind to BannedDate
+            if (model.BannedDate.HasValue)
+			{
+				user.BannedDate = DateTime.SpecifyKind(model.BannedDate.Value, DateTimeKind.Utc);
+			}
+            user.Department = await _context.Departments.FirstOrDefaultAsync(d => d.Id == model.DepartmentId);
 
 			var result = await _userManager.UpdateAsync(user);
 			if (result.Succeeded)

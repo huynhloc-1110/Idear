@@ -144,7 +144,7 @@ namespace Idear.Areas.Identity.Pages.Account
                 else if (user != null && user.BannedDate >= DateTime.UtcNow)
                 {
                     // User is banned, display an error message
-                    ModelState.AddModelError(string.Empty, $"Your account has been banned until {user.BannedDate.Value.ToShortDateString()}. Please contact the QA Manager for more information.");
+                    ModelState.AddModelError(string.Empty, $"Your account has been banned until {user.BannedDate.Value} in UTC+00. Please contact the QA Manager for more information.");
                     return Page();
                 }
                 else

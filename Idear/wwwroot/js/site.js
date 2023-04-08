@@ -131,6 +131,6 @@ $(function () {
     $("time.date").each(function (elem) {
         var utctimeval = $(this).html();
         var date = new Date(utctimeval);
-        $(this).html(date.toLocaleDateString("en-GB"));
+        $(this).html(date.toLocaleDateString("en-GB"), { timeZone: "UTC"});
     });
 });

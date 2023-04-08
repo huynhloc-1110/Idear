@@ -62,6 +62,8 @@ namespace Idear.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 topic.Id = Guid.NewGuid().ToString();
+                topic.ClosureDate = DateTime.SpecifyKind(topic.ClosureDate, DateTimeKind.Utc);
+                topic.FinalClosureDate = DateTime.SpecifyKind(topic.FinalClosureDate, DateTimeKind.Utc);
                 _context.Add(topic);
                 await _context.SaveChangesAsync();
                 return Ok();
@@ -79,6 +81,8 @@ namespace Idear.Areas.Admin.Controllers
                 try
                 {
                     topic.Id = id;
+                    topic.ClosureDate = DateTime.SpecifyKind(topic.ClosureDate, DateTimeKind.Utc);
+                    topic.FinalClosureDate = DateTime.SpecifyKind(topic.FinalClosureDate, DateTimeKind.Utc);
                     _context.Update(topic);
                     await _context.SaveChangesAsync();
                 }
