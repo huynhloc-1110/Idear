@@ -1,4 +1,6 @@
-﻿@model PaginatedList<Idear.Models.Comment>
+﻿@using System.Globalization;
+
+@model PaginatedList<Idear.Models.Comment>
 
 @{
     ViewData["Title"] = "Anonymous Comments";
@@ -27,14 +29,13 @@
                     <td>@comment.Text</td>
                     <td>@comment.User!.FullName</td>
                     <td>@comment.Idea!.Text</td>
-                    <td>@comment.Datetime</td>
+                    <td><time class="datetime">@comment.Datetime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)</time></td>
                     <td>
                         <a class="btn btn-info" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@comment.Idea!.Id" asp-fragment="@comment.Id">
                             <i class="bi bi-card-list"></i> Details
                         </a>
                     </td>
                 </tr>
-
             }
         }
         else

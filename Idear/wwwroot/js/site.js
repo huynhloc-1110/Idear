@@ -120,3 +120,17 @@ $(function() {
         });
     }
 })
+
+// convert datetime to client timezone
+$(function () {
+    $("time.datetime").each(function (elem) {
+        var utctimeval = $(this).html();
+        var date = new Date(utctimeval);
+        $(this).html(date.toLocaleString("en-GB"));
+    });
+    $("time.date").each(function (elem) {
+        var utctimeval = $(this).html();
+        var date = new Date(utctimeval);
+        $(this).html(date.toLocaleDateString("en-GB"));
+    });
+});
