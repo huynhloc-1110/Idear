@@ -1,17 +1,11 @@
-﻿using Idear.Areas.Staff.ViewModels;
-using Idear.Data;
+﻿using Idear.Data;
 using Idear.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using MailKit.Net.Smtp;
-using MimeKit;
-using Microsoft.Extensions.Logging;
-using MailKit.Security;
-using Org.BouncyCastle.Crypto;
 using Idear.Services;
+using System.Globalization;
 
 namespace Idear.Areas.Staff.Controllers
 {
@@ -34,15 +28,20 @@ namespace Idear.Areas.Staff.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string cmtText, bool isAnonymous, string ideaId,
-            string deadline)
+        public async Task<IActionResult> Create(string cmtText, bool isAnonymous, string ideaId)
         {
-            // check for comment null or topic deadline meet
-            if (!DateTime.TryParse(deadline, out var topicFinalClosureDate))
-            {
-                return BadRequest("The request is invalid.");
-            }
-            if (cmtText == "" || cmtText == null || topicFinalClosureDate < DateTime.UtcNow)
+			// check if the idea is null
+			var idea = await _context.Ideas
+				.Include(i => i.Topic)
+				.FirstOrDefaultAsync(i => i.Id == ideaId);
+			if (idea == null)
+			{
+				return BadRequest("The idea id for this comment is invalid.");
+			}
+
+			// check if the comment text is null or the topic final closure date is passed
+			var topicFinalClosureDate = idea.Topic!.FinalClosureDate;
+            if (string.IsNullOrEmpty(cmtText) || topicFinalClosureDate < DateTime.UtcNow)
             {
                 return BadRequest("The request is invalid.");
             }
@@ -52,7 +51,7 @@ namespace Idear.Areas.Staff.Controllers
                 Id = Guid.NewGuid().ToString(),
                 Text = cmtText,
                 IsAnonymous = isAnonymous,
-                Idea = await _context.Ideas.FindAsync(ideaId),
+                Idea = idea,
                 User = await _userManager.GetUserAsync(User),
                 Datetime = DateTime.UtcNow
             };
@@ -87,7 +86,7 @@ namespace Idear.Areas.Staff.Controllers
                 _ = _sendMailService.SendMail(content);
             }
 
-            return Json(new { id = cmt.Id, user = cmt.User.FullName, dateTime = cmt.Datetime.ToString("d/M/yyyy HH:mm:ss") });
+            return Json(new { id = cmt.Id, user = cmt.User.FullName, dateTime = cmt.Datetime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture) });
         }
 
 		public async Task<IActionResult> Details(string id)
