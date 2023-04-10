@@ -228,7 +228,8 @@ namespace Idear.Areas.Staff.Controllers
                 }
 
                 //sets the model.FilePath property to the relative path of the uploaded file
-                model.FilePath = @"files\" + randomFileName;
+                model.FilePath = Path.Combine("files", randomFileName);
+                _logger.LogWarning($"File duoc luu trong database tai {model.FilePath}");
             }
 
             var idea = new Idea
