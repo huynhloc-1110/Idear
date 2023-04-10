@@ -20,10 +20,39 @@
 					<input asp-for="Text" class="form-control" />
 					<span asp-validation-for="Text" class="text-danger"></span>
 				</div>
-				<div class="gapbreak">
-					<label for="file-input"><b>Supporting files</b></label>
-					<input type="file" id="file-input" name="file" class="form-control" />
-				</div>
+				
+				@if (!string.IsNullOrEmpty(Model.FilePath))
+				{
+					<div class="gapbreak">
+						<label for="file-input"><b>Current supporting files</b></label>
+						<a class="card-body" asp-controller="Ideas" asp-action="DownloadFile" asp-route-id="@Model.Id">
+							@{
+								var extension = System.IO.Path.GetExtension(Model.FilePath);
+								var icon = extension switch
+								{
+									".pdf" => "bi bi-file-earmark-pdf",
+									".doc" or ".docx" => "bi bi-file-earmark-word",
+									".xls" or ".xlsx" => "bi bi-file-earmark-excel",
+									".png" or ".jpg" or ".gif" => "bi bi-file-earmark-image",
+									".ppt" or ".pptx" => "bi bi-file-earmark-ppt",
+									_ => "bi bi-file-earmark"
+								};
+							}
+							<i class="@icon"></i>
+							<span>&nbsp;@System.IO.Path.GetFileName(Model.FilePath)</span>
+						</a>
+					</div>
+					<div class="gapbreak">
+						<label for="file-input"><b>Update supporting files</b></label>
+						<input type="file" id="file-input" name="file" class="form-control" />
+					</div>
+				}else {
+					<div class="gapbreak">
+						<label for="file-input"><b>Update supporting files</b></label>
+						<input type="file" id="file-input" name="file" class="form-control" />
+					</div>
+				}
+
 				<div class="gapbreak">
 					<label asp-for="CategoryId"><b>Category</b></label>
 					<select asp-for="CategoryId" asp-items="@Model.Categories" class="form-control">
