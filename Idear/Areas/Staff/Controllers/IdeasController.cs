@@ -30,13 +30,15 @@ namespace Idear.Areas.Staff.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly ISendMailService _sendMailService;
+        private readonly ILogger<IdeasController> _logger;
 
-        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment, ISendMailService sendMailService)
+        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment, ISendMailService sendMailService, ILogger<IdeasController> logger)
         {
             _context = context;
             _userManager = userManager;
             _hostingEnvironment = hostingEnvironment;
             _sendMailService = sendMailService;
+            _logger = logger;
         }
 
         // GET: Staff/Ideas
@@ -216,6 +218,7 @@ namespace Idear.Areas.Staff.Controllers
                 var randomFileName = Path.ChangeExtension(Guid.NewGuid().ToString(), extension);
 
                 string filePath = Path.Combine(uploadDir, randomFileName);
+                _logger.LogWarning($"File duoc luu o {filePath}");
 
                 //creates a new file on the file system at the location specified by the filePath variable
                 //using the FileStream class and the file.CopyTo method
