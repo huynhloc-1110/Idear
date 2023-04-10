@@ -49,13 +49,12 @@ function ajaxPostCmt() {
 		var id = $('#idea-id').text();
 		var cmtText = $('#input-cmt').val();
 		var isAnonymous = $('#chk-anonymous').prop('checked');
-		var topicFinalClosureDate = $('#topic-final-date').text();
 
 		// Send the AJAX request with the CSRF token included in the header
 		$.ajax({
 			url: '/Staff/Comments/Create',
 			type: "POST",
-			data: { 'cmtText': cmtText, 'isAnonymous': isAnonymous, ideaId: id, deadline: topicFinalClosureDate },
+			data: { 'cmtText': cmtText, 'isAnonymous': isAnonymous, ideaId: id },
 			headers: headers,
 			success: function (result) {
 				// update cmt UI after successfully change the backend
@@ -68,6 +67,7 @@ function ajaxPostCmt() {
 function updateCmtUI(result, isAnonymous, cmtText) {
 	// add the new comment after the 'create comment' section
 	var cmtOwner = isAnonymous ? 'Anonymous User' : result.user;
+	var cmtDateTime = (new Date(result.dateTime)).toLocaleString("en-GB");
 	$('#card-new-cmt').after(
 		`
 		<div class="card">
@@ -84,7 +84,7 @@ function updateCmtUI(result, isAnonymous, cmtText) {
 				<p>${cmtText}</p>
 				<p class="text-right">
 					<small class="text-muted">
-						at ${result.dateTime}
+						at <time class="datetime">${cmtDateTime}</time>
 					</small>
 				</p>
 			</div>

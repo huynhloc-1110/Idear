@@ -1,4 +1,6 @@
-﻿@model PaginatedList<Idear.Models.Report>
+﻿@using System.Globalization;
+
+@model PaginatedList<Idear.Models.Report>
 
 @{
     ViewData["Title"] = "Reports";
@@ -83,7 +85,7 @@
                         }
                     </td>
                     <td>@report.Reason</td>
-                    <td>@report.DateTime</td>
+                    <td><time class="datetime">@report.DateTime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)</time></td>
                     <!-- Ban action-->
                     <td>
                         <div class="dropdown">

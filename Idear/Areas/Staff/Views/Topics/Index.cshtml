@@ -1,5 +1,7 @@
-﻿@model PaginatedList<Idear.Models.Topic>
-@using Microsoft.AspNetCore.Identity;
+﻿@using Microsoft.AspNetCore.Identity;
+@using System.Globalization;
+
+@model PaginatedList<Idear.Models.Topic>
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
@@ -25,16 +27,16 @@
         {
             <tr>
                 <td>
-                    <i class="@(item.ClosureDate >= DateTime.Now ? "bi bi-check-circle" : item.FinalClosureDate >= DateTime.Now ? "bi bi-volume-mute" : "bi bi-lock")"></i>
+                    <i class="@(item.ClosureDate >= DateTime.UtcNow ? "bi bi-check-circle" : item.FinalClosureDate >= DateTime.UtcNow ? "bi bi-volume-mute" : "bi bi-lock")"></i>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ClosureDate)
+                    <time class="date">@item.ClosureDate.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)</time>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FinalClosureDate)
+                    <time class="date">@item.FinalClosureDate.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)</time>
                 </td>
                 <td style="text-align:center">
                     @Html.DisplayFor(modelItem => item.Ideas!.Count)

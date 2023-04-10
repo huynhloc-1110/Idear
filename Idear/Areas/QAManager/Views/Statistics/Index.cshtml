@@ -1,4 +1,6 @@
-﻿@model Idear.Areas.QAManager.ViewModels.ExceptionReportsVM;
+﻿@using System.Globalization;
+
+@model Idear.Areas.QAManager.ViewModels.ExceptionReportsVM;
 
 @{
     ViewData["Title"] = "Statistics";
@@ -38,7 +40,7 @@
                                 <p class="card-text">
                                     @idea.Text
                                     <small class="text-muted">- by @idea.User!.FullName</small>
-                                    <small class="text-muted">- at @idea.DateTime</small>
+                                    <small class="text-muted">- at <time class="datetime">@idea.DateTime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)</time></small>
                                 </p>
                             </a>
                         </div>
@@ -61,7 +63,7 @@
                                 <p class="card-text">
                                     @idea.Text
                                     <small class="text-muted">- by @idea.User!.FullName</small>
-                                    <small class="text-muted">- at @idea.DateTime</small>
+                                    <small class="text-muted">- at <time class="datetime">@idea.DateTime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)</time></small>
                                 </p>
                             </a>
                         </div>
@@ -116,7 +118,7 @@
                                         <text>@report.ReportedComment.Text</text>
                                     }
                                     <small class="text-muted">- is reported by @report.Reporter!.FullName</small>
-                                    <small class="text-muted">- at @report.DateTime</small>
+                                    <small class="text-muted">- at <time class="datetime">@report.DateTime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)</time></small>
                                 </p>
                             </a>
                         </div>

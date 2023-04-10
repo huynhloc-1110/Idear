@@ -1,4 +1,5 @@
-﻿@model Idear.Areas.Staff.ViewModels.HomeVM
+﻿@using System.Globalization;
+@model Idear.Areas.Staff.ViewModels.HomeVM
 
 @{
     ViewData["Title"] = "Home Page";
@@ -49,7 +50,7 @@
                             <a class="card-body" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@idea.Id">
                                 <p class="card-text">
                                     @idea.Text
-                                    <small class="text-muted">- at @idea.DateTime</small>
+                                    <small class="text-muted">- at <time class="datetime">@idea.DateTime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)</time></small>
                                 </p>
                             </a>
                         </div>
@@ -71,7 +72,7 @@
                             <a class="card-body" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@idea.Id">
                                 <p class="card-text">
                                     @idea.Text
-                                    <small class="text-muted">- at @idea.DateTime</small>
+                                    <small class="text-muted">- at <time class="datetime">@idea.DateTime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)</time></small>
                                     <small class="text-muted">- @idea.Reacts.Where(i => i.ReactFlag == 1).Count() likes </small>
                                     <small class="text-muted">/ @idea.Reacts.Where(i => i.ReactFlag == -1).Count() dislikes </small>
                                 </p>
@@ -95,7 +96,7 @@
                             <a class="card-body" asp-area="Staff" asp-controller="Ideas" asp-action="Details" asp-route-id="@idea.Id">
                                 <p class="card-text">
                                     @idea.Text
-                                    <small class="text-muted">- at @idea.DateTime</small>
+                                    <small class="text-muted">- at <time class="datetime">@idea.DateTime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)</time></small>
                                     <small class="text-muted">- @idea.Views!.Sum(v => v.VisitTime) views</small>
                                 </p>
                             </a>
