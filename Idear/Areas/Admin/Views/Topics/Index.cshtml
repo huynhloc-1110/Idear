@@ -1,4 +1,6 @@
-﻿@model Idear.Areas.Admin.ViewModels.TopicsVM
+﻿@using System.Globalization;
+
+@model Idear.Areas.Admin.ViewModels.TopicsVM
 
 @{
     ViewData["Title"] = "Topic";
@@ -69,10 +71,10 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ClosureDate)
+                    <time class="date">@item.ClosureDate.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)</time>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FinalClosureDate)
+                    <time class="date">@item.FinalClosureDate.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)</time>
                 </td>
                 <td>
                     <button class="btn btn-primary" data-modal-action="Edit" data-modal-id="@item.Id"><i class="bi bi-pencil"></i> Edit</button>
