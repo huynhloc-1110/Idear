@@ -218,7 +218,7 @@ namespace Idear.Areas.Staff.Controllers
                 var randomFileName = Path.ChangeExtension(Guid.NewGuid().ToString(), extension);
 
                 string filePath = Path.Combine(uploadDir, randomFileName);
-                _logger.LogWarning($"File duoc luu o {filePath}");
+                _logger.LogWarning($"File is saved at {filePath}");
 
                 //creates a new file on the file system at the location specified by the filePath variable
                 //using the FileStream class and the file.CopyTo method
@@ -229,7 +229,7 @@ namespace Idear.Areas.Staff.Controllers
 
                 //sets the model.FilePath property to the relative path of the uploaded file
                 model.FilePath = Path.Combine("files", randomFileName);
-                _logger.LogWarning($"File duoc luu trong database tai {model.FilePath}");
+                _logger.LogWarning($"File's path is saved in the db as {model.FilePath}");
             }
 
             var idea = new Idea
