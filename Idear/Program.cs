@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Idear.Services;
+using DotNetEnv.Configuration;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddDotNetEnv(".env", LoadOptions.TraversePath());
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

@@ -30,13 +30,15 @@ namespace Idear.Areas.Staff.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly ISendMailService _sendMailService;
+        private readonly ILogger<IdeasController> _logger;
 
-        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment, ISendMailService sendMailService)
+        public IdeasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostingEnvironment, ISendMailService sendMailService, ILogger<IdeasController> logger)
         {
             _context = context;
             _userManager = userManager;
             _hostingEnvironment = hostingEnvironment;
             _sendMailService = sendMailService;
+            _logger = logger;
         }
 
         // GET: Staff/Ideas
@@ -216,6 +218,7 @@ namespace Idear.Areas.Staff.Controllers
                 var randomFileName = Path.ChangeExtension(Guid.NewGuid().ToString(), extension);
 
                 string filePath = Path.Combine(uploadDir, randomFileName);
+                _logger.LogWarning($"File is saved at {filePath}");
 
                 //creates a new file on the file system at the location specified by the filePath variable
                 //using the FileStream class and the file.CopyTo method
@@ -225,7 +228,8 @@ namespace Idear.Areas.Staff.Controllers
                 }
 
                 //sets the model.FilePath property to the relative path of the uploaded file
-                model.FilePath = @"files\" + randomFileName;
+                model.FilePath = Path.Combine("files", randomFileName);
+                _logger.LogWarning($"File's path is saved in the db as {model.FilePath}");
             }
 
             var idea = new Idea
